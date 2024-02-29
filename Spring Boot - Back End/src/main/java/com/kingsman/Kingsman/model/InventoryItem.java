@@ -15,13 +15,14 @@ public class InventoryItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String itemName;
-    private float weight;
     private int quantity;
     private String vendorId;
     @Column(name = "dateAndTime")
     private LocalDateTime dateTime;
     @Column(name = "last_modified")
     private LocalDateTime lastModified;
+    @Column(name = "last_daily_usage")
+    private LocalDateTime lastDailyUsage;
     @PrePersist
     protected void onCreate(){
         lastModified =LocalDateTime.now();

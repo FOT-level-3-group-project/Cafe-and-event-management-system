@@ -3,6 +3,7 @@ package com.kingsman.Kingsman.controller;
 import com.kingsman.Kingsman.exception.ItemNotFoundExeption;
 import com.kingsman.Kingsman.model.InventoryItem;
 import com.kingsman.Kingsman.service.InventoryService;
+import com.sun.jdi.event.StepEvent;
 import org.aspectj.apache.bcel.util.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -53,9 +54,17 @@ public class InventoryController {
         }else{
             throw new ItemNotFoundExeption(itemId);//throw exception
             //return ResponseEntity.notFound().build();
-
         }
 
+    }
+    @PutMapping("/use/{itemId}/{quantity}")
+    public ResponseEntity<String> useInventoryItem(@PathVariable long itemId, @PathVariable int quantity){
+        boolean success = inventoryService.useInventoryItem(itemId,quantity);
+        if (success){
+            return ResponseEntity.ok("item used successfully");
+        }else {
+            throw new ItemNotFoundExeption(itemId);
+        }
     }
 
 }
