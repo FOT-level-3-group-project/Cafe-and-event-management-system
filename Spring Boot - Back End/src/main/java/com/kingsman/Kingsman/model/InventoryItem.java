@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -16,5 +18,14 @@ public class InventoryItem {
     private float weight;
     private int quantity;
     private String vendorId;
+    @Column(name = "dateAndTime")
+    private LocalDateTime dateTime;
+    @Column(name = "last_modified")
+    private LocalDateTime lastModified;
+    @PrePersist
+    protected void onCreate(){
+        lastModified =LocalDateTime.now();
+        dateTime = LocalDateTime.now();
+    }
 
 }
