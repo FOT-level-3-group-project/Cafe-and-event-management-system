@@ -1,0 +1,20 @@
+/* Add your custom styles here */
+
+.container {
+    margin-top: 50px; /* Adjust the top margin as needed */
+  }
+  
+  .form-container {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Optional: Add styles for specific form elements */
+  .form-control {
+    margin-bottom: 15px;
+  }
+  
+  /* Adjust the styles based on your design preferences */
+  

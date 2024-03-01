@@ -15,7 +15,7 @@ const App = () => {
   return (
     <div>
       
-      {/* <BrowserRouter>
+      <BrowserRouter>
         <CashierSideBar>
           <Routes>
             <Route path="/" element={<Dashboard />} />
@@ -26,7 +26,7 @@ const App = () => {
             
           </Routes>
         </CashierSideBar> 
-      </BrowserRouter> */}
+      </BrowserRouter>
 
       
     </div>
