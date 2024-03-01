@@ -1,11 +1,15 @@
 package com.kingsman.Kingsman.service;
 
 import com.kingsman.Kingsman.model.InventoryItem;
+import com.kingsman.Kingsman.model.InventoryItemUsageLog;
+import com.kingsman.Kingsman.repository.InventoryItemUsageLogRepository;
 import com.kingsman.Kingsman.repository.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +18,8 @@ public class InventoryService {
 
     @Autowired
     private InventoryRepository inventoryRepository;
+    @Autowired
+    private InventoryItemUsageLogRepository inventoryItemUsageLogRepository;
 
     public void addItemInventory(InventoryItem item){
 
@@ -34,7 +40,6 @@ public class InventoryService {
             InventoryItem existingItem = existingItemOptional.get(); //get existing data in found Id
 
             //existingItem.setItemName(updatedItem.getItemName());
-            existingItem.setWeight(updatedItem.getWeight());
             existingItem.setQuantity(updatedItem.getQuantity());
             existingItem.setVendorId(updatedItem.getVendorId());
             existingItem.setLastModified(LocalDateTime.now()); //save modified data in repo
@@ -55,5 +60,41 @@ public class InventoryService {
         }else{
             return false;
         }
+    }
+
+    public boolean useInventoryItem(long itemId, int quantity) {
+        Optional<InventoryItem> existingItemOptional = inventoryRepository.findById(itemId); //find the existing item in repo using Id
+        if(existingItemOptional.isPresent()){
+            InventoryItem existingItem = existingItemOptional.get();
+
+            int currentQuantity = existingItem.getQuantity();//get quantity in existing item
+            if (currentQuantity >= quantity){
+                existingItem.setQuantity(currentQuantity-quantity); //decrease quantity
+
+                existingItem.setLastDailyUsage(LocalDateTime.now());
+
+                inventoryRepository.save(existingItem); //save updated Item to repo
+
+                //add data to the Inventory_usage_log table
+                InventoryItemUsageLog inventoryItemUsageLog = new InventoryItemUsageLog();
+                inventoryItemUsageLog.setItemId(existingItem.getId());
+                inventoryItemUsageLog.setItemName(existingItem.getItemName());
+                inventoryItemUsageLog.setDecreasedQuantity(quantity);
+                inventoryItemUsageLog.setUsageDateTime(LocalDateTime.now());
+
+                inventoryItemUsageLogRepository.save(inventoryItemUsageLog);
+
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+    public List<InventoryItemUsageLog> getInventoryUsageForDate(LocalDate date) {
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+
+        return inventoryItemUsageLogRepository.findByUsageDateTimeBetween(startOfDay,endOfDay);
     }
 }

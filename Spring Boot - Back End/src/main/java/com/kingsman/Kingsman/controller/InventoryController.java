@@ -2,12 +2,16 @@ package com.kingsman.Kingsman.controller;
 
 import com.kingsman.Kingsman.exception.ItemNotFoundExeption;
 import com.kingsman.Kingsman.model.InventoryItem;
+import com.kingsman.Kingsman.model.InventoryItemUsageLog;
 import com.kingsman.Kingsman.service.InventoryService;
+import com.sun.jdi.event.StepEvent;
 import org.aspectj.apache.bcel.util.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -53,9 +57,22 @@ public class InventoryController {
         }else{
             throw new ItemNotFoundExeption(itemId);//throw exception
             //return ResponseEntity.notFound().build();
-
         }
 
+    }
+    @PutMapping("/use/{itemId}/{quantity}") //decrease and update the inventory and store update status in another table
+    public ResponseEntity<String> useInventoryItem(@PathVariable long itemId, @PathVariable int quantity){
+        boolean success = inventoryService.useInventoryItem(itemId,quantity);
+        if (success){
+            return ResponseEntity.ok("item used successfully");
+        }else {
+            throw new ItemNotFoundExeption(itemId);
+        }
+    }
+    @GetMapping("/inventory-usage-log/{date}")
+    public ResponseEntity<List<InventoryItemUsageLog>> getInventoryUsageLogForDate(@PathVariable @DateTimeFormat(iso =DateTimeFormat.ISO.DATE)LocalDate date){
+        List<InventoryItemUsageLog> inventoryItemUsageLogs = inventoryService.getInventoryUsageForDate(date);
+        return ResponseEntity.ok(inventoryItemUsageLogs);
     }
 
 }
