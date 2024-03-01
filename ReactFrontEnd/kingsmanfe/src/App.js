@@ -1,25 +1,36 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-function App() {
+import Dashboard from './pages/cashier/Dashboard';
+import Menu from './pages/cashier/Menu';
+import Attendance from './pages/cashier/Attendance';
+import Bill from './pages/cashier/Bill';
+import Payment from './pages/cashier/Payment';
+
+import CashierSideBar from './component/CashierSideBar';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      
+      {/* <BrowserRouter>
+        <CashierSideBar>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/menu" element={<Menu />} />
+            <Route path="/bill" element={<Bill />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/attendance" element={<Attendance/>} />
+            
+          </Routes>
+        </CashierSideBar> 
+      </BrowserRouter> */}
+
+      
     </div>
   );
-}
+};
 
 export default App;
