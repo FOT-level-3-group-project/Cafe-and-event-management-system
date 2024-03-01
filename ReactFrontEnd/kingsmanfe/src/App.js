@@ -10,6 +10,9 @@ import Payment from './pages/cashier/Payment';
 
 import CashierSideBar from './component/CashierSideBar';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ManagerSideBar from './component/ManagerSideBar';
+import InventoryItemLord from './pages/manager/inventory/InventoryItemLord';
+
 
 const App = () => {
   return (
@@ -27,6 +30,22 @@ const App = () => {
           </Routes>
         </CashierSideBar> 
       </BrowserRouter> */}
+
+      {
+        <BrowserRouter>
+        <ManagerSideBar>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/menu" element={<Menu />} />
+            <Route path="/inventory" element={<InventoryItemLord/>} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/attendance" element={<Attendance/>} />
+            
+          </Routes>
+        </ManagerSideBar> 
+      </BrowserRouter>
+
+      }
 
       
     </div>
