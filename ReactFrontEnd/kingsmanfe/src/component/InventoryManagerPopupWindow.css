@@ -9,5 +9,7 @@
     padding: 20px;
     border: 1px solid #ddd;
     z-index: 1000;
+    width: 1000px; /* Set your desired width */
+    height: 500px;
   }
   
