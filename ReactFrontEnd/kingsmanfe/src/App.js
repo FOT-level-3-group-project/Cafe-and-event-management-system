@@ -17,7 +17,7 @@ const App = () => {
     <div>
       
       <BrowserRouter>
-        <CashierSideBar>
+        {/* <CashierSideBar>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/menu" element={<Menu />} />
@@ -27,7 +27,7 @@ const App = () => {
             <Route path="/attendanceVeiw" element={<AttendanceVeiw/>} />
             
           </Routes>
-        </CashierSideBar> 
+        </CashierSideBar>  */}
       </BrowserRouter>
 
       
