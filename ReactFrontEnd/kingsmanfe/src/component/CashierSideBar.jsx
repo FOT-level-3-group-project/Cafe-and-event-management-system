@@ -22,7 +22,7 @@ const CashierSideBar = ({ children }) => {
       icon: <FaTachometerAlt/>,
     },
     {
-      path: '/attendance',
+      path: '/attendanceVeiw',
       name: 'Attendance',
       icon: <FaUserCheck/>,
     },

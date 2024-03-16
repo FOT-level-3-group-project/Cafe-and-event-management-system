@@ -10,6 +10,7 @@ import Payment from './pages/cashier/Payment';
 
 import CashierSideBar from './component/CashierSideBar';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import AttendanceVeiw from './pages/cashier/AttendanceVeiw';
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
             <Route path="/bill" element={<Bill />} />
             <Route path="/payment" element={<Payment />} />
             <Route path="/attendance" element={<Attendance/>} />
+            <Route path="/attendanceVeiw" element={<AttendanceVeiw/>} />
             
           </Routes>
         </CashierSideBar> 
