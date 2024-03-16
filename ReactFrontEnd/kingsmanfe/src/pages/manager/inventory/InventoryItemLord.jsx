@@ -1,11 +1,33 @@
-import { reference } from '@popperjs/core';
+
 import React from 'react'
+import { useState } from 'react';
 import './inventoryStyle.css';
 import { BiCoinStack } from "react-icons/bi";
 import DatePickerComponent from '../../../component/DatePickerComponent';
 import AllInventoryItem from './AllInventoryItem';
+import AddInventoryItem from './AddInventoryItem';
+import { connect } from 'react-redux';
+
+
 
 function InventoryItemLord() {
+  const [isAddInventoryOpen, setAddInventoryOpen] = useState(false);
+
+  const openAddInventoryPopup = () => {
+    setAddInventoryOpen(true);
+  };
+
+  const closeAddInventoryPopup = () => {
+    setAddInventoryOpen(false);
+  };
+
+  // Function to handle adding an item to the inventory
+  const handleAddItem = (newItem) => {
+    console.log('Item added to inventory:', newItem);
+    // Add logic to update inventory state or perform other actions as needed
+  };
+
+
   return (
     <div>
         <div className="header">
@@ -16,9 +38,33 @@ function InventoryItemLord() {
         <div className="two-column-container">
             <div className="column large-column">
             {/* Content for the first column */}
-            <h2>Available Inventory Item</h2><hr></hr>
-            <AllInventoryItem/>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+            <h2>Available Inventory Item</h2>
+            
+            {/* Add inventory button */}
+            <button className="btn btn-primary" onClick={openAddInventoryPopup}>
+                  Add New Item +
+              </button>
+            </div>
+              
+              {isAddInventoryOpen && (
+                <div className="popup">
+                {/* Content of the Add Inventory Popup */}
+                  <AddInventoryItem onAddItem={handleAddItem} />
+                  <button className="btn btn-danger" onClick={closeAddInventoryPopup}>
+                      Close
+                  </button>
+                </div>
+              )}
+            
+            
+            <hr></hr>
+                <AllInventoryItem/>
             <p>This is the content of the first column.</p>
+            
+            
+
+
         </div>
         <div className="column small-column ">
             {/* Content for the second column */}
@@ -33,7 +79,9 @@ function InventoryItemLord() {
     </div>
   )
 }
+const mapStateToProps = (state) => ({
+  items: state.item.items,
+});
 
 
-
-export default InventoryItemLord;
+export default connect(mapStateToProps)(InventoryItemLord);
