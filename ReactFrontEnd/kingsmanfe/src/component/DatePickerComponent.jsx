@@ -1,6 +1,6 @@
-// CalendarOnly.jsx
+// CalendarOnly
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import axios from 'axios';
@@ -27,22 +27,32 @@ const DatePickerComponent = () => {
     setPopupOpen(false);
   };
 
+  //conslole
+  console.log(selectedDate);
+
   return (
     <div>
-      <h2>Calendar Component</h2>
-      <DatePicker
+      <h4>Select the date -</h4>
+        <div className="container text-center">
+      <DatePicker className="mx-auto"
         selected={selectedDate}
         onChange={handleDateChange}
-        dateFormat="yyyy-MM-dd"
+        dateFormat="yyyy/MM/dd"
         inline
       />
-      <button onClick={handleSubmit}>Submit</button>
+      
+
+      </div>
+      <br/>
+      
+      <div className='text-center'><button onClick={handleSubmit} className="mt-3 btn btn-success ">Submit</button></div>
 
       {isPopupOpen && (
         <InventoryManagerPopupWindow
-            selectedDate={formatDateToISO(selectedDate)}
+            selectedDate={selectedDate}
             onClose={closePopup}
         />
+        
       )}
     </div>
   );
