@@ -1,12 +1,14 @@
 
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './inventoryStyle.css';
 import { BiCoinStack } from "react-icons/bi";
 import DatePickerComponent from '../../../component/DatePickerComponent';
 import AllInventoryItem from './AllInventoryItem';
 import AddInventoryItem from './AddInventoryItem';
-import { connect } from 'react-redux';
+import lordItems from './AllInventoryItem';
+//import { connect } from 'react-redux';
+
 
 
 
@@ -19,6 +21,7 @@ function InventoryItemLord() {
 
   const closeAddInventoryPopup = () => {
     setAddInventoryOpen(false);
+
   };
 
   // Function to handle adding an item to the inventory
@@ -79,9 +82,5 @@ function InventoryItemLord() {
     </div>
   )
 }
-const mapStateToProps = (state) => ({
-  items: state.item.items,
-});
 
-
-export default connect(mapStateToProps)(InventoryItemLord);
+export default InventoryItemLord;

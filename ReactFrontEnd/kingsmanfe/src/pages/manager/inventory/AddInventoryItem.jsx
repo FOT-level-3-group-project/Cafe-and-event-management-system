@@ -1,7 +1,7 @@
-import { connect } from 'react-redux';
+
 import { useState } from 'react';
 import axios from 'axios';
-import { addItem } from '../../redux/actions'; 
+import lordItems from './AllInventoryItem';
 import InventoryItemAddedPopupWindow from '../../../component/InventoryItemAddedPopupWindow';
 
 
@@ -32,20 +32,23 @@ const AddInventoryItem = ({ onAddItem }) => {
           // Item added successfully
         console.log('Item added successfully:', response.data);
 
-        // Show success message
-        setShowSuccessMessage(true);
-
+      
         // Pass the new item to the parent component
         onAddItem(newItem);
 
         // Dispatch the action to add the item to the Redux store
-        addItem(newItem);
+       // addItem(newItem);
+
+        
 
         
           // Clear input fields after adding the item
           setItemName('');
           setQuantity('');
           setVendorId('');
+
+          // Show success message
+          setShowSuccessMessage(true);
 
         } else {
           console.error('Failed to add item:', response.data);
@@ -56,6 +59,7 @@ const AddInventoryItem = ({ onAddItem }) => {
     } else {
       alert('Please fill in all fields before adding an item.'); // add the popup warning
     }
+
   };
 
   return (
@@ -98,25 +102,28 @@ const AddInventoryItem = ({ onAddItem }) => {
             onChange={(e) => setVendorId(e.target.value)}
           />
         </div>
+        <div className='flex'>
         <button type="button" className="btn btn-primary" onClick={handleAddItem}>
           Add
         </button>
-        <br/>
-      </form>
-      
-      {showSuccessMessage && (
+        
+        {showSuccessMessage && (
         <InventoryItemAddedPopupWindow
           message="Item added successfully"
           onClose={() => setShowSuccessMessage(false)} // Close the popup message when the user clicks "Close"
         />
       )}
+        </div>
+        
+        <br/>
+      </form>
+      
+     
 
 
     </div>
   );
   
 };
-const mapDispatchToProps = {
-  addItem,
-};
-export default connect(null, mapDispatchToProps)(AddInventoryItem);
+
+export default AddInventoryItem;

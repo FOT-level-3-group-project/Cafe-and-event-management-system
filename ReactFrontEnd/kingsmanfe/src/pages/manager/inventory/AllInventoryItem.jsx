@@ -52,8 +52,11 @@ export default function AllInventoryItem(){
                                 <td>{new Date(item.dateTime).toLocaleString()}</td>
                                 <td>{new Date(item.lastModified).toLocaleString()}</td>
                                 <td>
+                                    <div className="flex">
                                     <button className= "btn btn-primary mx-2" >Edit</button>
                                     <button className = "btn btn-danger mx-2" >Delete</button>
+                                    </div>
+                                    
                                 </td>
                             </tr>
                         ))}
