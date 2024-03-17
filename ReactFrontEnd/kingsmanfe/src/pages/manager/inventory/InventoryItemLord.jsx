@@ -4,22 +4,27 @@ import { useState, useEffect } from 'react';
 import './inventoryStyle.css';
 import { BiCoinStack } from "react-icons/bi";
 import DatePickerComponent from '../../../component/DatePickerComponent';
-import AllInventoryItem from './AllInventoryItem';
 import AddInventoryItem from './AddInventoryItem';
-import lordItems from './AllInventoryItem';
-//import { connect } from 'react-redux';
+import axios from 'axios';
 
 
 
 
 function InventoryItemLord() {
   const [isAddInventoryOpen, setAddInventoryOpen] = useState(false);
+  const [items, setItems] = useState([]);
+
+  useEffect(() =>{ /*run the useEffect method, when lord the page and chenge the state*/
+        lordItems();
+
+    },[]);
 
   const openAddInventoryPopup = () => {
     setAddInventoryOpen(true);
   };
 
   const closeAddInventoryPopup = () => {
+    lordItems();
     setAddInventoryOpen(false);
 
   };
@@ -29,6 +34,18 @@ function InventoryItemLord() {
     console.log('Item added to inventory:', newItem);
     // Add logic to update inventory state or perform other actions as needed
   };
+
+  const lordItems = async () =>{
+
+    try {
+        const response = await axios.get("http://localhost:8080/api/inventory/view");
+        console.log(response.data); 
+        setItems(response.data);
+        
+    } catch (error) {
+        console.error("Error fetch data",error);
+    }
+};
 
 
   return (
@@ -62,7 +79,48 @@ function InventoryItemLord() {
             
             
             <hr></hr>
-                <AllInventoryItem/>
+                {/* {allinventory} */}
+
+                <div className='container'>
+            <div className='py-4'>
+                <table className="table border shadow">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col" className="text-center">Item Id</th>
+                <th scope="col">Item Name</th>
+                <th scope="col">Quantity (KG/Pics)</th>
+                <th scope="col">Vendor Name</th>
+                <th scope="col">Item Added Date</th>
+                <th scope="col">Item Edited Date</th>
+                <th scope="col" className="text-center">Actions</th>
+
+              </tr>
+            </thead>
+                    <tbody>
+                        {items.map((item, index) =>(
+                            <tr key={index}>
+                                <th scope="row">{index + 1}</th>
+                                <td className="text-center">{item.id}</td>
+                                <td className="text-center">{item.itemName}</td>
+                                <td className="text-center">{item.quantity}</td>
+                                <td className="text-center">{item.vendorId}</td>
+                                <td>{new Date(item.dateTime).toLocaleString()}</td>
+                                <td>{new Date(item.lastModified).toLocaleString()}</td>
+                                <td>
+                                    <div className="flex">
+                                    <button className= "btn btn-primary mx-2" >Edit</button>
+                                    <button className = "btn btn-danger mx-2" >Delete</button>
+                                    </div>
+                                    
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+                
             <p>This is the content of the first column.</p>
             
             

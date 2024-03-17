@@ -1,7 +1,6 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import lordItems from './AllInventoryItem';
 import InventoryItemAddedPopupWindow from '../../../component/InventoryItemAddedPopupWindow';
 
 
