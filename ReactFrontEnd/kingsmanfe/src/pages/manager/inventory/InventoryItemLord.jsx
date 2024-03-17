@@ -5,7 +5,10 @@ import './inventoryStyle.css';
 import { BiCoinStack } from "react-icons/bi";
 import DatePickerComponent from '../../../component/DatePickerComponent';
 import AddInventoryItem from './AddInventoryItem';
+import DeleteConfirmationPopup from '../../../component/DeleteConfirmationPopup';
+import EditInventoryItem from './EditInventoryItem';
 import axios from 'axios';
+
 
 
 
@@ -13,6 +16,11 @@ import axios from 'axios';
 function InventoryItemLord() {
   const [isAddInventoryOpen, setAddInventoryOpen] = useState(false);
   const [items, setItems] = useState([]);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [showEditPopup, setShowEditPopup] = useState(false);
+  const [editItemId, setEditItemId] = useState(null);
+
 
   useEffect(() =>{ /*run the useEffect method, when lord the page and chenge the state*/
         lordItems();
@@ -24,15 +32,36 @@ function InventoryItemLord() {
   };
 
   const closeAddInventoryPopup = () => {
-    lordItems();
     setAddInventoryOpen(false);
 
+  };
+
+  const handleEditItem = (itemId) => {
+    setShowEditPopup(true);
+    setEditItemId(itemId);
+  };
+
+  const cancelEdit = () => {
+    setShowEditPopup(false);
+    setEditItemId(null);
+  };
+
+  // Function to handle deleting an item
+  const handleDeleteItem = (itemId) => {
+    setShowConfirmation(true);
+    setItemToDelete(itemId);
+  };
+
+  // Function to cancel delete operation
+  const cancelDelete = () => {
+    setShowConfirmation(false);
+    setItemToDelete(null);
   };
 
   // Function to handle adding an item to the inventory
   const handleAddItem = (newItem) => {
     console.log('Item added to inventory:', newItem);
-    // Add logic to update inventory state or perform other actions as needed
+    lordItems();
   };
 
   const lordItems = async () =>{
@@ -45,6 +74,18 @@ function InventoryItemLord() {
     } catch (error) {
         console.error("Error fetch data",error);
     }
+};
+
+// Function to confirm delete operation
+const confirmDelete = async () => {
+  try {
+    await axios.delete(`http://localhost:8080/api/inventory/delete/${itemToDelete}`);
+    setShowConfirmation(false);
+    setItemToDelete(null);
+    lordItems(); // Reload items after deletion
+  } catch (error) {
+    console.error("Error deleting item", error);
+  }
 };
 
 
@@ -88,9 +129,9 @@ function InventoryItemLord() {
               <tr>
                 <th scope="col">#</th>
                 <th scope="col" className="text-center">Item Id</th>
-                <th scope="col">Item Name</th>
-                <th scope="col">Quantity (KG/Pics)</th>
-                <th scope="col">Vendor Name</th>
+                <th scope="col" className="text-center">Item Name</th>
+                <th scope="col" className="text-center">Quantity (KG/Pics)</th>
+                <th scope="col" className="text-center">Vendor Name</th>
                 <th scope="col">Item Added Date</th>
                 <th scope="col">Item Edited Date</th>
                 <th scope="col" className="text-center">Actions</th>
@@ -109,8 +150,8 @@ function InventoryItemLord() {
                                 <td>{new Date(item.lastModified).toLocaleString()}</td>
                                 <td>
                                     <div className="flex">
-                                    <button className= "btn btn-primary mx-2" >Edit</button>
-                                    <button className = "btn btn-danger mx-2" >Delete</button>
+                                    <button className= "btn btn-primary mx-2" onClick={() => handleEditItem(item.id)}>Edit</button>
+                                    <button className = "btn btn-danger mx-2" onClick={() => handleDeleteItem(item.id)}>Delete</button>
                                     </div>
                                     
                                 </td>
@@ -133,9 +174,21 @@ function InventoryItemLord() {
             <DatePickerComponent/>
             <p>This is the content of the second column.</p>
         </div>
-    
-      
         </div>
+        {showConfirmation && (
+        <DeleteConfirmationPopup
+          itemName={items.find(item => item.id === itemToDelete)?.itemName}
+          onCancel={cancelDelete}
+          onConfirm={confirmDelete}
+        />
+      )}
+      {showEditPopup && (
+        <EditInventoryItem
+          itemId={editItemId}
+          onCancel={cancelEdit}
+          onSubmit={lordItems} // Reload items after editing
+        />
+      )}
 
     </div>
   )
