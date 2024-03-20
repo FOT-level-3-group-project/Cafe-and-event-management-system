@@ -67,7 +67,7 @@ public class InventoryService {
         if(existingItemOptional.isPresent()){
             InventoryItem existingItem = existingItemOptional.get();
 
-            int currentQuantity = existingItem.getQuantity();//get quantity in existing item
+            Long currentQuantity = existingItem.getQuantity();//get quantity in existing item
             if (currentQuantity >= quantity){
                 existingItem.setQuantity(currentQuantity-quantity); //decrease quantity
 
@@ -79,7 +79,7 @@ public class InventoryService {
                 InventoryItemUsageLog inventoryItemUsageLog = new InventoryItemUsageLog();
                 inventoryItemUsageLog.setItemId(existingItem.getId());
                 inventoryItemUsageLog.setItemName(existingItem.getItemName());
-                inventoryItemUsageLog.setDecreasedQuantity(quantity);
+                inventoryItemUsageLog.setDecreasedQuantity((long) quantity);
                 inventoryItemUsageLog.setUsageDateTime(LocalDateTime.now());
 
                 inventoryItemUsageLogRepository.save(inventoryItemUsageLog);

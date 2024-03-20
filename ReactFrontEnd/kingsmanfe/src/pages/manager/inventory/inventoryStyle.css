@@ -4,8 +4,8 @@
 .header {
   display: flex;
   align-items: center;
-  background-color: #75e7a7;
-  border-bottom: 1px solid #dee2e6;
+  background-color: #ffffff;
+  border-bottom: 1px solid #d4cfcfda;
 }
 
 .icon {
