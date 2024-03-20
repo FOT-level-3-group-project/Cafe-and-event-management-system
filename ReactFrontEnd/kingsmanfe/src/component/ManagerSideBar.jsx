@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   FaBars,
-  FaFileInvoiceDollar,
   FaTachometerAlt,
   FaUserCheck,
  
@@ -18,32 +17,32 @@ const ManagerSideBar = ({ children }) => {
     const toggle = () => setIsOpen (!isOpen);
   const menuItem = [
     {
-      path: '/',
+      path: '/manager-sidebar/dashboard',
       name: 'Dashboard',
       icon: <FaTachometerAlt/>,
     },
     {
-      path: '/attendance',
+      path: '/manager-sidebar/attendance',
       name: 'Attendance',
       icon: <FaUserCheck/>,
     },
     {
-      path: '/menu',
+      path: '/manager-sidebar/menu',
       name: 'Menu',
       icon: <GiKnifeFork/>,
     },
     {
-      path: '/inventory',
+      path: '/manager-sidebar/inventory',
       name: 'Inventory',
       icon: <BiCoinStack/>,
     },
     {
-      path: '/payment',
+      path: '/manager-sidebar/payment',
       name: 'Payment',
       icon: <MdPayment/>
     },
     {
-      path: '/logout',  
+      path: '/',  
       name: 'Logout',
       icon: <IoMdLogOut />,
     },

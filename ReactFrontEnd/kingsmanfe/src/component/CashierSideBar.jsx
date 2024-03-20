@@ -17,32 +17,32 @@ const CashierSideBar = ({ children }) => {
     const toggle = () => setIsOpen (!isOpen);
   const menuItem = [
     {
-      path: '/',
+      path: '/cashier-sidebar/dashboard',
       name: 'Dashboard',
       icon: <FaTachometerAlt/>,
     },
     {
-      path: '/attendance',
+      path: '/cashier-sidebar/attendance',
       name: 'Attendance',
       icon: <FaUserCheck/>,
     },
     {
-      path: '/menu',
+      path: '/cashier-sidebar/menu',
       name: 'Menu',
       icon: <GiKnifeFork/>,
     },
     {
-      path: '/bill',
+      path: '/cashier-sidebar/bill',
       name: 'Bill',
       icon: <FaFileInvoiceDollar/>,
     },
     {
-      path: '/payment',
+      path: '/cashier-sidebar/payment',
       name: 'Payment',
       icon: <MdPayment/>
     },
     {
-      path: '/logout',  
+      path: '/',  
       name: 'Logout',
       icon: <IoMdLogOut />,
     },
@@ -62,7 +62,7 @@ const CashierSideBar = ({ children }) => {
             to={item.path}
             key={index}
             className="link"
-            activeClassName="active"
+            activeclassname="active"
           >
             <div className="icon">{item.icon}</div>
             <div style={{ display: isOpen ? "block" : "none"}} className="link_text">{item.name}</div>
