@@ -22,7 +22,7 @@ public class InventoryItemUsageLog {
     private String itemName;
 
     @Column(name = "decreased_quantity")
-    private int decreasedQuantity;
+    private Long decreasedQuantity;
 
     @Column(name = "usage_datetime")
     private LocalDateTime usageDateTime;

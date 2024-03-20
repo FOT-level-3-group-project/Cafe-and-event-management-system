@@ -15,7 +15,7 @@ public class InventoryItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String itemName;
-    private int quantity;
+    private Long quantity;
     private String vendorId;
     @Column(name = "dateAndTime")
     private LocalDateTime dateTime;

@@ -8,15 +8,11 @@ import InventoryManagerPopupWindow from './InventoryManagerPopupWindow';
 
 
 const DatePickerComponent = () => {
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [isPopupOpen, setPopupOpen] = useState(false);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
-  };
-
-  const formatDateToISO = (date) => {
-    return date.toISOString();
   };
 
   const handleSubmit = () => {
@@ -33,26 +29,27 @@ const DatePickerComponent = () => {
   return (
     <div>
       <h4>Select the date -</h4>
-        <div className="container text-center">
-      <DatePicker className="mx-auto"
-        selected={selectedDate}
-        onChange={handleDateChange}
-        dateFormat="yyyy/MM/dd"
-        inline
-      />
-      
+      <div className="container text-center">
+        <DatePicker
+          className="mx-auto"
+          selected={selectedDate}
+          onChange={handleDateChange}
+          dateFormat="yyyy/MM/dd"
+          inline
+        />
+
 
       </div>
-      <br/>
-      
+      <br />
+
       <div className='text-center'><button onClick={handleSubmit} className="mt-3 btn btn-success ">Submit</button></div>
 
       {isPopupOpen && (
         <InventoryManagerPopupWindow
-            selectedDate={selectedDate}
-            onClose={closePopup}
+          selectedDate={selectedDate}
+          onClose={closePopup}
         />
-        
+
       )}
     </div>
   );
