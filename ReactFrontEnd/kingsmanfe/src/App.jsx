@@ -12,6 +12,8 @@ import Login from './layout/Login';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ManagerSideBar from './component/ManagerSideBar';
 import InventoryItemLord from './pages/manager/inventory/InventoryItemLord';
+import RegisterEmployee from './pages/manager/registration/RegisterEmployee';
+import ResetPassword from './layout/ResetPassword';
 
 const App = () => {
   return (
@@ -19,6 +21,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/cashier-sidebar/*" element={<CashierRoutes />} />
         <Route path="/manager-sidebar/*" element={<ManagerRoutes />} />
         {/* <Route path="/chef-sidebar/*" element={<ChefRoutes />} />
@@ -50,10 +53,12 @@ const ManagerRoutes = () => {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="dashboard" element={<Dashboard />} />
+        {/* <Route path="dashboard" element={<ManagerDashboard />} /> */}
         <Route path="menu" element={<Menu />} />
         <Route path="inventory" element={<InventoryItemLord />} />
         <Route path="attendance" element={<Attendance />} />
         <Route path="payment" element={<Payment />} />
+        <Route path="register" element={<RegisterEmployee />} />
       </Routes>
     </ManagerSideBar>
   );
