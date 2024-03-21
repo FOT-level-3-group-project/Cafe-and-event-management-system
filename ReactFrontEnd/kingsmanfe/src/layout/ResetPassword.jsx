@@ -2,7 +2,7 @@ import React, { useState }from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import './ResetPassword.css';
-import { Button, Container, Card, Form, Row, Col, Image, Alert } from 'react-bootstrap';
+import { Button, Card, Form, Row, Col, Image } from 'react-bootstrap';
 import logo from '../images/logo.png';
 
 const ResetPassword = () => {
@@ -34,7 +34,7 @@ const ResetPassword = () => {
         }
 
          try {
-            const response = await axios.post('http://localhost:8080/resetpassword', { username, newPassword });
+            const response = await axios.post('http://localhost:8080/reset-password', { username, confirmPassword });
 
             if (response.status === 200) {
                 alert('Password reset successfully');
@@ -44,7 +44,7 @@ const ResetPassword = () => {
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('An error occurred, please try again later');
+            alert('An error occurred, please try again later', error);
         }
     };
 
@@ -105,8 +105,8 @@ return (
                        </Form.Group>
                             
                         <div className="d-flex justify-content-between align-items-center">
-                            <Button type="submit" id="submitbtnr" variant="primary">Sign in</Button>
                             <Button type="button" id="clearbtnr" variant="danger"  onClick={handleClearResetPwd} >Clear</Button>
+                            <Button type="submit" id="submitbtnr" variant="primary">Reset Password</Button>
                         </div>
                 </form>
                         <button type='submit' id='back'><Link to='/login'>Back to Login</Link></button>
