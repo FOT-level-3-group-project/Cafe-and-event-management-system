@@ -3,6 +3,7 @@ import {
   FaBars,
   FaTachometerAlt,
   FaUserCheck,
+  FaUserEdit,
  
 } from 'react-icons/fa';
 
@@ -40,6 +41,11 @@ const ManagerSideBar = ({ children }) => {
       path: '/manager-sidebar/payment',
       name: 'Payment',
       icon: <MdPayment/>
+    },
+    {
+      path: '/manager-sidebar/register',
+      name: 'Registration',
+      icon: <FaUserEdit/>
     },
     {
       path: '/',  

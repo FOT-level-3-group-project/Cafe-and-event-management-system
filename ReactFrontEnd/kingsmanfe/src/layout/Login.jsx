@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import './login.css';
+import logo from '../images/logo.png';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -15,7 +16,7 @@ function Login() {
   const handleClear = () => {
     setUsername('');
     setPassword('');
-    setShowPassword('');
+    // setShowPassword('');
     setError('');
   };
 
@@ -70,16 +71,16 @@ function Login() {
     <div className="container-fluid" id="div1">
       <Card className='my-5 shadow' id="card">
         <Row className='g-0'>
-          <Col md='5'>
-            <Image src='https://mdbootstrap.com/img/new/ecommerce/vertical/004.jpg' id="img" alt='phone' className='rounded-t-5 rounded-tr-lg-0' fluid />
+          <Col md='6'>
+            <Image src={logo} id="img" alt='phone' className='rounded-t-5 rounded-tr-lg-0' fluid />
           </Col>
-          <Col md='7'>
+          <Col md='6'>
             <Card.Body>
-              <h2 className="text-center mt-3 mb-4" id="loginHeading">Sign In</h2>
+              <h2 className="text-center mt-3 mb-4" id="loginHeading">Sign In</h2> <hr></hr>
               {error && <Alert variant="danger">{error}</Alert>}
               <Form onSubmit={handleLogin}>
                 <Form.Group className='mb-4' controlId="formUsername">
-                  <Form.Label>Username</Form.Label>
+                  <Form.Label id="username">Username</Form.Label>
                   <Form.Control
                     type="text"
                     placeholder="Enter username"
@@ -89,7 +90,7 @@ function Login() {
                 </Form.Group>
                 <Form.Group className='mb-4' controlId="formPassword">
                   <Form.Label className="d-flex justify-content-between align-items-center">
-                    <span>Password</span>
+                    <span id="password">Password</span>
                     <Form.Check
                       type="checkbox"
                       id="showpwd"

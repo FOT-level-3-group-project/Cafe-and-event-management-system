@@ -14,10 +14,13 @@
 #submitbtn{
   margin-left: 0%;
   width: 50%;
+  background-color: rgb(3, 3, 133);
+  border: none;
 }
 #clearbtn{
-  margin-left: 0%;
   width: 50%;
+  border: none;
+  margin-left: 0%;
 }
 
 #shadow{
@@ -46,4 +49,9 @@
 }
 #showpwd{
   border-color: rgb(34, 34, 34);
+}
+#username, #password{
+  font-family: 'Times New Roman', Times, serif;
+  font-size: large;
+
 }
