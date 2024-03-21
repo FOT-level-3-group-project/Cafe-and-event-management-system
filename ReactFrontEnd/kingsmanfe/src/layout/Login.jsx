@@ -15,6 +15,7 @@ function Login() {
   const handleClear = () => {
     setUsername('');
     setPassword('');
+    setShowPassword('');
     setError('');
   };
 
