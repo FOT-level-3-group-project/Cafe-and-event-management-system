@@ -2,12 +2,22 @@ import React, { useState } from 'react';
 import { Button, Container, Card, Form, Row, Col, Image, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import './login.css';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  const handleClear = () => {
+    setUsername('');
+    setPassword('');
+    setShowPassword('');
+    setError('');
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
@@ -16,18 +26,13 @@ function Login() {
     if (!username && !password) {
       setError('Username and password are required.');
       return;
-    }
-
-      else if (!username) {
+    }else if (!username) {
       setError('Username required.');
       return;
-    }
-
-      else if (!password) {
+    }else if (!password) {
       setError('Password required.');
       return;
     }
-
 
     try {
       const response = await axios.post('http://localhost:8080/login', { username, password });
@@ -57,51 +62,59 @@ function Login() {
           setError('Unknown user role');
       }
     } catch (error) {
-      setError(error.message);
+        setError('Invalid username or password');
     }
   };
 
   return (
-    <div className="container-fluid">
-      <div className="row justify-content-center">
-        <div className="col-md-9">
-          <Container className='my-5' style={{ height: '400px', width: '80%' }}>
-            <Card>
-              <Row className='g-0 align-items-center'>
-                <Col md='5'>
-                  <Image src='https://mdbootstrap.com/img/new/ecommerce/vertical/004.jpg' alt='phone' className='rounded-t-5 rounded-tr-lg-0' fluid />
-                </Col>
-                <Col md='7'>
-                  <Card.Body>
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    <Form onSubmit={handleLogin}>
-                      <Form.Group className='mb-4' controlId="formUsername">
-                        <Form.Label>Username</Form.Label>
-                        <Form.Control
-                          type="text"
-                          placeholder="Enter username"
-                          value={username}
-                          onChange={(e) => setUsername(e.target.value)}
-                        />
-                      </Form.Group>
-                      <Form.Group className='mb-4' controlId="formPassword">
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control
-                          type="password"
-                          placeholder="Password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                      </Form.Group>
-                      <Button type="submit" variant="primary" className="mb-4 w-50">Sign in</Button>
-                    </Form>
-                  </Card.Body>
-                </Col>
-              </Row>
-            </Card>
-          </Container>
-        </div>
-      </div>
+    <div className="container-fluid" id="div1">
+      <Card className='my-5 shadow' id="card">
+        <Row className='g-0'>
+          <Col md='5'>
+            <Image src='https://mdbootstrap.com/img/new/ecommerce/vertical/004.jpg' id="img" alt='phone' className='rounded-t-5 rounded-tr-lg-0' fluid />
+          </Col>
+          <Col md='7'>
+            <Card.Body>
+              <h2 className="text-center mt-3 mb-4" id="loginHeading">Sign In</h2>
+              {error && <Alert variant="danger">{error}</Alert>}
+              <Form onSubmit={handleLogin}>
+                <Form.Group className='mb-4' controlId="formUsername">
+                  <Form.Label>Username</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                </Form.Group>
+                <Form.Group className='mb-4' controlId="formPassword">
+                  <Form.Label className="d-flex justify-content-between align-items-center">
+                    <span>Password</span>
+                    <Form.Check
+                      type="checkbox"
+                      id="showpwd"
+                      className="ms-2"
+                      onChange={(e) => setShowPassword(e.target.checked)}
+                    />
+                  </Form.Label>
+                  <Form.Control
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <Link to='/ResetPassword' className="forgot-pwd"> Forgot Password?</Link>
+                </Form.Group>
+                 <div className="d-flex justify-content-between align-items-center">
+                 <Button type="button" id="clearbtn" variant="danger"  onClick={handleClear} >Clear</Button>
+                  <Button type="submit" id="submitbtn" variant="primary">Sign in</Button>
+                  
+                </div>
+              </Form>
+            </Card.Body>
+          </Col>
+        </Row>
+      </Card>
     </div>
   );
 }
