@@ -43,14 +43,16 @@ const DatePickerComponent = () => {
       <br />
 
       <div className='text-center'><button onClick={handleSubmit} className="mt-3 btn btn-success ">Submit</button></div>
+      <div className='shadow'> 
+        {isPopupOpen && (
+          <InventoryManagerPopupWindow
+            selectedDate={selectedDate}
+            onClose={closePopup}
+          />
 
-      {isPopupOpen && (
-        <InventoryManagerPopupWindow
-          selectedDate={selectedDate}
-          onClose={closePopup}
-        />
+        )}
+      </div>
 
-      )}
     </div>
   );
 };

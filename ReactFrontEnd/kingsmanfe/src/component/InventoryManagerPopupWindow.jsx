@@ -36,7 +36,7 @@ const InventoryManagerPopupWindow = ({ selectedDate, onClose }) => {
   }, []);
 
   return (
-    <div className="popup" >
+    <div className="popup shadow" style={{ maxWidth: '800px'}} >
       <button onClick={onClose} className='btn btn-danger'>Close</button>
       <h2>Data for {selectedDate ? new Date(selectedDate).toLocaleDateString() : 'N/A'}</h2>
       <div className='py-4' style={{ maxHeight: '350px', overflowY: 'auto' }}>

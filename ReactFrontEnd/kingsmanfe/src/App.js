@@ -38,34 +38,34 @@ const App = () => {
       </BrowserRouter> */}
 
       {
-        <BrowserRouter>
-        <ManagerSideBar>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/menu" element={<Menu />} />
-            <Route path="/inventory" element={<InventoryItemLord/>} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/attendance" element={<Attendance/>} />
+      //   <BrowserRouter>
+      //   <ManagerSideBar>
+      //     <Routes>
+      //       <Route path="/" element={<Dashboard />} />
+      //       <Route path="/menu" element={<Menu />} />
+      //       <Route path="/inventory" element={<InventoryItemLord/>} />
+      //       <Route path="/payment" element={<Payment />} />
+      //       <Route path="/attendance" element={<Attendance/>} />
             
-          </Routes>
-        </ManagerSideBar> 
-      </BrowserRouter>
+      //     </Routes>
+      //   </ManagerSideBar> 
+      // </BrowserRouter>
 
       }
       
       {
-      //   <BrowserRouter>
-      //     <Header/>
-      //     <ChefSideBar>
-      //     <Routes>
-      //       <Route path="/" element={<ChefDashbord />} /> {/*ChefDashbord added*/}
-      //       <Route path="/orders" element={<ChefOrders />} /> {/*Cheforder added*/}
-      //       <Route path="/inventory" element={<ChefInventory/>} /> {/*ChefInventory added*/}
-      //       <Route path="/payment" element={<Payment />} />
-      //       <Route path="/attendance" element={<Attendance/>} />
-      //     </Routes>
-      //     </ChefSideBar>
-      // </BrowserRouter>
+        <BrowserRouter>
+          {/* <Header/> */}
+          <ChefSideBar>
+          <Routes>
+            <Route path="/" element={<ChefDashbord />} /> {/*ChefDashbord added*/}
+            <Route path="/orders" element={<ChefOrders />} /> {/*Cheforder added*/}
+            <Route path="/inventory" element={<ChefInventory/>} /> {/*ChefInventory added*/}
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/attendance" element={<Attendance/>} />
+          </Routes>
+          </ChefSideBar>
+      </BrowserRouter>
 
       }
 

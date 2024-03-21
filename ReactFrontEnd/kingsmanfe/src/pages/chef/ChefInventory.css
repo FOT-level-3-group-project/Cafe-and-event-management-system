@@ -41,7 +41,7 @@
   }
   
   .large-column_chef{
-    flex: 2; /* Adjust the value to control the size of the second column */
+    flex: 2.5; /* Adjust the value to control the size of the second column */
     border-right: 3px solid #b1aeae;
   }
   
