@@ -17,61 +17,79 @@ import ChefInventory from './pages/chef/ChefInventory';
 import ChefOrders from './pages/chef/ChefOrders';
 import Header from './component/Header';
 import ChefDashbord from './pages/chef/ChefDashbord';
+import PlaceOrder from './pages/waiter/PlaceOrder';
+import SelectProduct from './pages/waiter/SelectProduct';
+import EditCustomer from './pages/waiter/EditCustomer';
 
 
 
 const App = () => {
   return (
-    
     <div>
-      {/* <BrowserRouter>
-        <CashierSideBar>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/menu" element={<Menu />} />
-            <Route path="/bill" element={<Bill />} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/attendance" element={<Attendance/>} />
-            
-          </Routes>
-        </CashierSideBar> 
-      </BrowserRouter> */}
+       <BrowserRouter>
 
-      {
-        <BrowserRouter>
-        <ManagerSideBar>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/menu" element={<Menu />} />
-            <Route path="/inventory" element={<InventoryItemLord/>} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/attendance" element={<Attendance/>} />
-            
-          </Routes>
-        </ManagerSideBar> 
+        <Routes>
+        <Route path="/" element={<PlaceOrder />}/>
+
+
+        <Route path="/editCustomer/:id" element={<EditCustomer />} />
+
+         </Routes>
+
       </BrowserRouter>
 
-      }
-      
-      {
-      //   <BrowserRouter>
-      //     <Header/>
-      //     <ChefSideBar>
-      //     <Routes>
-      //       <Route path="/" element={<ChefDashbord />} /> {/*ChefDashbord added*/}
-      //       <Route path="/orders" element={<ChefOrders />} /> {/*Cheforder added*/}
-      //       <Route path="/inventory" element={<ChefInventory/>} /> {/*ChefInventory added*/}
-      //       <Route path="/payment" element={<Payment />} />
-      //       <Route path="/attendance" element={<Attendance/>} />
-      //     </Routes>
-      //     </ChefSideBar>
-      // </BrowserRouter>
-
-      }
-
-
-      
     </div>
+    // <div>
+    //   {/* <SelectProduct/> */}
+    //   <PlaceOrder/>
+    //   {/* <BrowserRouter>
+    //     <CashierSideBar>
+    //       <Routes>
+    //         <Route path="/" element={<Dashboard />} />
+    //         <Route path="/menu" element={<Menu />} />
+    //         <Route path="/bill" element={<Bill />} />
+    //         <Route path="/payment" element={<Payment />} />
+    //         <Route path="/attendance" element={<Attendance/>} />
+            
+    //       </Routes>
+    //     </CashierSideBar> 
+    //   </BrowserRouter> */}
+
+    //   {/* {
+    //     <BrowserRouter>
+    //     <ManagerSideBar>
+    //       <Routes>
+    //         <Route path="/" element={<Dashboard />} />
+    //         <Route path="/menu" element={<Menu />} />
+    //         <Route path="/inventory" element={<InventoryItemLord/>} />
+    //         <Route path="/payment" element={<Payment />} />
+    //         <Route path="/attendance" element={<Attendance/>} />
+            
+    //       </Routes>
+    //     </ManagerSideBar> 
+    //   </BrowserRouter>
+
+    //   } */}
+      
+    //   {
+    //   //   <BrowserRouter>
+    //   //     <Header/>
+    //   //     <ChefSideBar>
+    //   //     <Routes>
+    //   //       <Route path="/" element={<ChefDashbord />} /> {/*ChefDashbord added*/}
+    //   //       <Route path="/orders" element={<ChefOrders />} /> {/*Cheforder added*/}
+    //   //       <Route path="/inventory" element={<ChefInventory/>} /> {/*ChefInventory added*/}
+    //   //       <Route path="/payment" element={<Payment />} />
+    //   //       <Route path="/attendance" element={<Attendance/>} />
+    //   //     </Routes>
+    //   //     </ChefSideBar>
+    //   // </BrowserRouter>
+
+    //   }
+
+
+      
+    // </div>
   );
 };
 
