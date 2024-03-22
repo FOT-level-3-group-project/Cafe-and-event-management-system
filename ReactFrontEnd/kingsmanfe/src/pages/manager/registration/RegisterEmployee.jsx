@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Container, Card, Form, Row, Col, Alert } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
@@ -22,18 +22,28 @@ function RegisterEmployee() {
         uniform_size: '',
         emergency_contact: ''
     });
-    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [validationErrors, setValidationErrors] = useState({}); 
     
     const navigate = useNavigate();
+
+     const generatePassword = () => {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#&';
+        const length = 6;
+        let newPassword = '';
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            newPassword += characters.charAt(randomIndex);
+        }
+        return newPassword;
+    };
 
     const handleResetForm = () => {
         setFormData({
                 first_name: '',
                 last_name: '',
                 username: '',
-                password: '',
+                password: generatePassword(),
                 position: '',
                 contact_number: '',
                 email: '',
@@ -42,9 +52,7 @@ function RegisterEmployee() {
                 IDNumber: '',
                 joined_date: '',
                 uniform_size: '',
-                emergency_contact: '',
-                setShowPassword: false,
-                setShowConfirmPassword: false
+                emergency_contact: ''
             }); 
             setError('');
 
@@ -97,6 +105,13 @@ const handleChange = (e) => {
             setError('Username is already taken');
         }
     };
+
+    useEffect(() => {
+        setFormData({
+            ...formData,
+            password: generatePassword()
+        });
+    }, []); 
 
     const genderOptions = ["Male", "Female", "Other"];
     const uniformSizeOptions = ["Estra Small", "Small", "Medium", "Large", "Extra Large"];
@@ -223,9 +238,8 @@ const handleChange = (e) => {
                                 <Col md={6}>
                                         <Form.Group>
                                             <Form.Label>Password</Form.Label>
-                                            <Form.Control type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleChange} required />
-                                            <Form.Check type="checkbox" name="Show Password" onClick={() => setShowPassword(!showPassword)} />
-                                        </Form.Group>
+                                            <Form.Control type="text" name="password" value={formData.password} />
+                                         </Form.Group>
                                     </Col>
                                 </Row>
                                 <div className="d-flex justify-content-between align-items-center">
