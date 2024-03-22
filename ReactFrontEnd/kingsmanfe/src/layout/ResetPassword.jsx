@@ -34,13 +34,13 @@ const ResetPassword = () => {
         }
 
          try {
-            const response = await axios.post('http://localhost:8080/reset-password', { username, confirmPassword });
+            const response = await axios.post('http://localhost:8080/reset-password', { username, confirmPassword }, { withCredentials: true });
 
             if (response.status === 200) {
-                alert('Password reset successfully');
+                setError('Password reset successfully');
                 window.location.href = '/login';
             } else {
-                alert('Failed to reset password');
+                setError('Failed to reset password');
             }
         } catch (error) {
             console.error('Error:', error);

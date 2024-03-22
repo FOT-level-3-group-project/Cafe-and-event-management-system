@@ -214,12 +214,12 @@ if (numberPattern.test(value)) {
                                     <Col md={6}>
                                          <Form.Group>
                                             <Form.Label>Joined Date</Form.Label>
-                                            {/* Use DatePicker component */}
+                                           
                                             <DatePicker
                                                 selected={formData.joined_date}
                                                 onChange={handleDateChange}
                                                 name="joined_date"
-                                                dateFormat="yyyy/mm/dd"
+                                                dateFormat="yyyy/MM/dd"
                                                 className="form-control"
                                             />
                                         </Form.Group>
