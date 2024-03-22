@@ -26,19 +26,7 @@ import EditCustomer from './pages/waiter/EditCustomer';
 const App = () => {
   return (
     <div>
-       {/* <BrowserRouter>
-
-        <Routes>
-        <Route path="/" element={<PlaceOrder />}/>
-
-
-        <Route path="/editCustomer/:id" element={<EditCustomer />} />
-
-         </Routes>
-
-      </BrowserRouter> */}
-
-    
+       
     
        {/* <BrowserRouter>
     //     <CashierSideBar>
