@@ -26,7 +26,7 @@ import EditCustomer from './pages/waiter/EditCustomer';
 const App = () => {
   return (
     <div>
-       <BrowserRouter>
+       {/* <BrowserRouter>
 
         <Routes>
         <Route path="/" element={<PlaceOrder />}/>
@@ -36,13 +36,11 @@ const App = () => {
 
          </Routes>
 
-      </BrowserRouter>
+      </BrowserRouter> */}
 
-    </div>
-    // <div>
-    //   {/* <SelectProduct/> */}
-    //   <PlaceOrder/>
-    //   {/* <BrowserRouter>
+    
+    
+       {/* <BrowserRouter>
     //     <CashierSideBar>
     //       <Routes>
     //         <Route path="/" element={<Dashboard />} />
@@ -55,7 +53,7 @@ const App = () => {
     //     </CashierSideBar> 
     //   </BrowserRouter> */}
 
-    //   {/* {
+       {/* {
     //     <BrowserRouter>
     //     <ManagerSideBar>
     //       <Routes>
@@ -71,7 +69,7 @@ const App = () => {
 
     //   } */}
       
-    //   {
+       {
     //   //   <BrowserRouter>
     //   //     <Header/>
     //   //     <ChefSideBar>
@@ -85,11 +83,11 @@ const App = () => {
     //   //     </ChefSideBar>
     //   // </BrowserRouter>
 
-    //   }
+      }
 
 
       
-    // </div>
+    </div>
   );
 };
 
