@@ -22,6 +22,7 @@ import SelectProduct from './pages/waiter/SelectProduct';
 import EditCustomer from './pages/waiter/EditCustomer';
 import RegisterEmployee from './pages/manager/registration/RegisterEmployee';
 import ResetPassword from './layout/ResetPassword';
+import WaiterSideBar from './component/WaiterSideBar';
 
 const App = () => {
   return (
@@ -63,6 +64,7 @@ const ManagerRoutes = () => {
             <Route path="/inventory" element={<InventoryItemLord/>} />
             <Route path="/payment" element={<Payment />} />
             <Route path="/attendance" element={<Attendance/>} />
+            <Route path="/register" element={<RegisterEmployee/>} />
       </Routes>
     </ManagerSideBar>
   );
@@ -74,10 +76,10 @@ const ChefRoutes = () => {
     <ChefSideBar>
       <Routes>
             <Route path="/" element={<ChefDashbord />} /> {/*ChefDashbord added*/}
-            <Route path="/orders" element={<ChefOrders />} /> {/*Cheforder added*/}
-            <Route path="/inventory" element={<ChefInventory/>} /> {/*ChefInventory added*/}
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/attendance" element={<Attendance/>} />
+            <Route path="orders" element={<ChefOrders />} /> {/*Cheforder added*/}
+            <Route path="inventory" element={<ChefInventory/>} /> {/*ChefInventory added*/}
+            <Route path="payment" element={<Payment />} />
+            <Route path="attendance" element={<Attendance/>} />
       </Routes>
     </ChefSideBar>
   );

@@ -18,32 +18,27 @@ const ChefSideBar = ({ children }) => {
     const toggle = () => setIsOpen (!isOpen);
   const menuItem = [
     {
-      path: '/',
+      path: '/chef-sidebar/dashboard',
       name: 'Dashboard',
       icon: <FaTachometerAlt/>,
     },
     {
-      path: '/orders',
+      path: '/chef-sidebar/orders',
       name: 'Orders',
       icon: <FaUserCheck/>,
     },
     {
-      path: '/inventory',
+      path: '/chef-sidebar/inventory',
       name: 'Inventory',
       icon: <BiCoinStack/>,
     },
     {
-      path: '/',
-      name: 'Inventory',
-      icon: <BiCoinStack/>,
-    },
-    {
-      path: '/',
+      path: '/chef-sidebar/payment',
       name: 'Payment',
       icon: <MdPayment/>
     },
     {
-      path: '/logout',  
+      path: '/',  
       name: 'Logout',
       icon: <IoMdLogOut />,
     },
