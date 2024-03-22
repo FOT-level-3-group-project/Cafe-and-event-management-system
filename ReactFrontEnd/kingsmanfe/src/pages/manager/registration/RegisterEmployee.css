@@ -27,3 +27,6 @@ button{
     margin-left: 10%;
     /* color: white; */
 }
+#clearbtn{
+    background-color: rgb(87, 91, 94);
+}

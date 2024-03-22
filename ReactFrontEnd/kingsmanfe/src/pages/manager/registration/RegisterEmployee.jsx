@@ -12,7 +12,6 @@ function RegisterEmployee() {
         last_name: '',
         username: '',
         password: '',
-        confirm_password: '',
         position: '',
         contact_number: '',
         email: '',
@@ -24,10 +23,8 @@ function RegisterEmployee() {
         emergency_contact: ''
     });
     const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState('');
-    const letterPattern = /^[A-Za-z]+$/;
-    const numberPattern = /^\d+$/;
+    const [validationErrors, setValidationErrors] = useState({}); 
     
     const navigate = useNavigate();
 
@@ -37,7 +34,6 @@ function RegisterEmployee() {
                 last_name: '',
                 username: '',
                 password: '',
-                confirm_password: '',
                 position: '',
                 contact_number: '',
                 email: '',
@@ -58,54 +54,40 @@ const handleChange = (e) => {
     const { name, value } = e.target;
     let errorMessage = '';
 
-    if (name === 'password') {
-        if(value.length < 6 && !/\d/.test(value)) {
-            errorMessage = 'Password must be at least 6 characters long and contain at least one number';
-        } else if (value.length < 6) {
-            errorMessage = 'Password must be at least 6 characters long';
-        } else if (!/\d/.test(value)) {
-    errorMessage = 'Password must contain at least one number';
-}
-    }
-
-    if (letterPattern.test(value)) {
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-
-        }));
-    }
-
-if (numberPattern.test(value)) {
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value
-        }));
-    }
+    if (name === 'contact_number' || name === 'emergency_contact') {
+            if (!/^\d+$/.test(value)) {
+                setError('Please enter only numbers for mobile number');
+            }
+        } else if (name === 'first_name' || name === 'last_name') {
+            if (!/^[a-zA-Z]+$/.test(value)) {
+                setError('Please enter only letters for first name and last name');
+            }
+        }
 
     setFormData({
         ...formData,
         [name]: value,
-        error: errorMessage // Store the error message in the formData
+        error: errorMessage 
+    });
+
+     setValidationErrors({
+            ...validationErrors,
+            [name]: errorMessage
+        });
+};
+
+    const handleDateChange = (date) => {
+    setFormData({
+        ...formData,
+        joined_date: date,
     });
 };
-;
-
-      const handleDateChange = (date) => {
-        setFormData({
-            ...formData,
-            joined_date: date,
-        });
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
        handleResetForm();
        setError('Registered successfully!');
-        if (formData.password !== formData.confirm_password) {
-            setError('Passwords do not match');
-            return;
-        }
+
         try {
             const response = await axios.post('http://localhost:8080/register', formData);
             console.log(response.data);
@@ -118,7 +100,7 @@ if (numberPattern.test(value)) {
 
     const genderOptions = ["Male", "Female", "Other"];
     const uniformSizeOptions = ["Estra Small", "Small", "Medium", "Large", "Extra Large"];
-    const positionOptions = ["Manager", "Cashier", "Chef", "Waiter"];
+    const positionOptions = ["Cashier", "Chef", "Waiter"];
 
     return (
         <Container id="maincontainer">
@@ -134,16 +116,12 @@ if (numberPattern.test(value)) {
                                         <Form.Group>
                                             <Form.Label>First Name</Form.Label>
                                             <Form.Control type="text" name="first_name" value={formData.first_name} onChange={handleChange} required />
-                                                {!letterPattern.test(formData.first_name) && (
-                                                <Form.Text className="text-danger">Please enter only letters</Form.Text>)}
                                         </Form.Group>
                                     </Col>
                                     <Col md={6}>
                                         <Form.Group>
                                             <Form.Label>Last Name</Form.Label>
                                             <Form.Control type="text" name="last_name" value={formData.last_name} onChange={handleChange} required />
-                                                {!letterPattern.test(formData.first_name) && (
-                                                <Form.Text className="text-danger">Please enter only letters</Form.Text>)}
                                         </Form.Group>
                                     </Col>
                                 </Row>
@@ -171,8 +149,6 @@ if (numberPattern.test(value)) {
                                         <Form.Group>
                                             <Form.Label>Contact Number</Form.Label>
                                             <Form.Control type="text" name="contact_number" value={formData.contact_number} onChange={handleChange} required />
-                                                {!numberPattern.test(formData.contact_number) && (
-                                                <Form.Text className="text-danger">Please enter only numbers</Form.Text>)}
                                         </Form.Group>
                                     </Col>
                                     <Col md={6}>
@@ -214,12 +190,11 @@ if (numberPattern.test(value)) {
                                     <Col md={6}>
                                          <Form.Group>
                                             <Form.Label>Joined Date</Form.Label>
-                                            {/* Use DatePicker component */}
                                             <DatePicker
                                                 selected={formData.joined_date}
                                                 onChange={handleDateChange}
                                                 name="joined_date"
-                                                dateFormat="yyyy/mm/dd"
+                                                dateFormat="yyyy/MM/dd"
                                                 className="form-control"
                                             />
                                         </Form.Group>
@@ -241,8 +216,6 @@ if (numberPattern.test(value)) {
                                         <Form.Group>
                                             <Form.Label>Emergency Contact</Form.Label>
                                             <Form.Control type="text" name="emergency_contact" value={formData.emergency_contact} onChange={handleChange} required />
-                                                {!numberPattern.test(formData.contact_number) && (
-                                                <Form.Text className="text-danger">Please enter only numbers</Form.Text>)}
                                         </Form.Group>
                                     </Col>
                                 </Row>
@@ -251,34 +224,12 @@ if (numberPattern.test(value)) {
                                         <Form.Group>
                                             <Form.Label>Password</Form.Label>
                                             <Form.Control type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleChange} required />
-                                            {formData.password.length > 0 && formData.error && (
-                                                <Form.Text className="text-danger">{formData.error}</Form.Text>
-                                            )}
                                             <Form.Check type="checkbox" name="Show Password" onClick={() => setShowPassword(!showPassword)} />
                                         </Form.Group>
                                     </Col>
-                                    <Col md={6}>
-                                    <Form.Group>
-                                        <Form.Label>Confirm Password</Form.Label>
-                                        <Form.Control 
-                                            type={showConfirmPassword ? "text" : "password"} 
-                                            name="confirm_password" 
-                                            value={formData.confirm_password} 
-                                            onChange={handleChange} 
-                                            required 
-                                        />
-                                        {formData.confirm_password !== formData.password && formData.confirm_password.length > 0 && (
-                                            <Form.Text className="text-danger">Passwords do not match</Form.Text>
-                                        )}
-                                        <Form.Check 
-                                            type="checkbox" 
-                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)} 
-                                        />
-                                    </Form.Group>
-                                    </Col>
                                 </Row>
                                 <div className="d-flex justify-content-between align-items-center">
-                                    <Button variant="danger" type="button" id="clearbtn"onClick={handleResetForm}> Clear </Button>
+                                    <Button type="button" id="clearbtn" onClick={handleResetForm}> Clear </Button>
                                     <Button variant="primary" type="submit" id="submitbtn"> Register </Button>
                                 </div>
                             </Form> <hr></hr>
