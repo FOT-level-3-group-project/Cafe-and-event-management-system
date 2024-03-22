@@ -27,8 +27,8 @@ const WaiterSideBar = ({ children }) => {
       icon: <FaUserCheck/>,
     },
     {
-      path: '/waiter-sidebar/menu',
-      name: 'Menu',
+      path: '/waiter-sidebar/placeorder',
+      name: 'PlaceOrder',
       icon: <GiKnifeFork/>,
     },
     {
