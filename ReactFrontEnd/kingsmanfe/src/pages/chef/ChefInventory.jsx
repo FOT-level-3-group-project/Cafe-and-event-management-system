@@ -3,12 +3,18 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import UseItemPopup from './Component/UseItemPopup';
 import './ChefInventory.css';
+import Pagination from './Component/Pagination';
+import { BiCoinStack } from 'react-icons/bi';
 
 export default function ChefInventory() {
     const [items, setItems] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
     const [todayUsage, setTodayUsage] = useState([]);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(8); // Number of items per page
+
 
     useEffect(() => { /*run the useEffect method, when lord the page and chenge the state*/
         lordItems();
@@ -22,6 +28,7 @@ export default function ChefInventory() {
             const response = await axios.get("http://localhost:8080/api/inventory/view");
             console.log(response.data);
             setItems(response.data);
+            fetchTodayUsage();
 
         } catch (error) {
             console.error("Error fetch data", error);
@@ -30,7 +37,7 @@ export default function ChefInventory() {
 
     const fetchTodayUsage = async () => {
         try {
-            
+
             const currentDate = new Date(); // Get the current date
             currentDate.setDate(currentDate.getDate() + 0); // Increase the date by 1 day
             const increasedDate = currentDate.toISOString().split('T')[0]; // Format the increased date
@@ -66,102 +73,117 @@ export default function ChefInventory() {
         setSelectedItem(null);
     };
 
+    // Logic for pagination
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(items.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
 
 
 
 
     return (
-        <div className="two-column-container_chef">
-            <div className="column large-column_chef">
-                {/* Content for the first column */}
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h2>Available Inventory Item</h2>
-                </div>
-
-                <hr></hr>
-                <div className='container'>
-                    <div className='py-4'>
-                        <table className="table border shadow">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col" className="text-center">Item Id</th>
-                                    <th scope="col" className="text-center">Item Name</th>
-                                    <th scope="col" className="text-center">Quantity (KG/Pics)</th>
-                                    <th scope="col" className="text-center">Vendor Name</th>
-                                    <th scope="col" className="text-center">Actions</th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {items.map((item, index) => (
-                                    <tr key={index}>
-                                        <th scope="row">{index + 1}</th>
-                                        <td className="text-center">{item.id}</td>
-                                        <td className="text-center">{item.itemName}</td>
-                                        <td className="text-center">{item.quantity}</td>
-                                        <td className="text-center">{item.vendorId}</td>
-                                        <td>
-                                            <div className="flex button-container">
-                                                <button className="btn btn-primary mx-2 " onClick={() => handleUseItem(item.id)}>Use Item</button>
-                                            </div>
-
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+        <div>
+            <div className="header">
+                <BiCoinStack className="icon" size={60} />
+                <h2 className="inventory-title">Inventory</h2>
             </div>
-
-            <div className="column small-column_chef ">
-
-                {/* Content for the second column */}
-                <h2>Today Item Usage</h2><hr></hr>
-
-                <div className='container'>
-                    <div className='py-4'>
-                        <table className="table border shadow">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col" className="text-center">Item Id</th>
-                                    <th scope="col" className="text-center">Item Name</th>
-                                    <th scope="col" className="text-center">Quantity Used</th>
-                                    <th scope="col" className="text-center">Usage Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {todayUsage.map((usage, index) => (
-                                    <tr key={index}>
-                                        <th scope="row">{index + 1}</th>
-                                        <td className="text-center">{usage.itemId}</td>
-                                        <td className="text-center">{usage.itemName}</td>
-                                        <td className="text-center">{usage.decreasedQuantity}</td>
-                                        <td className="text-center">{new Date(usage.usageDateTime).toLocaleString()}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-
-
-                        <p>This is the content of the second column.</p>
+            <div className="two-column-container_chef">
+                <div className="column large-column_chef">
+                    {/* Content for the first column */}
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                        <h2>Available Inventory Item</h2>
                     </div>
 
+                    <hr></hr>
+                    <div className='container'>
+                        <div className='py-4'>
+                            {/* Pagination for the table */}
+                            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+                            <table className="table border shadow">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col" className="text-center">Item Id</th>
+                                        <th scope="col" className="text-center">Item Name</th>
+                                        <th scope="col" className="text-center">Quantity (KG/Pics)</th>
+                                        <th scope="col" className="text-center">Vendor Name</th>
+                                        <th scope="col" className="text-center">Actions</th>
 
-                    {/* Popup window */}
-                    {showPopup && selectedItem && (
-                        <UseItemPopup
-                            item={selectedItem}
-                            onConfirm={handleUseItemConfirm}
-                            onCancel={handleCancelPopup}
-                            onReloadItems={lordItems}
-                        />
-                    )}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {currentItems.map((item, index) => (
+                                        <tr key={index}>
+                                            <th scope="row">{index + 1}</th>
+                                            <td className="text-center">{item.id}</td>
+                                            <td className="text-center">{item.itemName}</td>
+                                            <td className="text-center">{item.quantity}</td>
+                                            <td className="text-center">{item.vendorId}</td>
+                                            <td>
+                                                <div className="flex button-container">
+                                                    <button className="btn btn-primary mx-2 " onClick={() => handleUseItem(item.id)}>Use Item</button>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div className="column small-column_chef ">
+
+                    {/* Content for the second column */}
+                    <h2>Today Item Usage</h2><hr></hr>
+
+                    <div className='container'>
+                        <div className='py-4'>
+                            <br /><br /><br />
+                            <table className="table border shadow">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col" className="text-center">Item Id</th>
+                                        <th scope="col" className="text-center">Item Name</th>
+                                        <th scope="col" className="text-center">Quantity Used</th>
+                                        <th scope="col" className="text-center">Usage Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {todayUsage.map((usage, index) => (
+                                        <tr key={index}>
+                                            <th scope="row">{index + 1}</th>
+                                            <td className="text-center">{usage.itemId}</td>
+                                            <td className="text-center">{usage.itemName}</td>
+                                            <td className="text-center">{usage.decreasedQuantity}</td>
+                                            <td className="text-center">{new Date(usage.usageDateTime).toLocaleString()}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        {/* Popup window */}
+                        {showPopup && selectedItem && (
+                            <UseItemPopup
+                                item={selectedItem}
+                                onConfirm={handleUseItemConfirm}
+                                onCancel={handleCancelPopup}
+                                onReloadItems={lordItems}
+                            />
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
-
     );
 }

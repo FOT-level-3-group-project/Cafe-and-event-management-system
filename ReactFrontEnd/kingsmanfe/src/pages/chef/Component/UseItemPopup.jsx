@@ -30,10 +30,10 @@ export default function UseItemPopup({ item, onConfirm, onCancel, onReloadItems 
     };
 
     return (
-        <div className="popup">
+        <div className="popup shadow" style={{ maxWidth: '500px',maxHeight: '300px'  }}>
             <div className="popup-content">
                 <h3>{item.itemName}</h3>
-                <p>Available Quantity: {item.quantity}</p>
+                <p>Available Quantity: Kg/Pics. {item.quantity}</p>
                 <div className="mb-3">
                     <label htmlFor="quantityUsed" className="form-label">Quantity to Use:</label>
                     <input
@@ -44,8 +44,11 @@ export default function UseItemPopup({ item, onConfirm, onCancel, onReloadItems 
                         onChange={(e) => setQuantityUsed(e.target.value)}
                     />
                 </div>
-                <button className="btn btn-primary" onClick={handleConfirm}>Confirm Use</button>
-                <button className="btn btn-secondary" onClick={onCancel}>Cancel</button>
+                <div className='-flex center-content-between'>
+                <button className="btn btn-primary mx-2" onClick={handleConfirm}>Confirm Use</button>
+                <button className="btn btn-danger" onClick={onCancel}>Cancel</button>
+                </div>
+                
             </div>
         </div>
     );

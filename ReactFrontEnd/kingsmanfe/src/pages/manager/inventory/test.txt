@@ -8,7 +8,6 @@ import AddInventoryItem from './AddInventoryItem';
 import DeleteConfirmationPopup from '../../../component/DeleteConfirmationPopup';
 import EditInventoryItem from './EditInventoryItem';
 import axios from 'axios';
-import Pagination from '../../chef/Component/Pagination';
 
 
 
@@ -21,9 +20,6 @@ function InventoryItemLord() {
   const [itemToDelete, setItemToDelete] = useState(null);
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [editItemId, setEditItemId] = useState(null);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(6); // Number of items per page
 
 
   useEffect(() => { /*run the useEffect method, when lord the page and chenge the state*/
@@ -92,15 +88,6 @@ function InventoryItemLord() {
     }
   };
 
-  // Logic for pagination
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(items.length / itemsPerPage);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
 
   return (
     <div>
@@ -122,7 +109,7 @@ function InventoryItemLord() {
           </div>
 
           {isAddInventoryOpen && (
-            <div className="popup shadow" style={{ maxWidth: '600px',maxHeight: '700px'  }}>
+            <div className="popup">
               {/* Content of the Add Inventory Popup */}
               <AddInventoryItem onAddItem={handleAddItem} />
               <button className="btn btn-danger" onClick={closeAddInventoryPopup}>
@@ -137,8 +124,6 @@ function InventoryItemLord() {
 
           <div className='container'>
             <div className='py-4' style={{ maxHeight: '600px', overflowY: 'auto' }}>
-              {/* Pagination for the table */}
-            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
               <table className="table border shadow">
                 <thead>
                   <tr>
@@ -154,9 +139,9 @@ function InventoryItemLord() {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItems.map((item, index) => (
+                  {items.map((item, index) => (
                     <tr key={index}>
-                      <th scope="row">{indexOfFirstItem + index + 1}</th>
+                      <th scope="row">{index + 1}</th>
                       <td className="text-center">{item.id}</td>
                       <td className="text-center">{item.itemName}</td>
                       <td className="text-center">{item.quantity}</td>
@@ -181,6 +166,7 @@ function InventoryItemLord() {
           {/* Content for the second column */}
           <h2>Check Daily Usage</h2><hr></hr>
           <DatePickerComponent />
+          <p>This is the content of the second column.</p>
         </div>
       </div>
       {showConfirmation && (
@@ -198,9 +184,8 @@ function InventoryItemLord() {
         />
       )}
 
-
     </div>
-  );
+  )
 }
 
 export default InventoryItemLord;

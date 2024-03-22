@@ -34,7 +34,6 @@ const App = () => {
         <Route path="/manager-sidebar/*" element={<ManagerRoutes />} />
         <Route path="/chef-sidebar/*" element={<ChefRoutes />} />
         <Route path="/waiter-sidebar/*" element={<WaiterRoutes />} />
-
       </Routes>
     </BrowserRouter>
   );
@@ -59,28 +58,26 @@ const ManagerRoutes = () => {
   return (
     <ManagerSideBar>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="dashboard" element={<Dashboard />} />
-        {/* <Route path="dashboard" element={<ManagerDashboard />} /> */}
-        <Route path="menu" element={<Menu />} />
-        <Route path="inventory" element={<InventoryItemLord />} />
-        <Route path="attendance" element={<Attendance />} />
-        <Route path="payment" element={<Payment />} />
-        <Route path="register" element={<RegisterEmployee />} />
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/menu" element={<Menu />} />
+            <Route path="/inventory" element={<InventoryItemLord/>} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/attendance" element={<Attendance/>} />
       </Routes>
     </ManagerSideBar>
   );
 };
 
+
 const ChefRoutes = () => {
   return (
     <ChefSideBar>
       <Routes>
-        <Route path="/" element={<ChefDashbord />} /> {/*ChefDashbord added*/}
-        <Route path="/orders" element={<ChefOrders />} /> {/*Cheforder added*/}
-        <Route path="/inventory" element={<ChefInventory />} /> {/*ChefInventory added*/}
-        <Route path="/payment" element={<Payment />} />
-        <Route path="/attendance" element={<Attendance />} />
+            <Route path="/" element={<ChefDashbord />} /> {/*ChefDashbord added*/}
+            <Route path="/orders" element={<ChefOrders />} /> {/*Cheforder added*/}
+            <Route path="/inventory" element={<ChefInventory/>} /> {/*ChefInventory added*/}
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/attendance" element={<Attendance/>} />
       </Routes>
     </ChefSideBar>
   );
