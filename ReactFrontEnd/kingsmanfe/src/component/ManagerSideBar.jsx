@@ -18,6 +18,7 @@ const ManagerSideBar = ({ children }) => {
     const toggle = () => setIsOpen (!isOpen);
   const menuItem = [
     {
+
       path: '/manager-sidebar/dashboard',
       name: 'Dashboard',
       icon: <FaTachometerAlt/>,
