@@ -104,15 +104,15 @@ function InventoryItemLord() {
 
   return (
     <div>
-      <div className="header">
+      <div className="header-man-inv">
         <BiCoinStack className="icon" size={60} />
         <h2 className="inventory-title">Inventory</h2>
       </div>
 
-      <div className="two-column-container">
-        <div className="column large-column">
+      <div className="two-column-container-man-inv">
+        <div className="column-man-inv large-column-man-inv">
           {/* Content for the first column */}
-          <div className="d-flex justify-content-between align-items-center mb-3">
+          <div className="d-flex justify-content-between align-items-center">
             <h2>Available Inventory Item</h2>
 
             {/* Add inventory button */}
@@ -135,8 +135,8 @@ function InventoryItemLord() {
           <hr></hr>
           {/* {allinventory} */}
 
-          <div className='container'>
-            <div className='py-4' style={{ maxHeight: '600px', overflowY: 'auto' }}>
+          <div>
+            <div className='py-4'>
               {/* Pagination for the table */}
             <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
               <table className="table border shadow">
@@ -177,7 +177,7 @@ function InventoryItemLord() {
             </div>
           </div>
         </div>
-        <div className="column small-column ">
+        <div className="column-man-inv small-column-man-inv ">
           {/* Content for the second column */}
           <h2>Check Daily Usage</h2><hr></hr>
           <DatePickerComponent />

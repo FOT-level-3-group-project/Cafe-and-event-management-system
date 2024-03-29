@@ -1,7 +1,7 @@
 
 /* inventoryStyle.css */
 
-.header {
+.header-man-inv {
   display: flex;
   align-items: center;
   background-color: #ffffff;
@@ -18,23 +18,22 @@
 }
 
 
-.two-column-container {
+.two-column-container-man-inv {
   display: flex;
 }
 
-.column {
-  flex: 1;
-  padding: 20px;
-  margin: 10px;
-  box-sizing: border-box; /* Ensure padding is included in the width */
+.column-man-inv {
+  padding: 1%;
+  margin: 1px;
+  box-sizing: border-box; /*Ensure padding is included in the width */
   
 }
 
-.small-column {
+.small-column-man-inv {
   flex: 1; /* Adjust the value to control the size of the second column */
 }
 
-.large-column {
+.large-column-man-inv {
   flex: 2.5; /* Adjust the value to control the size of the second column */
   border-right: 3px solid #b1aeae;
 }

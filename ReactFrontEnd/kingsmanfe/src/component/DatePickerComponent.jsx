@@ -29,7 +29,7 @@ const DatePickerComponent = () => {
   return (
     <div>
       <h4>Select the date -</h4>
-      <div className="container text-center">
+      <div className="text-center">
         <DatePicker
           className="mx-auto"
           selected={selectedDate}
