@@ -11,6 +11,7 @@ import axios from 'axios';
 export default function Login() {
     const [formData, setFormData] = useState({});
     const {loarding, error: errorMessage} = useSelector(state => state.user);
+    const { currentUser } = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -39,8 +40,19 @@ export default function Login() {
 
             if(response.status === 200){
                 dispatch(logInSuccess(data));
-                navigate('/dashborde');
                 console.log("data stored in redux");
+                console.log(currentUser.position);
+
+                if((currentUser.position) === 'manager'){ //check the user are manager
+                    navigate('/manager')
+                }else if((currentUser.position)=== 'cashier'){
+                    navigate('/cashier')
+                }else if((currentUser.position)=== 'chef'){
+                    navigate('/chef')
+                }else if((currentUser.position)=== 'waiter'){
+                    navigate('/waiter')
+                }
+
             }
 
         }catch(error){
