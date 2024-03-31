@@ -8,7 +8,7 @@ export default function Header() {
     return (
         <Navbar className='border-b-2'>
             <Link to='/' className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'>
-                <span className='px-2 py-1 bg-gradient-to-r from-lime-900 via-lime-600 to-lime-500 rounded-lg text-white'>Kingsman</span>
+                <span className='px-2 py-1 bg-gradient-to-r from-lime-900 via-lime-600 to-lime-500 rounded-lg text-white'>Kingsman Cafe & Events</span>
             </Link>
             <div className='flex gap-3 md:order-2'>
                 <Button className='w-12 h-10 hidden sm:inline' color='gray' pill>
