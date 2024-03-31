@@ -1,12 +1,15 @@
 import { Avatar, Button, Dropdown, Navbar } from 'flowbite-react'
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { FaMoon } from 'react-icons/fa'
-import {  useSelector } from 'react-redux'
+import { FaMoon ,FaSun} from 'react-icons/fa'
+import {  useSelector, useDispatch } from 'react-redux'
+import { toggleTheme } from '../redux/theme/themeSlice'
 
 export default function Header() {
     const path = useLocation().pathname;
+    const dispatch = useDispatch();
     const { currentUser } = useSelector((state) => state.user);
+    const { theme } = useSelector((state) => state.theme);
     console.log(currentUser);
     return (
         <Navbar className='border-b-2'>
@@ -14,8 +17,8 @@ export default function Header() {
                 <span className='px-2 py-1 bg-gradient-to-r from-lime-900 via-lime-600 to-lime-500 rounded-lg text-white'>Kingsman Cafe & Events</span>
             </Link>
             <div className='flex gap-3 md:order-2'>
-                <Button className='w-12 h-10 hidden sm:inline' color='gray' pill>
-                    <FaMoon />
+                <Button className='w-12 h-10 hidden sm:inline' color='gray' pill onClick={()=>dispatch(toggleTheme())}>
+                    {theme === 'light' ? <FaSun /> : <FaMoon />}
                 </Button>
                 {currentUser ? (
                     <Dropdown
