@@ -39,6 +39,7 @@ export default function Login() {
 
             if(response.status === 200){
                 dispatch(logInSuccess(data));
+                navigate('/dashborde');
                 console.log("data stored in redux");
             }
 
