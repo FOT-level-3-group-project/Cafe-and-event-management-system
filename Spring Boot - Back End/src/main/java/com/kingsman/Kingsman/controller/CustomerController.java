@@ -27,31 +27,25 @@ public class CustomerController {
     @GetMapping("/email/{email}")
     public ResponseEntity<?> getByEmail(@PathVariable String email) {
         CustomerDTO customer = customerService.findByEmail(email);
-        if (customer != null) {
-            return ResponseEntity.ok(customer);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found with the given email: " + email);
-        }
+        return customer != null ?
+                ResponseEntity.ok(customer) :
+                ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found with the given email: " + email);
     }
 
     @GetMapping("/mobile/{mobile}")
     public ResponseEntity<?> getByMobile(@PathVariable String mobile) {
         CustomerDTO customer = customerService.findByMobile(mobile);
-        if (customer != null) {
-            return ResponseEntity.ok(customer);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found with the given mobile: " + mobile);
-        }
+        return customer != null ?
+                ResponseEntity.ok(customer) :
+                ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found with the given mobile: " + mobile);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         CustomerDTO customer = customerService.findById(id);
-        if (customer != null) {
-            return ResponseEntity.ok(customer);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found with the given ID: " + id);
-        }
+        return customer != null ?
+                ResponseEntity.ok(customer) :
+                ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found with the given ID: " + id);
     }
 
     @PostMapping
@@ -70,11 +64,9 @@ public class CustomerController {
     public ResponseEntity<?> updateCustomer(@PathVariable Long id, @RequestBody CustomerDTO customerDTO) {
         try {
             CustomerDTO updatedCustomer = customerService.update(id, customerDTO);
-            if (updatedCustomer != null) {
-                return ResponseEntity.ok(updatedCustomer);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found with ID: " + id);
-            }
+            return updatedCustomer != null ?
+                    ResponseEntity.ok(updatedCustomer) :
+                    ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found with ID: " + id);
         } catch (CustomerDuplicateMobileNumberException ex) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("A customer already exists with this mobile number");
         } catch (Exception ex) {
