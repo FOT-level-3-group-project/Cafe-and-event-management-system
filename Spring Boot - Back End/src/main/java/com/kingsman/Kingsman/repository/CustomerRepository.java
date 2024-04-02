@@ -1,7 +1,16 @@
 package com.kingsman.Kingsman.repository;
 
+import com.kingsman.Kingsman.dto.CustomerDTO;
 import com.kingsman.Kingsman.model.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
-public interface CustomerRepository extends JpaRepository<Customer,Long> {
+import java.util.Optional;
+
+@Repository
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
+    Optional<Customer> findByCusEmail(String email);
+    Optional<Customer> findByCusMobile(String mobile);
+    boolean existsByCusMobile(String cusMobile);
 }
