@@ -30,9 +30,11 @@ export default function CashierSideBar() {
                             Profile
                         </Sidebar.Item>
                     </Link>
+
                     <Sidebar.Item icon={HiArrowSmRight} className='cursor-pointer' >
                         Log Out
                     </Sidebar.Item>
+
 
                 </Sidebar.ItemGroup>
             </Sidebar.Items>
