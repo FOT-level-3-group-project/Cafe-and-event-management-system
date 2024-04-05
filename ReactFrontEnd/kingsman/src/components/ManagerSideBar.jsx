@@ -23,15 +23,16 @@ export default function ManagerSideBar() {
             <Sidebar.Items>
                 <Sidebar.ItemGroup>
                     <Link to='/manager?tab=inventory'>
-                        <Sidebar.Item active={tab === 'inventory'} icon={HiUser} >
+                        <Sidebar.Item active={tab === 'inventory'} icon={HiUser} as='div' >
                             Inventory
                         </Sidebar.Item>
                     </Link>
                     <Link to='/manager?tab=profile'>
-                        <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"User"} labelColor='dark'>
+                        <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"User"} labelColor='dark' as='div'>
                             Profile
                         </Sidebar.Item>
                     </Link>
+
                     <Sidebar.Item icon={HiArrowSmRight} className='cursor-pointer' >
                         Log Out
                     </Sidebar.Item>
