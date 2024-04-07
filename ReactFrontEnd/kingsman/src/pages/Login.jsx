@@ -1,6 +1,6 @@
-import React from 'react'
-import logo from '../image/logo.png'
-import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react'
+import React from 'react';
+import logo from '../image/logo.png';
+import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 
 export default function Login() {
     const [formData, setFormData] = useState({});
-    const { loarding, error: errorMessage } = useSelector(state => state.user);
+    const { loading, error: errorMessage } = useSelector(state => state.user);
     const { currentUser } = useSelector((state) => state.user);
     const [showPassword, setShowPassword] = useState(false);
 
@@ -21,6 +21,7 @@ export default function Login() {
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.id]: e.target.value.trim() })
     };
+
     console.log(formData);
 
     const handleSubmit = async (e) => {
@@ -28,7 +29,9 @@ export default function Login() {
         if (!formData.username || !formData.password) {
             return dispatch(logInFailure("please fill the all field")); //setErrorMessage is a check the all fields are filled
         }
+
         console.log(formData);
+
         try {
             dispatch(logInStart());
             const response = await axios.post('http://localhost:8080/api/user/login', formData);
@@ -37,7 +40,7 @@ export default function Login() {
             const data = response.data;
 
             if (data.success == false) {
-                dispatch(logInFailure(data.message));
+                dispatch(logInFailure(data.message)); //error message
                 navigate('/');
             }
 
@@ -45,7 +48,6 @@ export default function Login() {
                 dispatch(logInSuccess(data));
                 console.log("data stored in redux");
                 
-
                     if (currentUser && currentUser.position === 'manager') { // Check the user's position
                         navigate('/manager');
                     } else if (currentUser && currentUser.position === 'cashier') {
@@ -55,14 +57,13 @@ export default function Login() {
                     } else if (currentUser && currentUser.position === 'waiter') {
                         navigate('/waiter');
                     }
-        
-
             }
-
         } catch (error) {
-            dispatch(logInFailure(error.message));
+            dispatch(logInFailure("Invalid username or password"));
+            setFormData({});
         }
     };
+    
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
@@ -81,13 +82,12 @@ export default function Login() {
                     <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
                         <div>
                             <Label value='Username' />
-                            <TextInput type='text' placeholder='Username' id='username' onChange={handleChange} />
-
+                            <TextInput type='text' placeholder='Username' id='username' onChange={handleChange} value={formData.username || ''} />
                         </div>
+
                         <div>
                             <Label value='Password' />
-                            <TextInput type='password' placeholder='Password' id='password' onChange={handleChange} />
-
+                            <TextInput type={showPassword ? 'text' : 'password'} placeholder='Password' id='password' onChange={handleChange} value={formData.password || ''} />
                             {/* password visibility */}
                             <div className='flex justify-between'>
                                 <span></span>
@@ -97,18 +97,19 @@ export default function Login() {
                                     {showPassword ? 'Hide Password' : 'Show Password'}
                                 </Link>
                             </div>
-
                         </div>
-                        <Button gradientDuoTone='greenToBlue' type='submit' className='mt-4' disabled={loarding}>
+                        
+                        <Button gradientDuoTone='greenToBlue' type='submit' className='mt-4' disabled={loading}>
                             {
-                                loarding ? (
+                                loading ? (
                                     <>
                                         <Spinner size='sm' />
-                                        <span className='pl-3'> Loarding ...</span>
+                                        <span className='pl-3'> Loading ...</span>
                                     </>
                                 ) : 'Log in'
                             }
                         </Button>
+                        <Link to='/ResetPassword' className="forgot-pwd"> Forgot Password?</Link>
 
                     </form>
                     {
