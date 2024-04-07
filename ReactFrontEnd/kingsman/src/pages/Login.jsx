@@ -109,7 +109,7 @@ export default function Login() {
                                 ) : 'Log in'
                             }
                         </Button>
-                        <Link to='/ResetPassword' className="forgot-pwd"> Forgot Password?</Link>
+                        <Link to='/ResetPassword' className="resetPassword"> Forgot Password?</Link>
 
                     </form>
                     {

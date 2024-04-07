@@ -11,6 +11,7 @@ import Chef from './pages/chef/Chef'
 import Manager from './pages/manager/Manager'
 import Waiter from './pages/waiter/Waiter'
 import OnlyManagerPrivateRoute from './components/OnlyManagerPrivateRoute'
+import ResetPassword from './pages/ResetPassword';
 //import { Link } from 'react-router-dom'
 
 export default function App() {
@@ -34,8 +35,7 @@ export default function App() {
 
         <Route path="/about" element={<About/>} />
         <Route path="/login" element={<Login/>} />
-
-      
+        <Route path="/resetPassword" element={<ResetPassword/>} />
 
       </Routes>
     </BrowserRouter>

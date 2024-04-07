@@ -4,6 +4,7 @@ import logo from '../image/logo.png';
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { resetPasswordStart, resetPasswordSuccess, resetPasswordFailure } from '../redux/user/userSlice';
 
 function ResetPassword(){
@@ -27,6 +28,16 @@ function ResetPassword(){
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    //Show password visibility
+    const toggleNewPasswordVisibility = () => {
+        setShowNewPassword(!showNewPassword);
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
+
+
     //Getting username
     const handleSubmitUsername = async (e) => {
         e.preventDefault();
@@ -41,230 +52,161 @@ function ResetPassword(){
         }
     };
 
-//Getting OTP
-  const handleSubmitOtp = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await axios.post('http://localhost:8080/verify-otp', { 
-      username,
-      otp 
-    });
-    if (response.data.includes("verified successfully")) {
-      setShowPasswordForm(true);
-    } else {
-      alert('Invalid OTP, please try again.');
-    }
-  } catch (error) {
-    alert('Error:', error);
-  }
-};
+    //Getting OTP
+    const handleSubmitOtp = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post('http://localhost:8080/verify-otp', { 
+                username,
+                otp 
+            });
+            if (response.data.includes("verified successfully")) {
+                setShowPasswordForm(true);
+            } else {
+                dispatch(setResetPasswordError('Invalid OTP, please try again.'));
+            }
+        } catch (error) {
+            dispatch(setResetPasswordError(error));
+        }
+    };
 
-//Getting new password
-  const handleSubmitPassword = async (e) => {
-    e.preventDefault();
-    try {
-       // Password validation logic
-      if (!validatePassword(newPassword)) {
-        alert('Password must have at least 6 characters, one uppercase letter, one lowercase letter, and one number or special character.');
-        return;
-      }
-      if (newPassword !== confirmPassword) {
-        alert('Passwords do not match.');
-        return;
-      }
+    //Getting new password
+    const handleSubmitPassword = async (e) => {
+        e.preventDefault();
+        try {
+        // Password validation logic
+            if (!validatePassword(newPassword)) {
+                alert('Password must have at least 6 characters, one uppercase letter, one lowercase letter, and one number or special character.');
+                return;
+            }
+            if (newPassword !== confirmPassword) {
+                alert('Passwords do not match.');
+                return;
+            }
 
-      const response = await axios.post('http://localhost:8080/reset-password', {
-        username,
-        newPassword,
-        confirmPassword
+            const response = await axios.post('http://localhost:8080/reset-password', {
+                username,
+                newPassword,
+                confirmPassword
+            });
+            console.log('Response data:', response.data); // Log the response data to the console
+            if (response.data.includes("Password reset successful")) {
+                alert('Password reset successful!');
+                navigate('/login');
+            } else {
+                dispatch(setResetPasswordError('Password reset failed. Please try again.'));
+            }
+        } catch (error) {
+            alert('Error:', error);
+        }
+    };
+
+    const validatePassword = (password) => {
+        // Password must have at least 6 characters, one uppercase letter, one lowercase letter, and one number or special character
+        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z!@#$%^&*()_+]).{6}$/;
+        return passwordRegex.test(password);
+    };
+
+    const handlePasswordChange = (e) => {
+        const { value } = e.target;
+        setNewPassword(value);
+
+        // Password requirements validation
+        setRequirementsMet({
+            length: value.length >= 6,
+            uppercase: /[A-Z]/.test(value),
+            lowercase: /[a-z]/.test(value),
+            numberOrSpecialChar: /[\d!@#$%^&*()_+]/.test(value)
         });
-console.log('Response data:', response.data); // Log the response data to the console
-    if (response.data.includes("Password reset successful")) {
-      alert('Password reset successful!');
-      navigate('/login');
-    } else {
-      alert('Password reset failed. Please try again.');
-    }
-  } catch (error) {
-    alert('Error:', error);
-  }
-};
+        setPasswordError('');
+    };
 
- const validatePassword = (password) => {
-    // Password must have at least 6 characters, one uppercase letter, one lowercase letter, and one number or special character
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z!@#$%^&*()_+]).{6}$/;
-    return passwordRegex.test(password);
-  };
+  return (
+        <div className='min-h-screen mt-20'>
+            <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center'>
 
- const handlePasswordChange = (e) => {
-    const { value } = e.target;
-    setNewPassword(value);
-
-    // Password requirements validation
-    setRequirementsMet({
-      length: value.length >= 6,
-      uppercase: /[A-Z]/.test(value),
-      lowercase: /[a-z]/.test(value),
-      numberOrSpecialChar: /[\d!@#$%^&*()_+]/.test(value)
-    });
-    setPasswordError('');
-  };
-const clearFieldsUsername = () => {
-    setUsername('');
-  };
-
-const clearFieldsOTP = () => {
-    setOtp('');
-  };
-
-   const clearFieldsPwd = () => {
-    setNewPassword('');
-    setConfirmPassword('');
-    setError('');
-    setPasswordError('');
-    setRequirementsMet({
-      length: false,
-      uppercase: false,
-      lowercase: false,
-      numberOrSpecialChar: false
-    });
-    setShowNewPassword(false);
-    setShowConfirmPassword(false);
-  };
-
-//   return (
-//         <div className="container mx-auto">
-//             <h1 className="text-3xl font-bold text-center mt-8 mb-4">Forgot Password</h1>
-//             {!showOtpForm && !showPasswordForm && (
-//                 <form onSubmit={handleSubmitUsername} className="flex flex-col gap-4">
-//                     <label>
-//                         Username:
-//                         <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="border border-gray-300 p-2 rounded" />
-//                     </label>
-//                     <button type="button" onClick={clearFieldsUsername} className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Clear</button>
-//                     <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
-//                 </form>
-//             )}
-//             {showOtpForm && !showPasswordForm && (
-//                 <form onSubmit={handleSubmitOtp} className="flex flex-col gap-4">
-//                     <label>
-//                         OTP:
-//                         <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} className="border border-gray-300 p-2 rounded" />
-//                     </label>
-//                     <button type="button" onClick={clearFieldsOTP} className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Clear</button>
-//                     <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
-//                 </form>
-//             )}
-//             {showPasswordForm && (
-//                 <form onSubmit={handleSubmitPassword} className="flex flex-col gap-4">
-//                     <label>
-//                         New Password:
-//                         <input type={showNewPassword ? 'text' : 'password'} value={newPassword} onChange={handlePasswordChange} className="border border-gray-300 p-2 rounded" />
-//                     </label>
-//                     {newPassword && (
-//                         <ul className="list-disc pl-4">
-//                             <li className={requirementsMet.length ? 'text-green-500' : 'text-red-500'}>Password must have at least 6 characters</li>
-//                             <li className={requirementsMet.uppercase ? 'text-green-500' : 'text-red-500'}>Password must contain at least one uppercase letter</li>
-//                             <li className={requirementsMet.lowercase ? 'text-green-500' : 'text-red-500'}>Password must contain at least one lowercase letter</li>
-//                             <li className={requirementsMet.numberOrSpecialChar ? 'text-green-500' : 'text-red-500'}>Password must contain at least one number or special character</li>
-//                         </ul>
-//                     )}
-//                     {passwordError && <div className="text-red-500">{passwordError}</div>}
-//                     <label>
-//                         Confirm Password:
-//                         <input type={showConfirmPassword ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="border border-gray-300 p-2 rounded" />
-//                     </label>
-//                     <div>
-//                         <input type="checkbox" id="showPassword" checked={showNewPassword} onChange={() => setShowNewPassword(!showNewPassword)} className="mr-2" />
-//                         <label htmlFor="showNewPassword">Show New Password</label>
-//                     </div>
-//                     <div>
-//                         <input type="checkbox" id="showConfirmPassword" checked={showConfirmPassword} onChange={() => setShowConfirmPassword(!showConfirmPassword)} className="mr-2" />
-//                         <label htmlFor="showConfirmPassword">Show Confirm Password</label>
-//                     </div>
-//                     <button type="button" onClick={clearFieldsPwd} className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Clear</button>
-//                     <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
-//                 </form>
-//             )}
-//         </div>
-//     );
-
- return (
-    <div className='min-h-screen mt-20'>
-        <div className= 'flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center'>
-            <div>
-                {/* left side */}
+                {/* Left side */}
                 <div className='flex-1'>
                     <img src={logo} alt='logo' className='w-80 h-80' />
                 </div>
 
-                {/* right side */}
+                {/* Right side */}
                 <div className='flex-1'>
-                    <h1 className="text-3xl font-bold text-center mt-8 mb-4">Forgot Password</h1>
-
+                    
+                    {/* Username Form */}
                     {!showOtpForm && !showPasswordForm && (
                         <form onSubmit={handleSubmitUsername} className="flex flex-col gap-4">
-                            <label>
-                                Username:
-                                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="border border-gray-300 p-2 rounded" />
-                            </label>
-                            <button type="button" onClick={clearFieldsUsername} className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Clear</button>
-                            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
+                            <h1 className="text-3xl font-bold text-center mt-8 mb-4">Forgot Password</h1>
+                            <div>
+                                <Label value="Username" />
+                                <TextInput type='text' placeholder="Username" id='PRusername' onChange={(e) => setUsername(e.target.value)} value={username || ''} />
+                            </div>
+                            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Send OTP</button>
+                            <Link to="/login" className="text-blue-500 mt-4">Go Back</Link> {/* Go Back link */}
                         </form>
-                    )}   
+
+                    )}
+
+                    {/* OTP Form */}
+                    {showOtpForm && !showPasswordForm && (
+                        <form onSubmit={handleSubmitOtp} className="flex flex-col gap-4">
+                            <h1 className="text-3xl font-bold text-center mt-8 mb-4">Verify OTP </h1>
+                            <div>
+                                <Label value="OTP" />
+                                <TextInput type='text' placeholder="Enter OTP" id='PRotp' onChange={(e) => setOtp(e.target.value)} value={otp || ''} />
+                            </div>
+                            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Verify OTP</button>
+                            <Link to="/login" className="text-blue-500 mt-4">Go Back</Link> {/* Go Back link */}
+                        </form>
+                    )}
+
+                    {/* Password Form */}
+                    {showPasswordForm && (
+                        <form onSubmit={handleSubmitPassword} className="flex flex-col gap-4">
+                            <h1 className="text-3xl font-bold text-center mt-8 mb-4">Reset Password</h1>
+                            <div>
+                                <Label value="New Password" />
+                                <TextInput type={showNewPassword ? 'text' : 'password'} placeholder="New Password" id='PRnewPassword' onChange={handlePasswordChange} value={newPassword || ''} />
+                                {/* password visibility */}
+                                <div className='flex justify-between'>
+                                    <span></span>
+                                    <Link
+                                        type='button'
+                                        onClick={toggleNewPasswordVisibility}>
+                                        {showNewPassword ? 'Hide Password' : 'Show Password'}
+                                    </Link>
+                                </div>
+
+                                {/* Password requirements */}
+                                <div className='flex flex-col gap-2 mt-4'>
+                                    <span className={requirementsMet.length ? 'text-green-500' : 'text-red-500'}>At least 6 characters</span>
+                                    <span className={requirementsMet.uppercase ? 'text-green-500' : 'text-red-500'}>At least one uppercase letter</span>
+                                    <span className={requirementsMet.lowercase ? 'text-green-500' : 'text-red-500'}>At least one lowercase letter</span>
+                                    <span className={requirementsMet.numberOrSpecialChar ? 'text-green-500' : 'text-red-500'}>At least one number or special character</span>
+                                </div>
+
+                                
+
+                                <Label value="Confirm Password" />
+                                <TextInput type={showConfirmPassword ? 'text' : 'password'} placeholder="Confirm Password" id='PRconfirmPassword' onChange={(e) => setConfirmPassword(e.target.value)} value={confirmPassword || ''} />
+                                <div className='flex justify-between'>
+                                    <span></span>
+                                    <Link
+                                        type='button'
+                                        onClick={toggleConfirmPasswordVisibility}>
+                                        {showConfirmPassword ? 'Hide Password' : 'Show Password'}
+                                    </Link>
+                                </div>
+                                
+                            </div>
+                            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Reset Password</button>
+                            <Link to="/login" className="text-blue-500 mt-4">Go Back</Link> {/* Go Back link */}
+                        </form>
+                    )}
                 </div>
-            </div>
-           
-            <div>
-                {showOtpForm && !showPasswordForm && (
-                    <form onSubmit={handleSubmitOtp} className="flex flex-col gap-4">
-                        <label>
-                            OTP:
-                            <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} className="border border-gray-300 p-2 rounded" />
-                        </label>
-                            <button type="button" onClick={clearFieldsOTP} className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Clear</button>
-                            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
-                        </form>
-                    )}
-            </div>
-                    
-
-
-            {showPasswordForm && (
-                <form onSubmit={handleSubmitPassword} className="flex flex-col gap-4">
-                    <label>
-                        New Password:
-                        <input type={showNewPassword ? 'text' : 'password'} value={newPassword} onChange={handlePasswordChange} className="border border-gray-300 p-2 rounded" />
-                    </label>
-                    {newPassword && (
-                        <ul className="list-disc pl-4">
-                            <li className={requirementsMet.length ? 'text-green-500' : 'text-red-500'}>Password must have at least 6 characters</li>
-                            <li className={requirementsMet.uppercase ? 'text-green-500' : 'text-red-500'}>Password must contain at least one uppercase letter</li>
-                            <li className={requirementsMet.lowercase ? 'text-green-500' : 'text-red-500'}>Password must contain at least one lowercase letter</li>
-                            <li className={requirementsMet.numberOrSpecialChar ? 'text-green-500' : 'text-red-500'}>Password must contain at least one number or special character</li>
-                        </ul>
-                    )}
-                    {passwordError && <div className="text-red-500">{passwordError}</div>}
-                    <label>
-                        Confirm Password:
-                        <input type={showConfirmPassword ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="border border-gray-300 p-2 rounded" />
-                    </label>
-                    <div>
-                        <input type="checkbox" id="showPassword" checked={showNewPassword} onChange={() => setShowNewPassword(!showNewPassword)} className="mr-2" />
-                        <label htmlFor="showNewPassword">Show New Password</label>
-                    </div>
-                    <div>
-                        <input type="checkbox" id="showConfirmPassword" checked={showConfirmPassword} onChange={() => setShowConfirmPassword(!showConfirmPassword)} className="mr-2" />
-                        <label htmlFor="showConfirmPassword">Show Confirm Password</label>
-                    </div>
-                    <button type="button" onClick={clearFieldsPwd} className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Clear</button>
-                    <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Submit</button>
-                </form>
-            )}
             </div>
         </div>
     );
-
 
 }
 
