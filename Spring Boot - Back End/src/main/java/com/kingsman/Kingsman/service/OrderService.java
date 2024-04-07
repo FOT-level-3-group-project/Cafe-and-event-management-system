@@ -141,10 +141,13 @@ public class OrderService {
 
     private OrderItemDTO convertOrderItemToDTO(OrderItem orderItem) {
         OrderItemDTO orderItemDTO = new OrderItemDTO();
+        orderItemDTO.setOrderItemId(orderItem.getOrderItemId());
         orderItemDTO.setFoodItemId(orderItem.getFoodItem().getFoodId());
+        orderItemDTO.setFoodItemName(orderItem.getFoodItem().getFoodName());
         orderItemDTO.setQuantity(orderItem.getQuantity());
         return orderItemDTO;
     }
+
 
 
     private Order convertToEntity(OrderDTO orderDTO) {
