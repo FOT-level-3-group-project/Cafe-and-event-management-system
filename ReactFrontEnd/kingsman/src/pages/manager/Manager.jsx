@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import ManagerSideBar from '../../components/ManagerSideBar';
 import AllinventoryItem from './inventory/AllinventoryItem';
 import ManagerProfile from './ManagerProfile';
+import Header from '../../components/Header';
+
 
 export default function Manager() {
     const location = useLocation();
