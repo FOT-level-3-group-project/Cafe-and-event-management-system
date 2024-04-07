@@ -6,7 +6,7 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/
 import { app } from '../../firebase';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { updateStart, updateSuccess, updateFailure } from '../../redux/user/userSlice';
+import { updateStart, updateSuccess, updateFailure, logOutSuccess } from '../../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -112,7 +112,7 @@ export default function ManagerProfile() {
       dispatch(updateStart());
       console.log(currentUser.id)
       console.log(formData);
-      const response = await axios.put(`http://localhost:8080/api/employees/update/2`, formData);
+      const response = await axios.put(`http://localhost:8080/api/employees/update/${currentUser.id}`, formData);
 
       console.log(response);
       const data = response.data;
@@ -132,6 +132,16 @@ export default function ManagerProfile() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  const handleLogOut = async () => {
+
+    try {
+      dispatch(logOutSuccess());
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
 
 
   console.log(formData);
@@ -196,7 +206,7 @@ export default function ManagerProfile() {
 
       <div className='text-red-500 flex justify-between mt-5'>
         <span></span>
-        <span className='cursor-pointer'> Log out</span>
+        <span onClick={handleLogOut} className='cursor-pointer'> Log out</span>
       </div>
 
       {/* user update success alert  */}

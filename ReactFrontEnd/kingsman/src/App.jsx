@@ -10,6 +10,7 @@ import Cashier from './pages/cashier/Cashier'
 import Chef from './pages/chef/Chef'
 import Manager from './pages/manager/Manager'
 import Waiter from './pages/waiter/Waiter'
+//import { Link } from 'react-router-dom'
 
 export default function App() {
   return (
