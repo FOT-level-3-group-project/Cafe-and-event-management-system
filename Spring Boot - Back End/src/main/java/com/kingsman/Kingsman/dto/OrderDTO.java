@@ -22,4 +22,6 @@ public class OrderDTO {
     private double totalAfterDiscount;
     private String paymentMethod;
     private boolean paymentStatus;
+    private Date createdDate;
+    private Date updatedDate;
 }

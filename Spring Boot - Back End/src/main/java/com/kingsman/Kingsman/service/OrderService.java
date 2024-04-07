@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,12 +48,36 @@ public class OrderService {
     }
 
     public OrderDTO updateOrder(Long orderId, OrderDTO orderDTO) {
+        // Check if the order exists
         Order existingOrder = getOrderIfExists(orderId);
-        BeanUtils.copyProperties(convertToEntity(orderDTO), existingOrder, "orderId");
-        List<OrderItem> orderItems = createOrderItems(orderDTO.getOrderItems(), existingOrder);
-        existingOrder.setOrderItems(orderItems);
-        return convertToDTO(orderRepository.save(existingOrder));
+
+        // Update the fields of the existing order with values from the DTO
+        existingOrder.setCustomerId(orderDTO.getCustomerId());
+        existingOrder.setOrderItems(createOrderItems(orderDTO.getOrderItems(), existingOrder));
+        existingOrder.setOrderDateTime(orderDTO.getOrderDateTime());
+        existingOrder.setOrderStatus(orderDTO.getOrderStatus());
+        existingOrder.setTableNumber(orderDTO.getTableNumber());
+        existingOrder.setSubTotal(orderDTO.getSubTotal());
+        existingOrder.setDiscountValue(orderDTO.getDiscountValue());
+        existingOrder.setDiscountPercentage(orderDTO.getDiscountPercentage());
+        existingOrder.setTotalAfterDiscount(orderDTO.getTotalAfterDiscount());
+        existingOrder.setPaymentMethod(orderDTO.getPaymentMethod());
+        existingOrder.setPaymentStatus(orderDTO.isPaymentStatus());
+
+        // Set updated date
+        existingOrder.setUpdatedDate(new Date());
+
+        // Save the updated order
+        Order updatedOrder = orderRepository.save(existingOrder);
+
+        // Convert the updated order to DTO and return
+        return convertToDTO(updatedOrder);
     }
+
+
+
+
+
 
     public void deleteOrder(Long orderId) {
         if (!orderRepository.existsById(orderId)) {
@@ -101,7 +126,7 @@ public class OrderService {
 
     private OrderDTO convertToDTO(Order order) {
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.setEmployeeId(order.getEmployee().getId().longValue());
+        orderDTO.setEmployeeId(order.getEmployee().getId().longValue()); // This line is causing the NullPointerException
         BeanUtils.copyProperties(order, orderDTO);
 
         // Map order items
@@ -112,6 +137,7 @@ public class OrderService {
 
         return orderDTO;
     }
+
 
     private OrderItemDTO convertOrderItemToDTO(OrderItem orderItem) {
         OrderItemDTO orderItemDTO = new OrderItemDTO();
