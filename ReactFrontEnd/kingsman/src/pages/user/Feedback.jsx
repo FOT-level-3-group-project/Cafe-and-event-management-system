@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
-import { Label, Textarea } from "flowbite-react";
+import { Textarea } from "flowbite-react";
 import { Button } from "flowbite-react";
-import { Rating } from "flowbite-react";
+import { Rating } from '@mui/material';
+import Typography from '@mui/material/Typography';
 
 export default function Feedback() {
-  const [rating, setRating] = useState(0);
-
-  const handleRatingChange = (value) => {
-    setRating(value);
-  };
+  const [value, setValue] = useState(3); // Placeholder value (3)
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -19,36 +16,36 @@ export default function Feedback() {
         </div>
         <hr />
 
-        <div className="mb-8">
-          <h3 className="text-lg">We would like your feedback to improve our service</h3>
-          <h3 className="text-lg">What is your opinion of our Foods</h3>
-          <Rating
-            size="md"
-            value={rating}
-            onChange={handleRatingChange}
-          >
-            <Rating.Star style={{ color: rating >= 1 ? 'yellow' : 'gray' }} />
-            <Rating.Star style={{ color: rating >= 2 ? 'yellow' : 'gray' }} />
-            <Rating.Star style={{ color: rating >= 3 ? 'yellow' : 'gray' }} />
-            <Rating.Star style={{ color: rating >= 4 ? 'yellow' : 'gray' }} />
-            <Rating.Star style={{ color: rating >= 5 ? 'yellow' : 'gray' }} />
-          </Rating>
+        <div className="mb-7">
+          <p className="text-lg mb-2">We would like your feedback to improve our service</p>
+          <div className="mb-2 flex justify-center items-center">
+            <Typography component="legend">Rate our Foods</Typography>
+          </div>
+          <div className="flex justify-center items-center">
+            <Rating 
+              name="foods-rating"
+              value={value}
+              precision={0.5} // Allow half-star increments
+              sx={{ fontSize: '32px' }} // Increase the size of stars
+              onChange={(event, newValue) => {
+                setValue(newValue);
+              }}
+            />
+          </div>
         </div>
         <hr />
 
         <div className="mb-4">
           <div className="mb-2 block">
-            <Label htmlFor="comment" value="Your Feedback" />
+            <label htmlFor="comment" className="text-lg">Your Feedback</label>
           </div>
-          <Textarea id="comment" placeholder="Leave a comment..." required rows={4} />
+          <Textarea id="comment" placeholder="Leave a opinion..." required rows={7} />
         </div>
          
-        <div className="mb-4">
-          <Button color="blue">Blue</Button>
+        <div className="mb-4  flex justify-end mr-4">
+          <Button color="blue" pill>Submit Feedback</Button>
         </div>
       </form>
     </div>
   );
 }
-
-
