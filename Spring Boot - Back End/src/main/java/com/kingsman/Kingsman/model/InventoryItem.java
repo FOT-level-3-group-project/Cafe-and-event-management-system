@@ -16,6 +16,7 @@ public class InventoryItem {
     private Long id;
     private String itemName;
     private Long quantity;
+    private String unit;
     private String vendorId;
     @Column(name = "dateAndTime")
     private LocalDateTime dateTime;
