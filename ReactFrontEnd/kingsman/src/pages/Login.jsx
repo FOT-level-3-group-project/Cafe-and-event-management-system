@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logInStart, logInSuccess, logInFailure } from '../redux/user/userSlice';
 import axios from 'axios';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 export default function Login() {
@@ -44,17 +44,18 @@ export default function Login() {
             if (response.status === 200) {
                 dispatch(logInSuccess(data));
                 console.log("data stored in redux");
-                console.log(currentUser.position);
+                
 
-                if ((currentUser.position) === 'manager') { //check the user are manager
-                    navigate('/manager')
-                } else if ((currentUser.position) === 'cashier') {
-                    navigate('/cashier')
-                } else if ((currentUser.position) === 'chef') {
-                    navigate('/chef')
-                } else if ((currentUser.position) === 'waiter') {
-                    navigate('/waiter')
-                }
+                    if (currentUser && currentUser.position === 'manager') { // Check the user's position
+                        navigate('/manager');
+                    } else if (currentUser && currentUser.position === 'cashier') {
+                        navigate('/cashier');
+                    } else if (currentUser && currentUser.position === 'chef') {
+                        navigate('/chef');
+                    } else if (currentUser && currentUser.position === 'waiter') {
+                        navigate('/waiter');
+                    }
+        
 
             }
 
