@@ -25,6 +25,8 @@ public class Employee {
     private String uniform_size;
     private String emergency_contact;
 
+    private String profilePicture;
+
     public Integer getId() {
         return id;
     }
@@ -131,6 +133,14 @@ public class Employee {
 
     public String getEmergency_contact() {
         return emergency_contact;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     public void setEmergency_contact(String emergency_contact) {

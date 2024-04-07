@@ -4,6 +4,8 @@ import { Link, useLocation } from 'react-router-dom'
 import { FaMoon ,FaSun} from 'react-icons/fa'
 import {  useSelector, useDispatch } from 'react-redux'
 import { toggleTheme } from '../redux/theme/themeSlice'
+import { logOutSuccess } from '../redux/user/userSlice'
+
 
 export default function Header() {
     const path = useLocation().pathname;
@@ -11,6 +13,16 @@ export default function Header() {
     const { currentUser } = useSelector((state) => state.user);
     const { theme } = useSelector((state) => state.theme);
     console.log(currentUser);
+
+    const handleLogOut = async () => {
+
+        try {
+          dispatch(logOutSuccess());
+        } catch (error) {
+          console.log(error.message);
+        }
+      }
+
     return (
         <Navbar className='border-b-2'>
             <Link to='/' className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'>
@@ -27,7 +39,7 @@ export default function Header() {
                         label={
                             <Avatar
                                 alt='user'
-                                img={currentUser.profilePictrue}
+                                img={currentUser.profilePicture}
                                 rounded
                             />
                         }
@@ -36,13 +48,13 @@ export default function Header() {
                             <span className='block text-sm'>@{currentUser.username}</span>
                             <span className='block text-sm'>{currentUser.first_name} {currentUser.last_name}</span>
                         </Dropdown.Header>
-                        <Link to={'/dashboard?tab=profile'}> 
+                        <Link to={'/'+(currentUser.position)+'?tab=profile'}> 
                             <Dropdown.Item>
                                 Profile
                             </Dropdown.Item>
                         </Link>
                         <Dropdown.Divider />
-                        <Dropdown.Item>
+                        <Dropdown.Item onClick={handleLogOut}> 
                             Log out
                         </Dropdown.Item>
 

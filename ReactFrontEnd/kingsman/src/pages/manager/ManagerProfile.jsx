@@ -6,15 +6,28 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/
 import { app } from '../../firebase';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { updateStart, updateSuccess, updateFailure, logOutSuccess } from '../../redux/user/userSlice';
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 
 export default function ManagerProfile() {
-  const currentUser = useSelector(state => state.user);
+  const { currentUser } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileURL, setImageFileURL] = useState(null);
   const filePickerRef = useRef();
-  const [imageFileUplordingProcess, setImageFileUplordingProcess] = useState(0);
+  const [imageFileUplordingProcess, setImageFileUplordingProcess] = useState(null);
   const [imageFileUplordError, setImageFileUplordError] = useState(null);
+  const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
+  const [imageFileUploading, setImageFileUploading] = useState(false);
+  const [updateUserError, setUpdateUserError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({});
+  const dispatch = useDispatch();
+
+
+
   console.log(imageFileUplordError, imageFileUplordingProcess);
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -43,6 +56,7 @@ export default function ManagerProfile() {
     //     }
     //   }
     // }
+    setImageFileUploading(true);
     setImageFileUplordError(null);
     console.log('uploading image');
     const storage = getStorage(app);
@@ -56,28 +70,86 @@ export default function ManagerProfile() {
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setImageFileUplordingProcess(progress.toFixed(0)
         );
+      },
+      (error) => {
+        setImageFileUplordError("Failed to upload image (File size must be less than 2MB)"
+        );
         setImageFileUplordingProcess(null);
         setImageFile(null);
         setImageFileURL(null);
-      },
-      (error) => {
-        setImageFileUplordError("Failed to upload image (File size must be less than 2MB)");
+        setImageFileUploading(false);
+
 
       },
       () => {
         getDownloadURL(uplordTask.snapshot.ref).then((downloadURL) => {
           setImageFileURL(downloadURL);
+          setFormData({ ...formData, profilePicture: downloadURL });
+          setImageFileUploading(false);
 
         });
       }
     );
   };
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setUpdateUserError(null);
+    setUpdateUserSuccess(null);
+    if (Object.keys(formData).length === 0) {
+      setUpdateUserError('No changes made');
+      return;
+    }
+    if (imageFileUploading) {
+      setUpdateUserError('Please wait while image is uploading');
+      return;
+    }
+    try {
+      dispatch(updateStart());
+      console.log(currentUser.id)
+      console.log(formData);
+      const response = await axios.put(`http://localhost:8080/api/employees/update/${currentUser.id}`, formData);
+
+      console.log(response);
+      const data = response.data;
+      if (response.status !== 200) {
+        dispatch(updateFailure(data.message));
+        setUpdateUserError(data.message);
+      } else {
+        dispatch(updateSuccess(data));
+        setUpdateUserSuccess('Profile updated successfully');
+      }
+    } catch (error) {
+      dispatch(updateFailure(error.message));
+      setUpdateUserError(error.message);
+    }
+
+  };
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleLogOut = async () => {
+
+    try {
+      dispatch(logOutSuccess());
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+
+
+  console.log(formData);
   return (
+
     <div className='max-w-lg mx-auto p-3 w-full'>
       <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
-      <form className='flex flex-col gap-5'>
+      <form className='flex flex-col gap-5' onSubmit={handleSubmit}>
         <input type="file" accept='image/*' onChange={handleImageChange} ref={filePickerRef} hidden />
         <div className='relative w-32 h-32 self-center cursor-pointer shadow-md overflow-hidden rounded-full' onClick={() => filePickerRef.current.click()}>
 
@@ -101,11 +173,10 @@ export default function ManagerProfile() {
 
           )}
           {/* add the profile pic path */}
-          <img src={imageFileURL || currentUser.profilePicture} alt='user' className={`rounded-full w-full h-full object-cover border-8 border-[lightgray] ${
-              imageFileUplordingProcess &&
-              imageFileUplordingProcess < 100 &&
-              'opacity-60'
-            }`}/>
+          <img src={imageFileURL || currentUser.profilePicture} alt='user' defaultValue={currentUser.profilePicture} className={`rounded-full w-full h-full object-cover border-8 border-[lightgray] ${imageFileUplordingProcess &&
+            imageFileUplordingProcess < 100 &&
+            'opacity-60'
+            }`} />
         </div>
         {/* // profile image uplord error alert  */}
         {imageFileUplordError && (
@@ -115,15 +186,42 @@ export default function ManagerProfile() {
         )
         }
 
-        < TextInput type='text' id='username' placeholder='username' defaultValue={currentUser.username} />
-        <TextInput type='email' id='email' placeholder='email' defaultValue={currentUser.email} />
-        <TextInput type='password' id='password' placeholder='password' />
+        < TextInput type='text' id='first_name' placeholder='First Name' defaultValue={currentUser.first_name} onChange={handleChange} />
+        <TextInput type='text' id='last_name' placeholder='Last Name' defaultValue={currentUser.last_name} onChange={handleChange} />
+        <TextInput type='email' id='email' placeholder='email' defaultValue={currentUser.email} onChange={handleChange} />
+        <TextInput type={showPassword ? 'text' : 'password'} id='password' placeholder='password' defaultValue={currentUser.password} onChange={handleChange} />
+
+        {/* Button to toggle password visibility */}
+        <div className='flex justify-between'>
+          <span></span>
+          <Link
+            type='button'
+            onClick={togglePasswordVisibility}>
+            {showPassword ? 'Hide Password' : 'Show Password'}
+          </Link>
+        </div>
         <Button type='submit' gradientDuoTone='greenToBlue' outline >Update</Button>
       </form>
+
+
       <div className='text-red-500 flex justify-between mt-5'>
         <span></span>
-        <span className='cursor-pointer'> Log out</span>
+        <span onClick={handleLogOut} className='cursor-pointer'> Log out</span>
       </div>
+
+      {/* user update success alert  */}
+      {updateUserSuccess && (
+        <Alert color='success' className='mt-5'>
+          {updateUserSuccess}
+        </Alert>
+      )}
+
+      {/* update user error alert */}
+      {updateUserError && (
+        <Alert color='failure' className='mt-5'>
+          {updateUserError}
+        </Alert>
+      )}
     </div>
-  )
+  );
 }

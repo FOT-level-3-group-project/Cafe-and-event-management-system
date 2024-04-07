@@ -10,6 +10,8 @@ import Cashier from './pages/cashier/Cashier'
 import Chef from './pages/chef/Chef'
 import Manager from './pages/manager/Manager'
 import Waiter from './pages/waiter/Waiter'
+import OnlyManagerPrivateRoute from './components/OnlyManagerPrivateRoute'
+//import { Link } from 'react-router-dom'
 
 export default function App() {
   return (
@@ -17,13 +19,19 @@ export default function App() {
     <Header/>
       <Routes>
         <Route path="/" element={<Home/>} />
+
         <Route element={<PrivateRoute/>}>
           <Route path="/cashier" element={<Cashier/>}/>
           <Route path="/chef" element={<Chef/>}/>
-          <Route path="/manager" element={<Manager/>}/>
+          
           <Route path="/waiter" element={<Waiter/>}/>
           <Route path="/dashboard" element={<Dashboard/>} />
         </Route>
+
+        <Route element={<OnlyManagerPrivateRoute/>}>
+        <Route path="/manager" element={<Manager/>}/>
+        </Route>
+
         <Route path="/about" element={<About/>} />
         <Route path="/login" element={<Login/>} />
 
