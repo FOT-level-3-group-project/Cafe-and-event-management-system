@@ -15,6 +15,7 @@ export default function ManagerProfile() {
   const filePickerRef = useRef();
   const [imageFileUplordingProcess, setImageFileUplordingProcess] = useState(0);
   const [imageFileUplordError, setImageFileUplordError] = useState(null);
+  const [imageFileUploading, setImageFileUploading] = useState(false);
   console.log(imageFileUplordError, imageFileUplordingProcess);
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -43,6 +44,7 @@ export default function ManagerProfile() {
     //     }
     //   }
     // }
+    setImageFileUploading(true);
     setImageFileUplordError(null);
     console.log('uploading image');
     const storage = getStorage(app);
@@ -61,7 +63,12 @@ export default function ManagerProfile() {
         setImageFileURL(null);
       },
       (error) => {
-        setImageFileUplordError("Failed to upload image (File size must be less than 2MB)");
+        setImageFileUplordError("Failed to upload image (File size must be less than 2MB)"
+        );
+        setImageFileUplordingProcess(null);
+        setImageFile(null);
+        setImageFileURL(null);
+        setImageFileUploading(false);
 
       },
       () => {
