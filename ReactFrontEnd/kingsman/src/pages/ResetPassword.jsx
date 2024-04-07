@@ -48,7 +48,7 @@ function ResetPassword(){
             setShowOtpForm(true);
         } catch (error) {
             setError('Error:', error);
-            dispatch(setResetPasswordError(error));
+            dispatch(resetPasswordFailure(error));
         }
     };
 
@@ -63,10 +63,10 @@ function ResetPassword(){
             if (response.data.includes("verified successfully")) {
                 setShowPasswordForm(true);
             } else {
-                dispatch(setResetPasswordError('Invalid OTP, please try again.'));
+                dispatch(resetPasswordFailure('Invalid OTP, please try again.'));
             }
         } catch (error) {
-            dispatch(setResetPasswordError(error));
+            dispatch(resetPasswordFailure(error));
         }
     };
 
@@ -94,7 +94,7 @@ function ResetPassword(){
                 alert('Password reset successful!');
                 navigate('/login');
             } else {
-                dispatch(setResetPasswordError('Password reset failed. Please try again.'));
+                dispatch(resetPasswordFailure('Password reset failed. Please try again.'));
             }
         } catch (error) {
             alert('Error:', error);
