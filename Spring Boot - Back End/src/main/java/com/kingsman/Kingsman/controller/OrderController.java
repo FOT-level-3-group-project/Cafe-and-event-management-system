@@ -1,33 +1,58 @@
 package com.kingsman.Kingsman.controller;
 
-import com.kingsman.Kingsman.dto.OrderRequest;
-import com.kingsman.Kingsman.model.Customer;
-import com.kingsman.Kingsman.model.FoodItem;
-import com.kingsman.Kingsman.model.Order;
+import com.kingsman.Kingsman.dto.OrderDTO;
 import com.kingsman.Kingsman.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@CrossOrigin("http://localhost:3000/")
 @RequestMapping("/api/orders")
 public class OrderController {
 
+    private final OrderService orderService;
+
     @Autowired
-    private OrderService orderService;
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
-    @PostMapping("/create") // Create Order
-    public ResponseEntity<String> createOrder(@RequestBody OrderRequest orderRequest) {
-        Order order = new Order();
-        // Map data from OrderRequest to Order entity
-        order.setCustomer(new Customer(orderRequest.getCustomerId())); // Assuming you have a Customer entity
-        order.setFoodItem(new FoodItem(orderRequest.getFoodItemId())); // Assuming you have a FoodItem entity
-        order.setQuantity(orderRequest.getQuantity());
-        order.setSpecialNote(orderRequest.getSpecialNote());
+    @GetMapping
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
+        return ResponseEntity.ok(orderService.getAllOrders());
+    }
 
-         orderService.saveOrder(order);
-        return ResponseEntity.ok("Order Successfully Created");
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable("id") Long orderId) {
+        return ResponseEntity.ok(orderService.getOrderById(orderId));
+    }
+
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<List<OrderDTO>> getOrdersByCustomerId(@PathVariable("customerId") Long customerId) {
+        return ResponseEntity.ok(orderService.getOrdersByCustomerId(customerId));
+    }
+
+    @GetMapping("/employee/{employeeId}")
+    public ResponseEntity<List<OrderDTO>> getOrdersByEmployeeId(@PathVariable("employeeId") Long employeeId) {
+        return ResponseEntity.ok(orderService.getOrdersByEmployeeId(employeeId));
+    }
+
+    @PostMapping
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
+        return new ResponseEntity<>(orderService.createOrder(orderDTO), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<OrderDTO> updateOrder(@PathVariable("id") Long orderId, @RequestBody OrderDTO orderDTO) {
+        return ResponseEntity.ok(orderService.updateOrder(orderId, orderDTO));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable("id") Long orderId) {
+        orderService.deleteOrder(orderId);
+        return ResponseEntity.noContent().build();
     }
 }
