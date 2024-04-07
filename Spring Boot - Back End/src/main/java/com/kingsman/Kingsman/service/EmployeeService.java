@@ -16,8 +16,8 @@ public class EmployeeService {
         if(existingEmployee != null){
             existingEmployee.setFirst_name(updateEmployee.getFirst_name());
             existingEmployee.setEmail(updateEmployee.getEmail());
-            existingEmployee.setLast_name(updateEmployee.getFirst_name());
-            existingEmployee.setAddress(updateEmployee.getProfilePicture());
+            existingEmployee.setLast_name(updateEmployee.getLast_name());
+            existingEmployee.setProfilePicture(updateEmployee.getProfilePicture());
             existingEmployee.setPassword(updateEmployee.getPassword());
 
             return employeeRepository.save(existingEmployee);

@@ -4,14 +4,15 @@ import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {logInStart, logInSuccess, logInFailure} from '../redux/user/userSlice';
+import { logInStart, logInSuccess, logInFailure } from '../redux/user/userSlice';
 import axios from 'axios';
 
 
 export default function Login() {
     const [formData, setFormData] = useState({});
-    const {loarding, error: errorMessage} = useSelector(state => state.user);
+    const { loarding, error: errorMessage } = useSelector(state => state.user);
     const { currentUser } = useSelector((state) => state.user);
+    const [showPassword, setShowPassword] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -20,44 +21,47 @@ export default function Login() {
     };
     console.log(formData);
 
-    const handleSubmit = async(e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData.username || !formData.password) {
             return dispatch(logInFailure("please fill the all field")); //setErrorMessage is a check the all fields are filled
         }
         console.log(formData);
-        try{
+        try {
             dispatch(logInStart());
             const response = await axios.post('http://localhost:8080/api/user/login', formData);
             console.log(response);
-            
+
             const data = response.data;
 
-            if(data.success == false){
+            if (data.success == false) {
                 dispatch(logInFailure(data.message));
                 navigate('/');
             }
 
-            if(response.status === 200){
+            if (response.status === 200) {
                 dispatch(logInSuccess(data));
                 console.log("data stored in redux");
                 console.log(currentUser.position);
 
-                if((currentUser.position) === 'manager'){ //check the user are manager
+                if ((currentUser.position) === 'manager') { //check the user are manager
                     navigate('/manager')
-                }else if((currentUser.position)=== 'cashier'){
+                } else if ((currentUser.position) === 'cashier') {
                     navigate('/cashier')
-                }else if((currentUser.position)=== 'chef'){
+                } else if ((currentUser.position) === 'chef') {
                     navigate('/chef')
-                }else if((currentUser.position)=== 'waiter'){
+                } else if ((currentUser.position) === 'waiter') {
                     navigate('/waiter')
                 }
 
             }
 
-        }catch(error){
+        } catch (error) {
             dispatch(logInFailure(error.message));
         }
+    };
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
     };
 
     return (
@@ -80,6 +84,17 @@ export default function Login() {
                         <div>
                             <Label value='Password' />
                             <TextInput type='password' placeholder='Password' id='password' onChange={handleChange} />
+
+                            {/* password visibility */}
+                            <div className='flex justify-between'>
+                                <span></span>
+                                <Link
+                                    type='button'
+                                    onClick={togglePasswordVisibility}>
+                                    {showPassword ? 'Hide Password' : 'Show Password'}
+                                </Link>
+                            </div>
+
                         </div>
                         <Button gradientDuoTone='greenToBlue' type='submit' className='mt-4' disabled={loarding}>
                             {
