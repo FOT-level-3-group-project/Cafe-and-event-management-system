@@ -1,4 +1,3 @@
-
 package com.kingsman.Kingsman.service;
 
 import com.kingsman.Kingsman.dto.CustomerDTO;
@@ -21,17 +20,19 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public List<CustomerDTO> findAllWithEmployeeName() {
+    public List<CustomerDTO> findAllWithEmployeeDetails() {
         return customerRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public CustomerDTO findByEmail(String email) {
+    public List<CustomerDTO> findByEmail(String email) {
         return customerRepository.findByCusEmail(email)
+                .stream()
                 .map(this::convertToDTO)
-                .orElse(null);
+                .collect(Collectors.toList());
     }
+
 
     public CustomerDTO findByMobile(String mobile) {
         return customerRepository.findByCusMobile(mobile)
@@ -46,21 +47,16 @@ public class CustomerService {
     }
 
     public CustomerDTO create(CustomerDTO customerDTO) {
-        if (customerRepository.existsByCusMobile(customerDTO.getCusMobile())) {
-            throw new CustomerDuplicateMobileNumberException("Mobile number already exists: " + customerDTO.getCusMobile());
-        }
+        validateCustomer(customerDTO);
         Customer customer = convertToEntity(customerDTO);
-        customer.setAddedDate(LocalDateTime.now());
+        LocalDateTime now = LocalDateTime.now();
+        customer.setAddedDate(now);
+        customer.setUpdatedDate(now);
         return convertToDTO(customerRepository.save(customer));
     }
 
     public CustomerDTO update(Long id, CustomerDTO customerDTO) {
-        String mobileNumber = customerDTO.getCusMobile();
-        Optional<Customer> existingCustomerWithMobile = customerRepository.findByCusMobile(mobileNumber);
-        if (existingCustomerWithMobile.isPresent() && !existingCustomerWithMobile.get().getCusId().equals(id)) {
-            throw new CustomerDuplicateMobileNumberException("Mobile number already exists: " + mobileNumber);
-        }
-
+        validateCustomer(customerDTO);
         Optional<Customer> optionalCustomer = customerRepository.findById(id);
         if (optionalCustomer.isPresent()) {
             Customer existingCustomer = optionalCustomer.get();
@@ -76,10 +72,36 @@ public class CustomerService {
         customerRepository.deleteById(id);
     }
 
+    private void validateCustomer(CustomerDTO customerDTO) {
+        String email = customerDTO.getCusEmail();
+        String mobileNumber = customerDTO.getCusMobile();
+
+        if (!isValidEmail(email)) {
+            throw new IllegalArgumentException("Invalid email format: " + email);
+        }
+
+        if (!isValidMobileNumber(mobileNumber)) {
+            throw new IllegalArgumentException("Invalid mobile number: " + mobileNumber);
+        }
+
+        if (customerRepository.existsByCusMobile(mobileNumber)) {
+            throw new CustomerDuplicateMobileNumberException("Mobile number already exists: " + mobileNumber);
+        }
+    }
+
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
+
+    private boolean isValidMobileNumber(String mobileNumber) {
+        return mobileNumber.length() == 10 && mobileNumber.matches("\\d+");
+    }
+
     private CustomerDTO convertToDTO(Customer customer) {
         CustomerDTO customerDTO = new CustomerDTO();
         BeanUtils.copyProperties(customer, customerDTO);
-        customerDTO.setEmployee_id((int) customer.getEmployee().getId().longValue());
+        customerDTO.setEmployeeId(customer.getEmployee().getId());
         return customerDTO;
     }
 
@@ -88,7 +110,7 @@ public class CustomerService {
         BeanUtils.copyProperties(customerDTO, customer);
 
         Employee employee = new Employee();
-        employee.setId(customerDTO.getEmployee_id());
+        employee.setId(customerDTO.getEmployeeId());
         customer.setEmployee(employee);
 
         return customer;

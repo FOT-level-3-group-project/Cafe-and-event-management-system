@@ -20,16 +20,18 @@ public class CustomerController {
 
     @GetMapping
     public ResponseEntity<List<CustomerDTO>> getAllWithEmployeeName() {
-        List<CustomerDTO> customers = customerService.findAllWithEmployeeName();
+        List<CustomerDTO> customers = customerService.findAllWithEmployeeDetails();
         return ResponseEntity.ok(customers);
     }
 
     @GetMapping("/email/{email}")
     public ResponseEntity<?> getByEmail(@PathVariable String email) {
-        CustomerDTO customer = customerService.findByEmail(email);
-        return customer != null ?
-                ResponseEntity.ok(customer) :
-                ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found with the given email: " + email);
+        List<CustomerDTO> customers = customerService.findByEmail(email);
+        if (!customers.isEmpty()) {
+            return ResponseEntity.ok(customers);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No customer found with the given email: " + email);
+        }
     }
 
     @GetMapping("/mobile/{mobile}")

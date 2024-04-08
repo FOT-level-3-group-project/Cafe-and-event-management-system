@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,6 +22,7 @@ public class Customer {
 
     @Column(unique = true)
     @NotNull(message = "Mobile number is required")
+    @Size(min = 10, max = 10, message = "Mobile number must be 10 digits")
     private String cusMobile;
 
     private String cusEmail;
