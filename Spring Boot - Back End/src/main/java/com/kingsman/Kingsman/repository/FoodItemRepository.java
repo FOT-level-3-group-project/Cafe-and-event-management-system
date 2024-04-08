@@ -6,9 +6,10 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface FoodItemRepository extends JpaRepository<FoodItem,Long> {
-    @Query("select distinct f.foodCategory from FoodItem f")
-    List<String>findAllCategories();
+public interface FoodItemRepository extends JpaRepository<FoodItem, Long> {
 
-    List<FoodItem>findByfoodCategory(String foodCategory);
+    @Query("select distinct f.foodCategory from FoodItem f")
+    List<String> findAllCategories();
+
+    List<FoodItem> findByFoodCategory(String foodCategory);
 }
