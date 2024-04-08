@@ -1,63 +1,71 @@
-import React from 'react'
-import logo from '../image/logo.png'
-import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react'
+import React from 'react';
+import logo from '../image/logo.png';
+import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {logInStart, logInSuccess, logInFailure} from '../redux/user/userSlice';
+import { logInStart, logInSuccess, logInFailure } from '../redux/user/userSlice';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 
 export default function Login() {
     const [formData, setFormData] = useState({});
-    const {loarding, error: errorMessage} = useSelector(state => state.user);
+    const { loading, error: errorMessage } = useSelector(state => state.user);
     const { currentUser } = useSelector((state) => state.user);
+    const [showPassword, setShowPassword] = useState(false);
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.id]: e.target.value.trim() })
     };
+
     console.log(formData);
 
-    const handleSubmit = async(e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData.username || !formData.password) {
             return dispatch(logInFailure("please fill the all field")); //setErrorMessage is a check the all fields are filled
         }
+
         console.log(formData);
-        try{
+
+        try {
             dispatch(logInStart());
             const response = await axios.post('http://localhost:8080/api/user/login', formData);
             console.log(response);
-            
+
             const data = response.data;
 
-            if(data.success == false){
-                dispatch(logInFailure(data.message));
+            if (data.success == false) {
+                dispatch(logInFailure(data.message)); //error message
                 navigate('/');
             }
 
-            if(response.status === 200){
+            if (response.status === 200) {
                 dispatch(logInSuccess(data));
                 console.log("data stored in redux");
-                console.log(currentUser.position);
-
-                if((currentUser.position) === 'manager'){ //check the user are manager
-                    navigate('/manager')
-                }else if((currentUser.position)=== 'cashier'){
-                    navigate('/cashier')
-                }else if((currentUser.position)=== 'chef'){
-                    navigate('/chef')
-                }else if((currentUser.position)=== 'waiter'){
-                    navigate('/waiter')
-                }
-
+                
+                    if (currentUser && currentUser.position === 'manager') { // Check the user's position
+                        navigate('/manager');
+                    } else if (currentUser && currentUser.position === 'cashier') {
+                        navigate('/cashier');
+                    } else if (currentUser && currentUser.position === 'chef') {
+                        navigate('/chef');
+                    } else if (currentUser && currentUser.position === 'waiter') {
+                        navigate('/waiter');
+                    }
             }
-
-        }catch(error){
-            dispatch(logInFailure(error.message));
+        } catch (error) {
+            dispatch(logInFailure("Invalid username or password"));
+            setFormData({});
         }
+    };
+    
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
     };
 
     return (
@@ -74,23 +82,34 @@ export default function Login() {
                     <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
                         <div>
                             <Label value='Username' />
-                            <TextInput type='text' placeholder='Username' id='username' onChange={handleChange} />
-
+                            <TextInput type='text' placeholder='Username' id='username' onChange={handleChange} value={formData.username || ''} />
                         </div>
+
                         <div>
                             <Label value='Password' />
-                            <TextInput type='password' placeholder='Password' id='password' onChange={handleChange} />
+                            <TextInput type={showPassword ? 'text' : 'password'} placeholder='Password' id='password' onChange={handleChange} value={formData.password || ''} />
+                            {/* password visibility */}
+                            <div className='flex justify-between'>
+                                <span></span>
+                                <Link
+                                    type='button'
+                                    onClick={togglePasswordVisibility}>
+                                    {showPassword ? 'Hide Password' : 'Show Password'}
+                                </Link>
+                            </div>
                         </div>
-                        <Button gradientDuoTone='greenToBlue' type='submit' className='mt-4' disabled={loarding}>
+                        
+                        <Button gradientDuoTone='greenToBlue' type='submit' className='mt-4' disabled={loading}>
                             {
-                                loarding ? (
+                                loading ? (
                                     <>
                                         <Spinner size='sm' />
-                                        <span className='pl-3'> Loarding ...</span>
+                                        <span className='pl-3'> Loading ...</span>
                                     </>
                                 ) : 'Log in'
                             }
                         </Button>
+                        <Link to='/ResetPassword' className="resetPassword"> Forgot Password?</Link>
 
                     </form>
                     {

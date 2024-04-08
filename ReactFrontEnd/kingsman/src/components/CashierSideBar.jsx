@@ -21,18 +21,20 @@ export default function CashierSideBar() {
             <Sidebar.Items>
                 <Sidebar.ItemGroup>
                     <Link to='/cashier?tab=attendance'>
-                        <Sidebar.Item active={tab === 'attendance'} icon={HiUser} >
+                        <Sidebar.Item active={tab === 'attendance'} icon={HiUser} as ='div'>
                             Attendance
                         </Sidebar.Item>
                     </Link>
                     <Link to='/cashier?tab=profile'>
-                        <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"User"} labelColor='dark'>
+                        <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"User"} labelColor='dark' as='div'>
                             Profile
                         </Sidebar.Item>
                     </Link>
+
                     <Sidebar.Item icon={HiArrowSmRight} className='cursor-pointer' >
                         Log Out
                     </Sidebar.Item>
+
 
                 </Sidebar.ItemGroup>
             </Sidebar.Items>

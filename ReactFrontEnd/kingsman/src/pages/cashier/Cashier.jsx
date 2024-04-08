@@ -27,6 +27,9 @@ export default function Cashier() {
       {tab === 'attendance' && <ShowAttendance />}
 
       {tab === 'profile' && <CashierProfile />}
+
+      
+
     </div >
   )
 }

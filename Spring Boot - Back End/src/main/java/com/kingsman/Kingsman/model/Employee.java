@@ -24,6 +24,8 @@ public class Employee {
     private String address;
     private String uniform_size;
     private String emergency_contact;
+    private String profilePicture;
+    private String otp;
 
     public Integer getId() {
         return id;
@@ -133,7 +135,23 @@ public class Employee {
         return emergency_contact;
     }
 
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
     public void setEmergency_contact(String emergency_contact) {
         this.emergency_contact = emergency_contact;
+    }
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
     }
 }
