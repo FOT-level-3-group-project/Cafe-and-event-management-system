@@ -40,6 +40,17 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrdersByEmployeeId(employeeId));
     }
 
+    @GetMapping("/status/{orderStatus}")
+    public ResponseEntity<List<OrderDTO>> getOrdersByOrderStatus(@PathVariable("orderStatus") String orderStatus) {
+        return ResponseEntity.ok(orderService.getOrdersByOrderStatus(orderStatus));
+    }
+
+    @GetMapping("/payment-status/{paymentStatus}")
+    public ResponseEntity<List<OrderDTO>> getOrdersByPaymentStatus(@PathVariable("paymentStatus") boolean paymentStatus) {
+        return ResponseEntity.ok(orderService.getOrdersByPaymentStatus(paymentStatus));
+    }
+
+
     @PostMapping
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
         return new ResponseEntity<>(orderService.createOrder(orderDTO), HttpStatus.CREATED);

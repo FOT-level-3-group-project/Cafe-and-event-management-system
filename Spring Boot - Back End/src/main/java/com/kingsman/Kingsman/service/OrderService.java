@@ -38,6 +38,17 @@ public class OrderService {
         return convertToDTO(order);
     }
 
+    public List<OrderDTO> getOrdersByOrderStatus(String orderStatus) {
+        List<Order> orders = orderRepository.findByOrderStatus(orderStatus);
+        return mapOrderListToDTOList(orders);
+    }
+
+    public List<OrderDTO> getOrdersByPaymentStatus(boolean paymentStatus) {
+        List<Order> orders = orderRepository.findByPaymentStatus(paymentStatus);
+        return mapOrderListToDTOList(orders);
+    }
+
+
     public OrderDTO createOrder(OrderDTO orderDTO) {
         Order order = convertToEntity(orderDTO);
         setEmployeeForOrder(order, orderDTO.getEmployeeId());

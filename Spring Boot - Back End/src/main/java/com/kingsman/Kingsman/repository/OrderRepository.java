@@ -18,4 +18,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.orderItems")
     List<Order> findAllWithOrderItems();
+
+    List<Order> findByOrderStatus(String orderStatus);
+
+    List<Order> findByPaymentStatus(boolean paymentStatus);
 }
