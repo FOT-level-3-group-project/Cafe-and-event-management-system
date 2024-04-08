@@ -48,36 +48,11 @@ public class OrderService {
     }
 
     public OrderDTO updateOrder(Long orderId, OrderDTO orderDTO) {
-        // Check if the order exists
         Order existingOrder = getOrderIfExists(orderId);
-
-        // Update the fields of the existing order with values from the DTO
-        existingOrder.setCustomerId(orderDTO.getCustomerId());
-        existingOrder.setOrderItems(createOrderItems(orderDTO.getOrderItems(), existingOrder));
-        existingOrder.setOrderDateTime(orderDTO.getOrderDateTime());
-        existingOrder.setOrderStatus(orderDTO.getOrderStatus());
-        existingOrder.setTableNumber(orderDTO.getTableNumber());
-        existingOrder.setSubTotal(orderDTO.getSubTotal());
-        existingOrder.setDiscountValue(orderDTO.getDiscountValue());
-        existingOrder.setDiscountPercentage(orderDTO.getDiscountPercentage());
-        existingOrder.setTotalAfterDiscount(orderDTO.getTotalAfterDiscount());
-        existingOrder.setPaymentMethod(orderDTO.getPaymentMethod());
-        existingOrder.setPaymentStatus(orderDTO.isPaymentStatus());
-
-        // Set updated date
-        existingOrder.setUpdatedDate(new Date());
-
-        // Save the updated order
+        updateOrderWithDTO(existingOrder, orderDTO);
         Order updatedOrder = orderRepository.save(existingOrder);
-
-        // Convert the updated order to DTO and return
         return convertToDTO(updatedOrder);
     }
-
-
-
-
-
 
     public void deleteOrder(Long orderId) {
         if (!orderRepository.existsById(orderId)) {
@@ -94,6 +69,12 @@ public class OrderService {
     public List<OrderDTO> getOrdersByEmployeeId(Long employeeId) {
         List<Order> orders = orderRepository.findByEmployeeId(employeeId);
         return mapOrderListToDTOList(orders);
+    }
+
+
+    private void updateOrderWithDTO(Order existingOrder, OrderDTO orderDTO) {
+        BeanUtils.copyProperties(orderDTO, existingOrder);
+        existingOrder.setUpdatedDate(new Date());
     }
 
     private List<OrderDTO> mapOrderListToDTOList(List<Order> orders) {
@@ -165,4 +146,5 @@ public class OrderService {
         orderItem.setQuantity(itemDTO.getQuantity());
         return orderItem;
     }
+
 }
