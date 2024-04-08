@@ -107,7 +107,7 @@ public class OrderService {
 
     private OrderDTO convertToDTO(Order order) {
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.setEmployeeId(order.getEmployee().getId().longValue()); // This line is causing the NullPointerException
+        orderDTO.setEmployeeId(order.getEmployee().getId().longValue());
         BeanUtils.copyProperties(order, orderDTO);
 
         // Map order items
