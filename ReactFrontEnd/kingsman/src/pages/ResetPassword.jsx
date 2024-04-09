@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import logo from '../image/logo.png';
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
@@ -125,12 +124,6 @@ function ResetPassword(){
         <div className='min-h-screen mt-20'>
             <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center'>
 
-                {/* Left side */}
-                {/* <div className='flex-1'>
-                    <img src={logo} alt='logo' className='w-80 h-80' />
-                </div> */}
-
-                {/* Right side */}
                 <div className='flex-1 flex justify-center '>
                     
                     {/* Username Form */}
