@@ -19,9 +19,8 @@ public class PasswordResetService {
 
     @Autowired
     private EmailService emailService;
-    
-    private Map<String, String> otpMap = new HashMap<>();
 
+    private Map<String, String> otpMap = new HashMap<>();
 
     // Generates a random OTP
     private String generateOTP() {

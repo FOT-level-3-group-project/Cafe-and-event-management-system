@@ -48,9 +48,7 @@ public class PasswordResetController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
     }
-
-
-
+    
     @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestBody PasswordResetRequest passwordResetRequest) {
         try {
