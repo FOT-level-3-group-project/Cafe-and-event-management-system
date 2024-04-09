@@ -33,7 +33,12 @@ public class PasswordResetController {
     @PostMapping("/verify-otp")
     public ResponseEntity<String> verifyOTP(@RequestBody VerifyOTP verifyOTP) {
         try {
-            boolean success = passwordResetService.verifyOTP(verifyOTP.getUsername(), verifyOTP.getOtp());
+            // Retrieve the entered OTP from the request
+            String enteredOTP = verifyOTP.getOtp();
+
+            // Verify the entered OTP against the OTP stored in the map
+            boolean success = passwordResetService.verifyOTP(verifyOTP.getUsername(), enteredOTP);
+
             if (success) {
                 return ResponseEntity.ok("OTP verified successfully.");
             } else {
@@ -43,6 +48,7 @@ public class PasswordResetController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
     }
+
 
 
     @PostMapping("/reset-password")

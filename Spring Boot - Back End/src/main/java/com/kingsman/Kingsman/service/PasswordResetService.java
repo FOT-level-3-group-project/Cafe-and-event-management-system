@@ -19,18 +19,16 @@ public class PasswordResetService {
 
     @Autowired
     private EmailService emailService;
-
-    @Autowired
-    private PasswordResetRequest passwordResetRequest;
-
+    
     private Map<String, String> otpMap = new HashMap<>();
 
 
-    // This method generates a random OTP
+    // Generates a random OTP
     private String generateOTP() {
         // Generate a random 4-digit OTP
         Random random = new Random();
         int otp = 1000 + random.nextInt(9999);
+        System.out.println("Generated OTP: " + otp);
         return String.valueOf(otp);
     }
 
@@ -43,37 +41,33 @@ public class PasswordResetService {
         }
 
         // Generate OTP
-        String otp = generateOTP();
+        String generatedOTP = generateOTP();
 
-        // Save OTP to the employee record (you may need to modify your Employee entity to include an OTP field)
-        employee.setOtp(otp);
-        passwordResetRepository.save(employee);
+        // Store the OTP in the map with the username as the key
+        otpMap.put(username, generatedOTP);
 
         // Send OTP to the user's email address
         String email = employee.getEmail();
         String subject = "Password Reset OTP";
-        String message = "Your OTP for password reset is: " + otp;
+        String message = "Your OTP for password reset is: " + generatedOTP;
         emailService.sendEmail(email, subject, message);
 
         return true; // OTP sent successfully
     }
-    public boolean isUserExists(String username, String email) {
-        Employee employee = passwordResetRepository.findByUsernameAndEmail(username, email);
-        System.out.println(employee);
-        return employee != null;
-    }
 
-    // Add a new method to verify the OTP
     public boolean verifyOTP(String username, String enteredOTP) {
-        // Retrieve the employee by email
-        Employee employee = passwordResetRepository.findByUsername(username);
-        if (employee == null) {
-            return false; // User not found
+        if (enteredOTP == null) {
+            return false; // Entered OTP is null
         }
 
-        // Check if the entered OTP matches the OTP stored in the database
-        String storedOTP = employee.getOtp();
-        return storedOTP != null && storedOTP.equals(enteredOTP);
+        // Retrieve the stored OTP for the given username
+        String storedOTP = otpMap.get(username);
+        if (storedOTP == null) {
+            return false; // No OTP found for the given username
+        }
+
+        // Compare the entered OTP with the stored OTP
+        return storedOTP.equals(enteredOTP);
     }
 
     @Transactional
