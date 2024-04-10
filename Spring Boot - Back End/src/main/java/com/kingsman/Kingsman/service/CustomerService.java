@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -47,7 +48,7 @@ public class CustomerService {
     }
 
     public CustomerDTO create(CustomerDTO customerDTO) {
-        validateCustomer(customerDTO);
+        validateCustomer(customerDTO,  "Create");
         Customer customer = convertToEntity(customerDTO);
         LocalDateTime now = LocalDateTime.now();
         customer.setAddedDate(now);
@@ -56,7 +57,7 @@ public class CustomerService {
     }
 
     public CustomerDTO update(Long id, CustomerDTO customerDTO) {
-        validateCustomer(customerDTO);
+        validateCustomer(customerDTO, "Update");
         Optional<Customer> optionalCustomer = customerRepository.findById(id);
         if (optionalCustomer.isPresent()) {
             Customer existingCustomer = optionalCustomer.get();
@@ -72,11 +73,12 @@ public class CustomerService {
         customerRepository.deleteById(id);
     }
 
-    private void validateCustomer(CustomerDTO customerDTO) {
+    private void validateCustomer(CustomerDTO customerDTO, String processType) {
         String email = customerDTO.getCusEmail();
         String mobileNumber = customerDTO.getCusMobile();
+        Long customerId = customerDTO.getCusId();
 
-        if (!isValidEmail(email)) {
+        if (email != null && !email.isEmpty() && !isValidEmail(email)) {
             throw new IllegalArgumentException("Invalid email format: " + email);
         }
 
@@ -84,7 +86,11 @@ public class CustomerService {
             throw new IllegalArgumentException("Invalid mobile number: " + mobileNumber);
         }
 
-        if (customerRepository.existsByCusMobile(mobileNumber)) {
+        if (customerRepository.existsByCusMobile(mobileNumber) && Objects.equals(processType, "Create")) {
+            throw new CustomerDuplicateMobileNumberException("Mobile number already exists: " + mobileNumber);
+        }
+
+        if (customerRepository.existsByCusMobileAndCusIdNot(mobileNumber, customerId) && Objects.equals(processType, "Update")){
             throw new CustomerDuplicateMobileNumberException("Mobile number already exists: " + mobileNumber);
         }
     }

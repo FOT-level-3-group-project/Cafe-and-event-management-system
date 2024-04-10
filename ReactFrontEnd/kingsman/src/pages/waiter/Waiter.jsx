@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import WaiterSideBar from '../../components/WaiterSideBar'
 import TakeOrder from './order/TakeOrder';
+import { Toaster } from 'react-hot-toast';
 
 export default function Waiter() {
 
@@ -19,6 +20,7 @@ export default function Waiter() {
   return (
 
     <div>
+       <Toaster position="top-right" />
         <div className='min-h-screen flex flex-col md:flex-row'>
             <div className='md:w-56'>
                 {/* sidebar */}
