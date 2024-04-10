@@ -1,19 +1,25 @@
-import React, { Fragment } from 'react'
-import { Button, Pagination, Datepicker, Dropdown } from 'flowbite-react'
+import React, { Fragment, useRef } from 'react'
+import { Button, Pagination, Datepicker, Dropdown} from 'flowbite-react'
 import { Table } from "flowbite-react";
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import EditInventoryItem from './EditInventoryItem';
 
 export default function AllinventoryItem() {
   const [inventoryData, setInventoryData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6; // Number of items to display per page
+  const [selectedDate, setSelectedDate] = useState(null);
+  // const datePickerRef = useRef(null);
+  const [editItem, setEditItem] = useState(null); // State to store item being edited
+  const [isEditPopupOpen, setIsEditPopupOpen] = useState(false); // State to manage visibility of edit popup
 
+  useEffect(() => { fetchData(); }, []);
 
   const openAddInventoryPopup = () => { };
 
-  useEffect(() => {
+  
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -26,8 +32,28 @@ export default function AllinventoryItem() {
       }
     };
 
-    fetchData();
-  }, []);
+  
+
+  // Handle edit button click
+  const handleEditClick = (itemId) => {
+    setEditItem(itemId);
+    setIsEditPopupOpen(true);
+  };
+
+  // Function to update item details
+  const handleEditSubmit = (updatedItem) => {
+    fetchData(); // Reload items after editing
+    // Implement your logic to update item details
+    console.log("Updated item:", updatedItem);
+
+  };
+
+  const cancelEdit = () => {
+    setIsEditPopupOpen(false);
+    setEditItem(null);
+  };
+
+
 
 
   // Calculate the index range of items to display based on the current page
@@ -41,6 +67,14 @@ export default function AllinventoryItem() {
   const onPageChange = (page) => {
     setCurrentPage(page);
   };
+  
+  // Function to handle the selection of the date
+  const handleDateSelect = (date) => {
+    setSelectedDate(date);
+    console.log('Selected date:', selectedDate);
+  };
+
+
 
   return (
     <Fragment>
@@ -99,11 +133,10 @@ export default function AllinventoryItem() {
                         <Table.Cell>{new Date(item.lastModified).toLocaleString()}</Table.Cell>
                         <Table.Cell>
                           <Dropdown label="Action" inline>
-                            <Dropdown.Item>Edit</Dropdown.Item>
+                            <Dropdown.Item onClick={() => handleEditClick(item.id)} >Edit</Dropdown.Item>
                             <Dropdown.Item>Delete</Dropdown.Item>
-
                           </Dropdown>
-                        </Table.Cell> {/* Replace "Action" with appropriate action buttons */}
+                        </Table.Cell>
                       </Table.Row>
                     ))
                   )}
@@ -124,16 +157,24 @@ export default function AllinventoryItem() {
 
             {/* date picker */}
             <div className='mt-1 border-t-2'>
-              <Datepicker inline className='mt-7' />
+              <Datepicker inline onSelect={handleDateSelect} className='mt-7' />
             </div>
 
             <div className=''>
-              <Button color="success" className='mt-6'>Submit</Button>
+              <Button color="success" className='mt-6' >Submit</Button>
             </div>
           </div>
 
         </div>
       </section>
+
+      {isEditPopupOpen && (
+        <EditInventoryItem
+          itemId={editItem}
+          onCancel={cancelEdit}
+          onSubmit={handleEditSubmit} // Reload items after editing
+        />
+      )}
     </Fragment>
   )
 }
