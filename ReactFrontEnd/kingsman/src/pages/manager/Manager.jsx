@@ -5,6 +5,7 @@ import ManagerSideBar from '../../components/ManagerSideBar';
 import AllinventoryItem from './inventory/AllinventoryItem';
 import ManagerProfile from './ManagerProfile';
 import Header from '../../components/Header';
+import RegisterEmployee from './registration/RegisterEmployee';
 
 
 export default function Manager() {
@@ -28,6 +29,8 @@ export default function Manager() {
                 {tab === 'inventory' && <AllinventoryItem/>}
                 {/* profile */}
                 {tab === 'profile' && <ManagerProfile/>}
+                {/* New Employee */}
+                {tab === 'new-employee' && <RegisterEmployee/>}
         </div>
     )
 }
