@@ -3,7 +3,7 @@ import { HiArrowNarrowRight } from "react-icons/hi";
 
 export default function ShowFeedback() {
   return (
-    <Timeline className="ml-5 mt-12 ml-10">
+    <Timeline className=" mt-12 ml-10">
       <Timeline.Item>
         <Timeline.Point />
         <Timeline.Content>
