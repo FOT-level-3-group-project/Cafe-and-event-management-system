@@ -33,7 +33,7 @@ export default function UpdateCustomerModal({ isOpen, onToggle, customerUpdateMo
             cusName: name.value.trim(),
             cusMobile: mobile.value.trim(),
             cusEmail: email.value.trim(),
-            employeeId: 1
+            employeeId: currentCustomerData.employeeId
         };
         setCustomerData(formData);
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {  useSelector } from 'react-redux'
 import PropTypes from 'prop-types';
 import {Modal} from "flowbite-react";
 import axios from 'axios';
@@ -7,6 +8,7 @@ import toast from 'react-hot-toast';
 
 export default function CustomerAddModal({ isOpen, onToggle, customerAddModalResponse }) {
 
+    const { currentUser } = useSelector((state) => state.user);
     const [formErrors, setFormErrors] = useState([]);
     const [responseErrors, setResponseErrors] = useState('');
 
@@ -23,7 +25,7 @@ export default function CustomerAddModal({ isOpen, onToggle, customerAddModalRes
             cusName: name.value.trim(),
             cusMobile: mobile.value.trim(),
             cusEmail: email.value.trim(),
-            employeeId: 1
+            employeeId: currentUser.id
         };
         
 

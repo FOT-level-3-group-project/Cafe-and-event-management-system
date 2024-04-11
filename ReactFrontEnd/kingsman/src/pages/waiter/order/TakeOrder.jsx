@@ -267,7 +267,7 @@ export default function TakeOrder() {
                                             <input
                                                 type="search"
                                                 id="default-search"
-                                                className="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg  border border-gray-300 focus:ring-0 focus: dark:bg-slate-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                                className="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg  border border-gray-300 focus:ring-0 focus:border-gray-300 dark:bg-slate-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                                                 placeholder="Search Food Items..."
                                                 value={searchQuery}
                                                 onChange={handleSearchQueryChange}
@@ -405,25 +405,25 @@ export default function TakeOrder() {
                         </div>
 
 
-                        <div className="flex flex-col justify-between rounded-lg border bg-white mb-6 shadow-md md:mt-0 dark:bg-gray-600 dark:border-none min-h-[calc(100vh-20rem)] h-auto">
+                        <div className=" py-2 flex flex-col justify-between rounded-lg border bg-white mb-6 shadow-md md:mt-0 dark:bg-gray-600 dark:border-none min-h-[calc(100vh-24rem)] h-auto">
 
-                            <div className="overflow-x-auto p-3 overflow-scroll max-h-[calc(100vh-34rem)] h-auto">
+                            <div className="overflow-x-auto overflow-scroll max-h-[calc(100vh-34rem)] h-auto px-2 py-2">
                                 <table className="w-full table-auto">
                                     <thead className="bg-gray-50 text-xs font-semibold uppercase text-gray-400 dark:bg-gray-700">
                                         <tr>
-                                            <th className="p-2">
+                                            <th className="px-2 py-1">
                                                 <div className="text-left font-semibold"> Name</div>
                                             </th>
-                                            <th className="p-2">
+                                            <th className="px-2 py-1">
                                                 <div className="text-center font-semibold">Price</div>
                                             </th>
-                                            <th className="p-2">
+                                            <th className="px-2 py-1">
                                                 <div className="text-center font-semibold">Qut</div>
                                             </th>
-                                            <th className="p-2">
+                                            <th className="px-2 py-1">
                                                 <div className="text-right font-semibold">Total LKR</div>
                                             </th>
-                                            <th className="p-2">
+                                            <th className="px-2 py-1">
                                                 <div className="text-center font-semibold">Action</div>
                                             </th>
                                         </tr>
@@ -436,19 +436,19 @@ export default function TakeOrder() {
                                         ) : (
                                             orderItems.map(item => (
                                                 <tr key={item.foodId}>
-                                                    <td className="p-2">
+                                                    <td className="px-2 py-1">
                                                         <div className="font-medium capitalize text-gray-800 dark:text-gray-50">{item.foodName}</div>
                                                     </td>
-                                                    <td className="p-2">
+                                                    <td className="px-2 py-1">
                                                         <div className="text-center font-medium text-green-500">{item.foodPrice.toFixed(2)}</div>
                                                     </td>
-                                                    <td className="p-2">
+                                                    <td className="px-2 py-1">
                                                         <div className="text-center dark:text-gray-50">{item.quantity}</div>
                                                     </td>
-                                                    <td className="p-2">
+                                                    <td className="px-2 py-1">
                                                         <div className="text-right font-medium text-green-500">{item.totalPrice.toFixed(2)}</div>
                                                     </td>
-                                                    <td className="p-2">
+                                                    <td className="px-2 py-1">
                                                         <div className="flex justify-center">
                                                             <button className="text-2xl text-amber-500"  onClick={() => openQuantityUpdateModal(item)}>
                                                                 <i className="ri-edit-fill"></i>
@@ -465,7 +465,7 @@ export default function TakeOrder() {
                                 </table>
                             </div>
 
-                            <div className="p-6">
+                            <div className="px-6 py-3">
                                 <hr className="mt-2 mb-3"/>
                                 <div className="flex justify-between">
                                     <p className="text-lg font-bold">Total</p>
@@ -479,7 +479,7 @@ export default function TakeOrder() {
                                         id="table"
                                         value={tableNumber}
                                         onChange={handleTableNumberChange}
-                                        className="block p-1 mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-0  dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                        className="block p-1 mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-0 focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                     >
                                         <option value={0}>No Table Assigned</option>
                                         {[...Array(10).keys()].map((num) => (
