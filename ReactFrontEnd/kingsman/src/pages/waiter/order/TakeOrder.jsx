@@ -1,26 +1,87 @@
-import  { useState } from "react";
+import  { useState,useEffect, } from "react";
+import {  useSelector } from 'react-redux'
 import CustomerAddModal from "../customer/CustomerAddModal";
 import SearchCustomerModal from "../customer/SearchCustomerModal";
 import UpdateCustomerModal from "../customer/UpdateCustomerModal";
+import axios from 'axios';
+import QuantityInputModal from "../FoodItems/QuantityInputModal";
+import QuantityUpdateModal from "../FoodItems/QuantityUpdateModal";
+import toast from 'react-hot-toast';
 
 export default function TakeOrder() {
+        const [responseErrors, setResponseErrors] = useState('');
+        const { currentUser } = useSelector((state) => state.user);
+
         const [customerAddModal, SetCustomerAddModal] = useState(false);
         const [customerSearchModal, SetCustomerSearchModal] = useState(false);
         const [customerUpdateModal, SetCustomerUpdateModal] = useState(false);
-
         const [customerData, setCustomerData] = useState({});
 
-        function openCustomerAddModal() {
+        const [quantityModalOpen, setQuantityModalOpen] = useState(false);
+        const [quantityUpdateModalOpen, setQuantityUpdateModalOpen] = useState(false);
+        const [foodItems, setFoodItems] = useState([]);
+        const [activeCategory, setActiveCategory] = useState("All");
+        const [searchQuery, setSearchQuery] = useState("");
+        
+
+        const [selectedFoodItem, setSelectedFoodItem] = useState({});
+        const [orderItems, setOrderItems] = useState([]);
+        const [billItemData, setBillItemData] = useState({});
+        const [tableNumber, setTableNumber] = useState(0);
+
+
+        const [subtotal, setSubtotal] = useState(0);
+        const [totalAfterDiscount, setTotalAfterDiscount] = useState(0);
+        const [discountPercentage, setDiscountPercentage] = useState(0);
+
+        useEffect(() => {
+            setResponseErrors("")
+            axios.get("http://localhost:8080/api/food/all")
+                .then(response => {
+                    setFoodItems(response.data);
+                })
+                .catch(error => {
+                    console.error("Error fetching food items:", error);
+                });
+        }, []);
+
+        useEffect(() => {
+            // Calculate subtotal by summing total prices of all products
+            const newSubtotal = orderItems.reduce((total, item) => total + item.totalPrice, 0);
+            setSubtotal(newSubtotal);
+    
+            // Calculate total after applying discount
+            const discountAmount = (newSubtotal * discountPercentage) / 100;
+            const newTotalAfterDiscount = newSubtotal - discountAmount;
+            setTotalAfterDiscount(newTotalAfterDiscount);
+
+        }, [orderItems, discountPercentage]);
+
+        const openCustomerAddModal = () => {
             SetCustomerAddModal(prevState => !prevState);
         }
 
-        function OpenSearchCustomerModal() {
+        const OpenSearchCustomerModal = () => {
             SetCustomerSearchModal(prevState => !prevState);
         }
 
-        function OpenCustomerUpdateModal() {
+        const OpenCustomerUpdateModal = () => {
             SetCustomerUpdateModal(prevState => !prevState);
         }
+
+        const OpenQuantityModal = () => {
+            setQuantityModalOpen(prevState => !prevState);
+        }
+
+        const openQuantityUpdateModal = (item) => {
+            setBillItemData(item);
+            setQuantityUpdateModalOpen(true);
+        };
+        
+        const closeQuantityUpdateModal = () => {
+            setBillItemData({});
+            setQuantityUpdateModalOpen(false);
+        };
 
         const handleCustomerModalResponse = (Data) => {
             setCustomerData(Data); 
@@ -34,35 +95,273 @@ export default function TakeOrder() {
             });
         };
 
+        const handleTableNumberChange = (e) => {
+            setTableNumber(parseInt(e.target.value));
+        };
+
+
+        // Filter food items based on  category and search query
+        const filteredFoodItems = foodItems.filter(item =>
+            (activeCategory === "All" || item.foodCategory === activeCategory) &&
+            item.foodName.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
+        //Change active category
+        const changeCategory = (category) => {
+            setActiveCategory(category);
+        };
+
+        //Handle Search 
+        const handleSearchQueryChange = (e) => {
+            setSearchQuery(e.target.value);
+        };
+
+        const handleSelectedFoodItem = (itemData) => {
+            setSelectedFoodItem(itemData);
+        };
+
+        const handleAddToBill = (quantity) => {
+          
+            if (selectedFoodItem.foodId) {
+                const updatedOrderItems = [...orderItems];
+                // Check if the item already exists
+                const existingItemIndex = orderItems.findIndex(item => item.foodId === selectedFoodItem.foodId);
+        
+                if (existingItemIndex !== -1) {
+                    //update its quantity and totalPrice
+                    updatedOrderItems[existingItemIndex].quantity = quantity;
+                    updatedOrderItems[existingItemIndex].totalPrice = selectedFoodItem.foodPrice * quantity;
+                } else {
+                    // Newly add it
+                    const totalPrice = selectedFoodItem.foodPrice * quantity;
+                    updatedOrderItems.push({ ...selectedFoodItem, quantity, totalPrice });
+                }
+        
+                setOrderItems(updatedOrderItems);
+                setSelectedFoodItem({});
+            }
+        };
+
+
+        //Remove item from the order
+        const removeFromOrder = (foodId) => {
+            const updatedOrderItems = orderItems.filter(item => item.foodId !== foodId);
+            setOrderItems(updatedOrderItems);
+        };
+        
+
+        //Edit item quantity in the order
+        const updateQuantity = (newQuantity) => {
+            const itemIdToUpdate = billItemData.foodId;
+            const index = orderItems.findIndex(item => item.foodId === itemIdToUpdate);
+
+            const updatedOrderItems = [...orderItems];
+            updatedOrderItems[index].quantity = newQuantity;
+            updatedOrderItems[index].totalPrice = updatedOrderItems[index].foodPrice * newQuantity;
+            setOrderItems(updatedOrderItems);
+
+        };
+        
+        
+        const generateOrder = () => {
+
+            if(orderItems.length < 1){
+                return setResponseErrors("At least one item must be ordered.");
+            }
+
+            const convertedOrderItems = orderItems.map(item => {
+                const { foodId, ...rest } = item;
+                return { foodItemId: foodId, ...rest };
+            });
+
+            // Generate JSON object with order details
+            const orderJSON = {
+                customerId: customerData.cusId || "",
+                orderDateTime: new Date().toISOString(),
+                orderStatus: "Pending",
+                tableNumber: tableNumber,
+                subTotal: subtotal,
+                discountValue: 0.0,
+                discountPercentage: 0.0,
+                totalAfterDiscount: totalAfterDiscount,
+                paymentMethod:"",
+                paymentStatus: false,
+                employeeId: currentUser.id,
+                orderItems: convertedOrderItems
+            };
+
+            fetch("http://localhost:8080/api/orders", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(orderJSON)
+            })
+            .then(response => {201
+                if (response.status === 201) {
+                    // Successful
+                    setCustomerData({});
+                    handleClearFields();
+                    setOrderItems([]);
+                    setResponseErrors("")
+                    setTableNumber(0)
+                    toast.success('Order Placed.');
+                } else {
+                    // Unexpected response
+                    console.error('Unexpected response status:', response.status);
+                    toast.error(
+                        "Something has error. \n Please Contact System Support.",
+                        {
+                          duration: 6000,
+                        }
+                      )
+                }
+            })
+            .catch(error => {
+                setResponseErrors(error);
+                console.error("Error:", error);
+            });
+
+
+        };
+            
+
   return (
     <div className="w-full bg-slate-200 dark:bg-slate-500 py-5">    
         <div className="w-full">
-            {/* Customer Details Section Start*/}
-            <div className=" max-w-full  px-6 lg:px-8">
-                <div className="mx-auto mt-16 max-w-2xl  ring-1 shadow-lg bg-slate-50 ring-black dark:bg-slate-700 sm:mt-10 lg:mx-0 lg:flex lg:max-w-none">
-                    <div className="px-8 py-4 lg:flex-auto">
-                        <h3 className="text-xl font-bold tracking-tight text-black dark:text-white">
-                            Customer Membership Details
-                        </h3>
+            <div className=" max-w-full  px-6">
+                {responseErrors && (
+                            <div
+                                id="alert-2"
+                                className="flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50  dark:bg-gray-800 dark:text-red-400 transition duration-300 ease-in-out"
+                                role="alert"
+                            >
+                                <i className="ri-information-2-fill"></i>
+                                <span className="sr-only">Error</span>
+                                <div className="ms-3 text-sm font-medium">
+                                    {responseErrors}
+                                </div>
+                                <button
+                                    onClick={() => setResponseErrors("")}
+                                    type="button"
+                                    className="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"
+                                    data-dismiss-target="#alert-2"
+                                    aria-label="Close"
+                                >
+                                    <span className="sr-only">Close</span>
+                                    <i className="ri-close-large-fill"></i>
+                                </button>
+                            </div>
+
+                )}
+                <div className="mx-auto justify-center md:flex md:space-x-6 xl:px-0">
+                    <div className="rounded-lg md:w-3/5">
                         <div>
-                            <div className="rounded  pt-3 flex flex-col">
-                                <div className="-mx-3 md:flex mb-2">
-                                    <div className="md:w-2/5 px-3 mb-6 md:mb-0">
-                                        <label
-                                            className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
-                                            htmlFor="grid-name"
-                                        >
-                                            Name
-                                        </label>
-                                        <input
-                                            className=" appearance-none block w-full bg-transparent text-grey-darker border rounded py-3 px-4 mb-3 selection:border-none focus:outline-none  focus:border-black focus:ring-0 dark:border-grey-darker dark:focus:border-gray-500"
-                                            id="grid-name"
-                                            type="text"
-                                            value={customerData.cusName}
-                                            readOnly
-                                        />
+                            <h1 className="mb-2 text-left text-xl font-bold dark:text-white">Order</h1>
+                            <div>
+                                <div className="max-w-full mb-2">
+                                        <div className="relative">
+                                            <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none ">
+                                                <i className="ri-search-line"></i>
+                                            </div>
+                                            <input
+                                                type="search"
+                                                id="default-search"
+                                                className="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg  border border-gray-300 focus:ring-0 focus: dark:bg-slate-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                                placeholder="Search Food Items..."
+                                                value={searchQuery}
+                                                onChange={handleSearchQueryChange}
+                                            />
+                                            <button
+                                                onClick={() => setSearchQuery("")}
+                                                type="button"
+                                                className="text-white absolute right-2.5 bottom-2.5 bg-orange-500 hover:bg-orange-600 selection:border-none focus:outline-none font-medium rounded-lg text-sm px-4 py-2 dark:bg-orange-500 dark:hover:bg-orange-700"
+                                            >
+                                                Clear
+                                            </button>
+                                        </div>
+                                </div>
+                            </div>
+                            {/* Category Tabs */}
+                            <div className="mb-4 flex space-x-4 p-2 bg-white rounded-lg shadow-md dark:bg-gray-600">
+                                <button onClick={() => changeCategory("All")} className={`flex-1 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${activeCategory === "All" ? 'bg-green-400 text-white font-bol' : ''}`}>All</button>
+                                <button onClick={() => changeCategory("Main Dish")} className={`flex-1 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${activeCategory === "Main Dish" ? 'bg-green-400 text-white font-bol' : ''}`}>Main Dish</button>
+                                <button onClick={() => changeCategory("Side Dish")} className={`flex-1 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${activeCategory === "Side Dish" ? 'bg-green-400 text-white font-bol' : ''}`}>Side Dish</button>
+                                <button onClick={() => changeCategory("Beverages")} className={`flex-1 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 ${activeCategory === "Beverages" ? 'bg-green-400 text-white font-bol' : ''}`}>Beverages</button>
+                            </div>
+
+                            {/* Food Items */}
+                            <div className='transition-all duration-20 p-2 max-h-[calc(100vh-17rem)] h-auto  rounded-lg block overflow-scroll'>
+                            <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+                                {filteredFoodItems.length < 1 ? (
+                                    <div className="col-span-full text-center my-4 text-gray-400">
+                                        <p>No items found.</p>
                                     </div>
-                                    <div className="md:w-2/5 px-3 mb-6 md:mb-0">
+                                ) : (
+                                    filteredFoodItems.map(item => (
+                                        <div key={item.foodId} onClick={() => { OpenQuantityModal(); handleSelectedFoodItem(item); }} className="bg-white shadow-md rounded-lg text-gray-600 hover:bg-green-400 hover:text-white dark:bg-gray-600 dark:hover:bg-green-400 flex flex-col">
+                                            <img
+                                            className="rounded-t-lg w-full h-40 object-cover"
+                                            src={item.foodImageURL}
+                                            alt={item.foodName}
+                                            />
+                                            <div className="px-5 pt-2 pb-3">
+                                            <h3 className="text-center capitalize font-bold text-base tracking-tight dark:text-white">{item.foodName}</h3>
+                                            <p className="text-sm text-center dark:text-white">LKR {item.foodPrice.toFixed(2)}</p>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {/* Side Bar*/}
+                    
+                    <div className="h-full  md:w-2/5">
+                        <div className="p-6 rounded-lg border bg-white mb-3 shadow-md md:mt-0 text-sm dark:bg-gray-600 dark: border-none">
+                            <div>
+                                <h4 className="font-bold">Customer Details</h4>
+                                <hr className="my-2" />
+                            </div>
+                            <div className="rounded  pt-1">
+                                <div className="w-full flex flex-col mb-2">
+                                    <div className="w-full flex justify-between">
+                                        <div className="w-1/2 mb-6 md:mb-0 mr-1">
+                                            <label
+                                                className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
+                                                htmlFor="grid-name"
+                                            >
+                                                Name
+                                            </label>
+                                            <input
+                                                className="appearance-none block w-full bg-transparent text-grey-darker rounded py-2 px-4 mb-3 selection:border-none focus:outline-none  focus:border-black focus:ring-0 dark:border-grey-darker dark:focus:border-gray-500"
+                                                id="grid-name"
+                                                type="text"
+                                                value={customerData.cusName}
+                                                readOnly
+                                            />
+                                        </div>
+                                        <div className="w-1/2 mb-6 md:mb-0 mx-auto ml-1">
+                                            <label
+                                                className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
+                                                htmlFor="grid-mobile"
+                                            >
+                                                Mobile
+                                            </label>
+                                            <input
+                                                className="appearance-none block w-full bg-transparent text-grey-darker border rounded py-2 px-4 mb-3 selection:border-none focus:outline-none  focus:border-black focus:ring-0 dark:border-grey-darker dark:focus:border-gray-500"
+                                                id="grid-mobile"
+                                                type="text"
+                                                value={customerData.cusMobile}
+                                                readOnly
+                                            />
+                                        </div>
+                                    </div>
+                                    {/* <div className="w-full mb-6 md:mb-0">
                                         <label
                                             className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
                                             htmlFor="grid-email"
@@ -70,61 +369,136 @@ export default function TakeOrder() {
                                             Email
                                         </label>
                                         <input
-                                            className=" appearance-none block w-full bg-transparent text-grey-darker border rounded py-3 px-4 mb-3 selection:border-none focus:outline-none  focus:border-black focus:ring-0 dark:border-grey-darker dark:focus:border-gray-500"
+                                            className=" appearance-none block w-full bg-transparent text-grey-darker border rounded py-2 px-4 mb-3 selection:border-none focus:outline-none  focus:border-black focus:ring-0 dark:border-grey-darker dark:focus:border-gray-500"
                                             id="grid-email"
                                             type="email"
                                             value={customerData.cusEmail}
                                             readOnly
                                         />
-                                    </div>
-                                    <div className="md:w-1/4 px-3">
-                                        <label
-                                            className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
-                                            htmlFor="grid-mobile"
-                                        >
-                                            Mobile
-                                        </label>
-                                        <input
-                                            className="appearance-none block w-full bg-transparent text-grey-darker border rounded py-3 px-4 mb-3 selection:border-none focus:outline-none  focus:border-black focus:ring-0 dark:border-grey-darker dark:focus:border-gray-500"
-                                            id="grid-mobile"
-                                            type="text"
-                                            value={customerData.cusMobile}
-                                            readOnly
-                                        />
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
+                            <div>
+                            <div className='flex items-center justify-between w-full overflow-hidden'>
+                                <button onClick={OpenSearchCustomerModal} className="flex-grow flex items-center justify-center px-3 py-2 bg-cyan-500 text-white font-semibold rounded hover:bg-cyan-600 mx-1">
+                                    <i className="ri-user-search-fill"></i>
+                                    <span className="ml-1">Search</span>
+                                </button>
+                                <button onClick={openCustomerAddModal} className="flex-grow flex items-center justify-center px-3 py-2 bg-green-500 mr-1 text-white font-semibold rounded hover:bg-green-600 mx-1">
+                                    <i className="ri-user-add-fill"></i>
+                                    <span className="ml-1">Add</span>
+                                </button>
+                                {customerData.cusName && (
+                                    <>
+                                        <button onClick={OpenCustomerUpdateModal} className="flex-grow flex items-center justify-center px-3 py-2 bg-amber-500 text-white font-semibold rounded hover:bg-amber-600 mx-1">
+                                            <i className="ri-edit-fill"></i>
+                                            <span className="ml-1">Update</span>
+                                        </button>
+                                        <button onClick={() => handleClearFields()} className="flex-grow flex items-center justify-center px-3 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600 mx-1">
+                                            <i className="ri-close-large-line"></i>
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+
+                            </div>
                         </div>
-                        <div>
-                        <div className="flex items-center justify-center min-h-full">
-                                <div className='flex items-center justify-end w-full xs:justify-evenly'>
-                                    <button onClick={openCustomerAddModal} className="flex items-center justify-center  px-3 py-2 bg-green-500 mr-1 text-white font-semibold rounded">
-                                        <i className="ri-user-add-fill"></i>
-                                        <span className="ml-1">Add New Customer</span>
-                                    </button>
-                                    <button onClick={OpenSearchCustomerModal} className="ml-2 mr-0 flex items-center justify-center  px-3 py-2 bg-orange-500 text-white font-semibold rounded">
-                                        <i className="ri-user-search-fill"></i>
-                                        <span className="ml-1">Search Customer</span>
-                                    </button>
-                                    {customerData.cusName && (
-                                        <>
-                                            <button onClick={OpenCustomerUpdateModal} className="ml-2 mr-0 flex items-center justify-center px-3 py-2 bg-amber-500 text-white font-semibold rounded">
-                                                <i className="ri-edit-fill"></i>
-                                                <span className="ml-1">Update Customer</span>
-                                            </button>
-                                            <button onClick={() => handleClearFields()} className="ml-2 mr-0 flex items-center justify-center px-3 py-2 bg-red-500 text-white font-semibold rounded">
-                                                <i className="ri-close-circle-fill"></i>
-                                                <span className="ml-1">Clear</span>
-                                            </button>
-                                        </>
-                                    )}
+
+
+                        <div className="flex flex-col justify-between rounded-lg border bg-white mb-6 shadow-md md:mt-0 dark:bg-gray-600 dark:border-none min-h-[calc(100vh-20rem)] h-auto">
+
+                            <div className="overflow-x-auto p-3 overflow-scroll max-h-[calc(100vh-34rem)] h-auto">
+                                <table className="w-full table-auto">
+                                    <thead className="bg-gray-50 text-xs font-semibold uppercase text-gray-400 dark:bg-gray-700">
+                                        <tr>
+                                            <th className="p-2">
+                                                <div className="text-left font-semibold"> Name</div>
+                                            </th>
+                                            <th className="p-2">
+                                                <div className="text-center font-semibold">Price</div>
+                                            </th>
+                                            <th className="p-2">
+                                                <div className="text-center font-semibold">Qut</div>
+                                            </th>
+                                            <th className="p-2">
+                                                <div className="text-right font-semibold">Total LKR</div>
+                                            </th>
+                                            <th className="p-2">
+                                                <div className="text-center font-semibold">Action</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100 text-sm">
+                                        {orderItems.length < 1 ? (
+                                            <tr>
+                                                <td colSpan="5" className="text-center text-gray-400 py-4">No items were found. Please Select from the Menu</td>
+                                            </tr>
+                                        ) : (
+                                            orderItems.map(item => (
+                                                <tr key={item.foodId}>
+                                                    <td className="p-2">
+                                                        <div className="font-medium capitalize text-gray-800 dark:text-gray-50">{item.foodName}</div>
+                                                    </td>
+                                                    <td className="p-2">
+                                                        <div className="text-center font-medium text-green-500">{item.foodPrice.toFixed(2)}</div>
+                                                    </td>
+                                                    <td className="p-2">
+                                                        <div className="text-center dark:text-gray-50">{item.quantity}</div>
+                                                    </td>
+                                                    <td className="p-2">
+                                                        <div className="text-right font-medium text-green-500">{item.totalPrice.toFixed(2)}</div>
+                                                    </td>
+                                                    <td className="p-2">
+                                                        <div className="flex justify-center">
+                                                            <button className="text-2xl text-amber-500"  onClick={() => openQuantityUpdateModal(item)}>
+                                                                <i className="ri-edit-fill"></i>
+                                                            </button>
+                                                            <button className="text-2xl ml-1 text-red-500" onClick={() => removeFromOrder(item.foodId)}>
+                                                                <i className="ri-delete-bin-2-line"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div className="p-6">
+                                <hr className="mt-2 mb-3"/>
+                                <div className="flex justify-between">
+                                    <p className="text-lg font-bold">Total</p>
+                                    <div>
+                                        <p className="mb-1 text-lg font-bold">LKR {totalAfterDiscount.toFixed(2)}</p>
+                                    </div>
                                 </div>
+                                <div>
+                                    <label htmlFor="table" className=" text-sm">Select Table:</label>
+                                    <select
+                                        id="table"
+                                        value={tableNumber}
+                                        onChange={handleTableNumberChange}
+                                        className="block p-1 mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-0  dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                    >
+                                        <option value={0}>No Table Assigned</option>
+                                        {[...Array(10).keys()].map((num) => (
+                                            <option key={num + 1} value={num + 1}>
+                                                Table {num + 1}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <button onClick={() => generateOrder()} className="mt-6 w-full rounded-md bg-green-500 py-1.5 font-medium text-white hover:bg-green-600">
+                                    <i className="ri-restaurant-2-fill"></i> Place Order
+                                </button>
+                            </div>
+
                         </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
-            {/* Customer Details Section End*/}
         </div>
 
         {/* Modals */}
@@ -145,6 +519,20 @@ export default function TakeOrder() {
             onToggle={OpenCustomerUpdateModal}
             customerUpdateModalResponse={handleCustomerModalResponse}
             currentCustomerData={customerData}
+        />
+
+        <QuantityInputModal 
+                isOpen={quantityModalOpen}
+                onToggle={OpenQuantityModal}
+                onAddToBill={handleAddToBill}
+                itemData={selectedFoodItem}
+        />
+
+        <QuantityUpdateModal
+            isOpen={quantityUpdateModalOpen}
+            onToggle={closeQuantityUpdateModal}
+            editQuantity={updateQuantity}
+            itemData={billItemData}
         />
     </div>
   )
