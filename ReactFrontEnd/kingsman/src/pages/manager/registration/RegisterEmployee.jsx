@@ -14,7 +14,7 @@ export default function RegisterEmployee() {
             contact_number: '',
             gender: '',
             IDNumber: '',
-            // joined_date: new date(),
+            joined_date: '',
             email: '',
             address: '',
             uniform_size: '',
@@ -51,7 +51,7 @@ export default function RegisterEmployee() {
             address: '',
             uniform_size: '',
             emergency_contact: '',
-            // profilePicture: ''
+            // profilePicture: '',
         }); 
             setErrorMessage('');
     };
@@ -63,6 +63,8 @@ export default function RegisterEmployee() {
         if (name === 'contact_number' || name === 'emergency_contact') {
             if (!/^\d+$/.test(value)) {
                 errorMessage('Please enter only numbers for mobile number');
+            }else if (value.length > 10) {
+            errorMessage('Contact number should not exceed 10 digits');
             }
         } else if (name === 'first_name' || name === 'last_name') {
             if (!/^[a-zA-Z]+$/.test(value)) {
@@ -91,19 +93,35 @@ export default function RegisterEmployee() {
             const response = await axios.post('http://localhost:8080/register', formData);
             console.log(response.data);
             const generatedPassword = formData.password; // Accessing the auto-generated password from form data
-            const successMessage = `Registered successfully! Generated Password: ${generatedPassword}`;
-        setErrorMessage(successMessage);
+            const successMessage = `Successfully registered with Password: ${generatedPassword}`;
+            setErrorMessage(successMessage);
         } catch (error) {
-                setErrorMessage('Username is already taken');
-            }
-        };
-
+            if (error.response) {
+                // Extract the error message from the response data and display it
+                setErrorMessage(error.response.data);
+            } else if (error.request) {
+                // This usually indicates a network error or the server did not respond
+                console.log(error.request);
+                setErrorMessage('Network error occurred. Please try again later.');
+            } else {
+                // Something happened in setting up the request that triggered an error
+                console.log('Error', error.message);
+                setErrorMessage('Registration failed');
+            };
+        }
+    };
     useEffect(() => {
         setFormData({
             ...formData,
             password: generatePassword()
         });
     }, []);
+
+    // const handleProfilePictureChange = (e) => {
+    //     const file = e.target.files[0];
+    //     setFormData({ ...formData, profilePicture: file });
+    // };
+
 
     return (
         <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row w-full '>
@@ -184,11 +202,22 @@ export default function RegisterEmployee() {
                             <TextInput type='text' placeholder='Emergency Contact' id='EmergencyContact' value={formData.emergency_contact} onChange={handleChange} name="emergency_contact" />
                         </div>
                     </div>
+                
+                        <div>
+                            <Label value='Password' />
+                            <TextInput type='text' placeholder='Password' id='Password' value={formData.password} />
+                        </div>
 
-                    <div>
-                        <Label value='Password' />
-                        <TextInput type='text' placeholder='Password' id='Password' value={formData.password} />
-                    </div>
+                        {/* <div className="flex items-center ">
+                            <Label value='Profile Picture' /> <br/>
+                            <input
+                                type='file'
+                                id='profilePicture'
+                                accept='image/*'
+                                onChange={(e) => handleProfilePictureChange(e)}
+                                className="py-2 px-10 text-sm leading-tight"
+                            />
+                        </div> */}
 
                     <div className="flex justify-between">
                         <button type="reset" className="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 mr-2 rounded w-full md:w-1/2 " id="clearbtn" onClick={handleResetForm}> Clear </button>
