@@ -144,7 +144,7 @@ export default function RegisterEmployee() {
                         <div>
                             <Label value='Position*' /> <br/>
                             {/* <select id='Position' value={formData.position} onChange={handleChange} className='w-full px-3 py-2 border rounded-md bg-gray-700 text-gray-400'> */}
-                            <select id='Position' value={formData.position} onChange={handleChange} name='position' className='w-full px-3 py-2 border rounded-md' required>
+                            <select id='Position' value={formData.position} onChange={handleChange} name='position' className='w-full px-3 py-2 border rounded-md dark:bg-gray-700' required>
                                 <option value=''>Select Position</option>
                                 <option value='Cashier'>Cashier</option>
                                 <option value='Chef'>Chef</option>
@@ -170,7 +170,7 @@ export default function RegisterEmployee() {
                         <div>
                             <Label value='Gender' /> <br/>
                             {/* <select id='Gender' value={formData.gender} onChange={handleChange} className='w-full px-3 py-2 border rounded-md bg-gray-700 text-gray-400'> */}
-                            <select id='Gender' value={formData.gender} onChange={handleChange} name='gender' className='w-full px-3 py-2 border rounded-md '>
+                            <select id='Gender' value={formData.gender} onChange={handleChange} name='gender' className='w-full px-3 py-2 border rounded-md dark:bg-gray-700 '>
                                 <option value=''>Select Gender</option>
                                 <option value='male'>Male</option>
                                 <option value='female'>Female</option>
@@ -188,7 +188,7 @@ export default function RegisterEmployee() {
                         <div>
                             <Label value='Uniform Size' /> <br/>
                             {/* <select id='UniformSize' value={formData.uniform_size} onChange={handleChange} className='w-full px-3 py-2 border rounded-md bg-gray-700 text-gray-400' > */}
-                            <select id='UniformSize' value={formData.uniform_size} name='uniform_size' onChange={handleChange} className='w-full px-3 py-2 border rounded-md ' >
+                            <select id='UniformSize' value={formData.uniform_size} name='uniform_size' onChange={handleChange} className='w-full px-3 py-2 border rounded-md dark:bg-gray-700' >
                                 <option value=''>Select</option>
                                 <option value='Extra Small'>Extra Small</option>
                                 <option value='Small'>Small</option>
