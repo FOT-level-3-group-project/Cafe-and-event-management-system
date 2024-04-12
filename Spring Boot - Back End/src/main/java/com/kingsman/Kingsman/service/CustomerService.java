@@ -2,6 +2,7 @@ package com.kingsman.Kingsman.service;
 
 import com.kingsman.Kingsman.dto.CustomerDTO;
 import com.kingsman.Kingsman.exception.CustomerDuplicateMobileNumberException;
+import com.kingsman.Kingsman.exception.ResourceNotFoundException;
 import com.kingsman.Kingsman.model.Customer;
 import com.kingsman.Kingsman.model.Employee;
 import com.kingsman.Kingsman.repository.CustomerRepository;
@@ -41,10 +42,15 @@ public class CustomerService {
                 .orElse(null);
     }
 
-    public CustomerDTO findById(Long id) {
-        return customerRepository.findById(id)
-                .map(this::convertToDTO)
-                .orElse(null);
+    public CustomerDTO findById(Long customerId) {
+        Optional<Customer> customerOptional = customerRepository.findById(customerId);
+        if (customerOptional.isEmpty()) {
+            throw new ResourceNotFoundException("Customer not found with id: " + customerId);
+        }
+        Customer customer = customerOptional.get();
+        CustomerDTO customerDTO = new CustomerDTO();
+        BeanUtils.copyProperties(customer, customerDTO);
+        return customerDTO;
     }
 
     public CustomerDTO create(CustomerDTO customerDTO) {

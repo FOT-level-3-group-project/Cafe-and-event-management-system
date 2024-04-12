@@ -1,5 +1,6 @@
 package com.kingsman.Kingsman.service;
 
+import com.kingsman.Kingsman.dto.CustomerDTO;
 import com.kingsman.Kingsman.dto.OrderDTO;
 import com.kingsman.Kingsman.dto.OrderItemDTO;
 import com.kingsman.Kingsman.exception.ResourceNotFoundException;
@@ -21,10 +22,12 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final CustomerService customerService;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, CustomerService customerService) {
         this.orderRepository = orderRepository;
+        this.customerService = customerService;
     }
 
     public List<OrderDTO> getAllOrders() {
@@ -39,12 +42,12 @@ public class OrderService {
     }
 
     public List<OrderDTO> getOrdersByOrderStatus(String orderStatus) {
-        List<Order> orders = orderRepository.findByOrderStatus(orderStatus);
+        List<Order> orders = orderRepository.findByOrderStatusOrderByOrderDateTimeDesc(orderStatus);
         return mapOrderListToDTOList(orders);
     }
 
     public List<OrderDTO> getOrdersByPaymentStatus(boolean paymentStatus) {
-        List<Order> orders = orderRepository.findByPaymentStatus(paymentStatus);
+        List<Order> orders = orderRepository.findByPaymentStatusOrderByOrderDateTimeDesc(paymentStatus);
         return mapOrderListToDTOList(orders);
     }
 
@@ -118,6 +121,7 @@ public class OrderService {
 
     private OrderDTO convertToDTO(Order order) {
         OrderDTO orderDTO = new OrderDTO();
+        // Copy existing properties
         orderDTO.setEmployeeId(order.getEmployee().getId().longValue());
         BeanUtils.copyProperties(order, orderDTO);
 
@@ -127,8 +131,15 @@ public class OrderService {
                 .collect(Collectors.toList());
         orderDTO.setOrderItems(orderItemDTOs);
 
+        // Fetch and set customer details if customerId is not null
+        if (order.getCustomerId() != null) {
+            CustomerDTO customerDTO = customerService.findById(order.getCustomerId());
+            orderDTO.setCustomer(customerDTO);
+        }
+
         return orderDTO;
     }
+
 
 
     private OrderItemDTO convertOrderItemToDTO(OrderItem orderItem) {
