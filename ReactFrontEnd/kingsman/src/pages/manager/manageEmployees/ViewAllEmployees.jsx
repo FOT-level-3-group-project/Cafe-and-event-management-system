@@ -17,6 +17,17 @@ const ViewAllEmployees = () => {
         }
         ViewAllEmployees();
     }, []);
+
+    const handleDelete = async (id, username) => {
+        if (window.confirm(`Are you sure you want to delete the employee ${username}?`)) {
+            try {
+                await axios.delete(`http://localhost:8080/api/user/delete/${id}`);
+                setEmployees(employees.filter(employee => employee.id !== id));
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    }
     
     return (
         <div className="container mx-auto px-4 py-8">
@@ -55,7 +66,9 @@ const ViewAllEmployees = () => {
                         <td className="px-4 py-2">{employee.uniform_size}</td>
                         <td className="px-4 py-2">{employee.emergency_contact}</td>
                         <td className="px-6 py-4 text-right"> <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Update</a> </td>
-                        <td className="px-6 py-4 text-right"> <a href="#" className="font-medium text-red-800 dark:text-red-500 hover:underline">Remove</a></td>
+                         <td className="px-6 py-4 text-right"> 
+                                    <button onClick={() => handleDelete(employee.id, employee.username)} className="font-medium text-red-800 dark:text-red-500 hover:underline">Remove</button>
+                                </td>
                     </tr>
                 ))}
             </tbody>
