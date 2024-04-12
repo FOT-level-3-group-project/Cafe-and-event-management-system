@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import WaiterSideBar from '../../components/WaiterSideBar'
 import TakeOrder from './order/TakeOrder';
 import { Toaster } from 'react-hot-toast';
+import ManageOrder from './order/ManageOrder';
 
 export default function Waiter() {
 
@@ -27,10 +28,10 @@ export default function Waiter() {
                 <WaiterSideBar/>
             </div>
 
-                {/* Inventory */}
+                {/* Orders */}
                 {tab === 'take-order' && <TakeOrder/>}
-                {/* profile */}
-                {/* {tab === 'profile' && <ManagerProfile/>} */}
+                {/* Manage Orders */}
+                {tab === 'manage-orders' && <ManageOrder/>}
         </div>
     </div>
 
