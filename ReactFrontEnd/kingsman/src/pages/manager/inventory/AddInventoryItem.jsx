@@ -4,7 +4,6 @@ import { Button, Checkbox, Label, Modal, TextInput, Dropdown } from "flowbite-re
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { set } from "firebase/database";
-import "../managerStyles/AddNewItem.css";
 import { HiCheck } from "react-icons/hi";
 
 function AddInventoryItem({ onSubmit, onCancel }) {

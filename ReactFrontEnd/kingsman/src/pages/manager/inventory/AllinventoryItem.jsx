@@ -184,8 +184,6 @@ export default function AllinventoryItem() {
           </div>
 
 
-
-
           {/* Right column */}
           <div className=' h-full w-auto md:h-screen  p-4 flex flex-col justify-start items-center'>
             <div className=''>
@@ -194,7 +192,7 @@ export default function AllinventoryItem() {
 
             {/* date picker */}
             <div className='mt-1 border-t-2'>
-              <Datepicker inline onSelect={handleDateSelect} className='mt-7' />
+              <Datepicker inline onChange={(date) => handleDateSelect(date)} className='mt-7' />
             </div>
 
             <div className=''>
