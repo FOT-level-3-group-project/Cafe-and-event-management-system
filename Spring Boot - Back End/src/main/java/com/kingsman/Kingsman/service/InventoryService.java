@@ -81,6 +81,7 @@ public class InventoryService {
                 inventoryItemUsageLog.setItemName(existingItem.getItemName());
                 inventoryItemUsageLog.setDecreasedQuantity((long) quantity);
                 inventoryItemUsageLog.setUsageDateTime(LocalDateTime.now());
+                inventoryItemUsageLog.setUnit(existingItem.getUnit());
 
                 inventoryItemUsageLogRepository.save(inventoryItemUsageLog);
 
