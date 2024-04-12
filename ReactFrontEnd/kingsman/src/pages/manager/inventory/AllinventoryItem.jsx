@@ -1,11 +1,15 @@
 import React, { Fragment, useRef } from 'react'
-import { Button, Pagination, Datepicker, Dropdown} from 'flowbite-react'
+import { Button, Pagination, Datepicker, Dropdown, Modal} from 'flowbite-react'
 import { Table } from "flowbite-react";
 import { useEffect, useState } from 'react';
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 import axios from 'axios';
 import EditInventoryItem from './EditInventoryItem';
+import AddInventoryItem from './AddInventoryItem';
+import DeleteInventoryItem from './DeleteInventoryItem';
 
 export default function AllinventoryItem() {
+  const [isAddInventoryOpen, setAddInventoryOpen] = useState(false);
   const [inventoryData, setInventoryData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -14,10 +18,20 @@ export default function AllinventoryItem() {
   // const datePickerRef = useRef(null);
   const [editItem, setEditItem] = useState(null); // State to store item being edited
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false); // State to manage visibility of edit popup
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false); // State to manage visibility of delete confirmation popup
+  const [itemToDelete, setItemToDelete] = useState(null); // State to store item to delete
 
   useEffect(() => { fetchData(); }, []);
 
-  const openAddInventoryPopup = () => { };
+  const openAddInventoryPopup = () => { 
+    setAddInventoryOpen(true);
+  };
+
+  const cancelAddInventoryPopup = () => {
+    setAddInventoryOpen(false);
+  };
+
+  
 
   
     const fetchData = async () => {
@@ -72,6 +86,29 @@ export default function AllinventoryItem() {
   const handleDateSelect = (date) => {
     setSelectedDate(date);
     console.log('Selected date:', selectedDate);
+  };
+
+  // Function to handle deleting an item
+  const handleDeleteItem = (itemId) => {
+    setShowDeleteConfirmation(true);
+    setItemToDelete(itemId);
+  };
+  // Function to confirm deletion
+  const cancelDelete = () => {
+    setShowDeleteConfirmation(false);
+    setItemToDelete(null);
+  };
+
+  // Function to delete an item
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:8080/api/inventory/delete/${itemToDelete}`);
+      setShowDeleteConfirmation(false);
+      setItemToDelete(null);
+      fetchData(); // Reload items after deleting
+    } catch (error) {
+      console.error("Error deleting item", error);
+    }
   };
 
 
@@ -134,7 +171,7 @@ export default function AllinventoryItem() {
                         <Table.Cell>
                           <Dropdown label="Action" inline>
                             <Dropdown.Item onClick={() => handleEditClick(item.id)} >Edit</Dropdown.Item>
-                            <Dropdown.Item>Delete</Dropdown.Item>
+                            <Dropdown.Item onClick={() => handleDeleteItem(item.id)}>Delete</Dropdown.Item>
                           </Dropdown>
                         </Table.Cell>
                       </Table.Row>
@@ -167,6 +204,14 @@ export default function AllinventoryItem() {
 
         </div>
       </section>
+      {/* Delete confirmation modal */}
+      {showDeleteConfirmation && (
+        <DeleteInventoryItem
+        itemName={inventoryData.find(item => item.id === itemToDelete)?.itemName}
+        onCancel={cancelDelete}
+        onConfirm={confirmDelete}
+      />
+      )}
 
       {isEditPopupOpen && (
         <EditInventoryItem
@@ -175,6 +220,13 @@ export default function AllinventoryItem() {
           onSubmit={handleEditSubmit} // Reload items after editing
         />
       )}
+
+      {isAddInventoryOpen && (  
+        <AddInventoryItem 
+        onCancel = {cancelAddInventoryPopup}
+        onSubmit={fetchData}
+        />
+        )}
     </Fragment>
   )
 }
