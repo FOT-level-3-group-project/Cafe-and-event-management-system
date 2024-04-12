@@ -129,8 +129,8 @@ export default function TakeOrder() {
         
                 if (existingItemIndex !== -1) {
                     //update its quantity and totalPrice
-                    updatedOrderItems[existingItemIndex].quantity = quantity;
-                    updatedOrderItems[existingItemIndex].totalPrice = selectedFoodItem.foodPrice * quantity;
+                    const newQuantity =  updatedOrderItems[existingItemIndex].quantity += quantity;
+                    updatedOrderItems[existingItemIndex].totalPrice = selectedFoodItem.foodPrice * newQuantity;
                 } else {
                     // Newly add it
                     const totalPrice = selectedFoodItem.foodPrice * quantity;
