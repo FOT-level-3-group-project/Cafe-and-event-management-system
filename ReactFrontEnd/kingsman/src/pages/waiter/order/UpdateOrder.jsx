@@ -8,8 +8,12 @@ import QuantityInputModal from "../FoodItems/QuantityInputModal";
 import QuantityUpdateModal from "../FoodItems/QuantityUpdateModal";
 import toast from 'react-hot-toast';
 
-export default function TakeOrder() {
+
+
+
+export default function UpdateOrder() {
         const [responseErrors, setResponseErrors] = useState('');
+        const [OrderResponse, setOrderResponse] = useState({});
         const { currentUser } = useSelector((state) => state.user);
 
         const [customerAddModal, SetCustomerAddModal] = useState(false);
@@ -26,6 +30,7 @@ export default function TakeOrder() {
 
         const [selectedFoodItem, setSelectedFoodItem] = useState({});
         const [orderItems, setOrderItems] = useState([]);
+        const [orderItemsConvertedResponse, setOrderItemsConvertedResponse] = useState([]);
         const [billItemData, setBillItemData] = useState({});
         const [tableNumber, setTableNumber] = useState(0);
 
@@ -35,7 +40,40 @@ export default function TakeOrder() {
         const [discountPercentage, setDiscountPercentage] = useState(0);
 
         useEffect(() => {
-            setResponseErrors("")
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderIDFromUrl = urlParams.get('order');
+            
+            axios.get(`http://localhost:8080/api/orders/${orderIDFromUrl}`)
+                .then(response => {
+                    if (response.status === 200){
+                        setOrderResponse(response.data);
+                        const { orderItems, tableNumber, subTotal, discountPercentage, totalAfterDiscount, customer } = response.data;
+                        const convertedOrderItems = orderItems.map(item => ({
+                            orderItemId: item.orderItemId,
+                            foodId: item.foodItemId,
+                            foodName:item.foodItemName, 
+                            foodPrice:item.foodPrice,
+                            quantity: item.quantity,
+                            totalPrice: item.quantity * item.foodPrice,
+                        }));
+                        setOrderItems(convertedOrderItems);
+                        setOrderItemsConvertedResponse(convertedOrderItems);
+                        setTableNumber(tableNumber);
+                        setSubtotal(subTotal);
+                        setDiscountPercentage(discountPercentage);
+                        setTotalAfterDiscount(totalAfterDiscount);
+                        if(customer){
+                            setCustomerData(customer);
+                        }
+                    }else {
+                        window.location.href = "/waiter?tab=manage-orders&error=order-not-found";
+                    }
+                })
+                .catch(error => {
+                    window.location.href = "/waiter?tab=manage-orders&error=order-not-found";
+                    console.error("Error fetching order details:", error);
+                });
+    
             axios.get("http://localhost:8080/api/food/all")
                 .then(response => {
                     setFoodItems(response.data);
@@ -163,11 +201,23 @@ export default function TakeOrder() {
         };
         
         
-        const generateOrder = () => {
+        const updateOrder = async () => {
             if (orderItems.length < 1) {
                 return setResponseErrors("At least one item must be ordered.");
             }
         
+            const removedIds = findRemovedItemIds(orderItemsConvertedResponse, orderItems);
+
+            let deleteStatus = true;
+            if (removedIds.length > 0) {
+                deleteStatus = deleteItems(removedIds);
+            }
+          
+            if (!deleteStatus) {
+                return;
+            }
+
+
             const convertedOrderItems = orderItems.map(item => {
                 const { foodId, ...rest } = item;
                 return { foodItemId: foodId, ...rest };
@@ -175,9 +225,10 @@ export default function TakeOrder() {
         
             // Generate JSON object with order details
             const orderJSON = {
+                orderId: OrderResponse.orderId,
                 customerId: customerData.cusId || "",
-                orderDateTime: new Date().toISOString(),
-                orderStatus: "Pending",
+                orderDateTime:OrderResponse.orderDateTime,
+                orderStatus: OrderResponse.orderStatus,
                 tableNumber: tableNumber,
                 subTotal: subtotal,
                 discountValue: 0.0,
@@ -188,24 +239,26 @@ export default function TakeOrder() {
                 employeeId: currentUser.id,
                 orderItems: convertedOrderItems
             };
+            console.log(orderItems);
         
-            axios.post("http://localhost:8080/api/orders", orderJSON, {
+            axios.put(`http://localhost:8080/api/orders/${OrderResponse.orderId}`, orderJSON, {
                 headers: {
                     "Content-Type": "application/json"
                 }
             })
             .then(response => {
-                if (response.status === 201) {
+                if (response.status === 200) {
                     // Successful
+                    toast.success('Order Updated.');
                     setCustomerData({});
                     handleClearFields();
                     setOrderItems([]);
                     setResponseErrors("");
                     setTableNumber(0);
-                    toast.success('Order Placed.');
+                    window.location.href = "/waiter?tab=manage-orders" ;
                 } else {
                     // Unexpected response
-                    console.error('Unexpected response status:', response.status);
+                    console.error('Unexpected response status:', response);
                     toast.error(
                         "Something has error. \n Please Contact System Support.",
                         { duration: 6000 }
@@ -217,7 +270,45 @@ export default function TakeOrder() {
                 console.error("Error:", error);
             });
         };
-            
+          
+        // Function to compare order items and find removed ones
+        const findRemovedItemIds = (responseItems, itemList) => {
+            const orderItems1 = responseItems || [];
+            const orderItems2 = itemList || [];
+        
+            const removedIds = orderItems1
+                .filter(item1 => !orderItems2.find(item2 => item1.orderItemId === item2.orderItemId))
+                .map(item => item.orderItemId);
+        
+            // Return the array of removed item IDs
+            return removedIds;
+        };
+
+        const deleteItems = async (removedIds) => {
+            try {
+                for (const itemId of removedIds) {
+                    const response = await axios.delete(`http://localhost:8080/api/orders/items/${itemId}`);
+                    if (response.status !== 204) {
+                        console.error(`Failed to delete item with ID ${itemId}.`);
+                        toast.error(
+                            "Something has error. \n Please Contact System Support.",
+                            { duration: 6000 }
+                        );
+                        return false; 
+                    }
+                }
+                return true; 
+            } catch (error) {
+                console.error('Error:', error);
+                return false;
+            }
+        };
+        
+        
+        
+    
+
+        
 
   return (
     <div className="w-full bg-slate-200 dark:bg-slate-500 py-5">    
@@ -250,7 +341,7 @@ export default function TakeOrder() {
                 <div className="mx-auto justify-center md:flex md:space-x-6 xl:px-0">
                     <div className="rounded-lg md:w-3/5">
                         <div>
-                            <h1 className="mb-2 text-left text-xl font-bold dark:text-white">Order</h1>
+                            <h1 className="mb-2 text-left text-xl font-bold dark:text-white">Order - <span className=" text-green-500 font-extrabold">#{OrderResponse.orderId}</span></h1>
                             <div>
                                 <div className="max-w-full mb-2">
                                         <div className="relative">
@@ -453,7 +544,7 @@ export default function TakeOrder() {
                                                     </td>
                                                 </tr>
                                             ))
-                                        )}
+                                        )}{}
                                     </tbody>
                                 </table>
                             </div>
@@ -482,8 +573,8 @@ export default function TakeOrder() {
                                         ))}
                                     </select>
                                 </div>
-                                <button onClick={() => generateOrder()} className="mt-6 w-full rounded-md bg-green-500 py-1.5 font-medium text-white hover:bg-green-600">
-                                    <i className="ri-restaurant-2-fill"></i> Place Order
+                                <button onClick={() => updateOrder()} className="mt-6 w-full rounded-md bg-amber-500  py-1.5 font-medium text-white hover:bg-amber-600">
+                                    <i className="ri-restaurant-2-fill"></i> Update Order
                                 </button>
                             </div>
 

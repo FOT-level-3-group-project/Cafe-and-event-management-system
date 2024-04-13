@@ -4,6 +4,8 @@ import WaiterSideBar from '../../components/WaiterSideBar'
 import TakeOrder from './order/TakeOrder';
 import { Toaster } from 'react-hot-toast';
 import ManageOrder from './order/ManageOrder';
+import UpdateOrder from './order/UpdateOrder';
+import OrderView from './order/OrderView';
 
 export default function Waiter() {
 
@@ -32,6 +34,10 @@ export default function Waiter() {
                 {tab === 'take-order' && <TakeOrder/>}
                 {/* Manage Orders */}
                 {tab === 'manage-orders' && <ManageOrder/>}
+                 {/* Update Order */}
+                {tab === 'update-orders' && <UpdateOrder/>}
+                 {/* View Order */}
+                 {tab === 'order-view' && <OrderView/>}
         </div>
     </div>
 

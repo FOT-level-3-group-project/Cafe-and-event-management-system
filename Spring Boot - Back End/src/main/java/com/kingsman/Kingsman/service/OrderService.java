@@ -149,7 +149,7 @@ public class OrderService {
         BeanUtils.copyProperties(orderDTO, existingOrder);
         existingOrder.setUpdatedDate(new Date());
     }
-    
+
     private List<OrderDTO> mapOrderListToDTOList(List<Order> orders) {
         return orders.isEmpty() ? Collections.emptyList() :
                 orders.stream()
