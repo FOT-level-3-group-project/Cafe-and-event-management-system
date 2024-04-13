@@ -56,6 +56,11 @@ export default function ManagerSideBar() {
                             View All Employees
                         </Sidebar.Item>
                     </Link>
+                    <Link to='/manager?tab=add-event'>
+                        <Sidebar.Item active={tab === 'add-event'} icon={HiUser} as='div'>
+                            Add Event
+                        </Sidebar.Item>
+                    </Link>
 
                     <Sidebar.Item icon={HiArrowSmRight} className='cursor-pointer' onClick={handleLogOut} >
                         Log Out
