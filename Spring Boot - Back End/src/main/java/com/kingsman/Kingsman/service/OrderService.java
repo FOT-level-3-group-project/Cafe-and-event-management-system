@@ -8,14 +8,14 @@ import com.kingsman.Kingsman.model.Employee;
 import com.kingsman.Kingsman.model.FoodItem;
 import com.kingsman.Kingsman.model.Order;
 import com.kingsman.Kingsman.model.OrderItem;
+import com.kingsman.Kingsman.repository.OrderItemRepository;
 import com.kingsman.Kingsman.repository.OrderRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,10 +23,11 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final CustomerService customerService;
-
+    private final OrderItemRepository orderItemRepository;
     @Autowired
-    public OrderService(OrderRepository orderRepository, CustomerService customerService) {
+    public OrderService(OrderRepository orderRepository, OrderItemRepository orderItemRepository, CustomerService customerService) {
         this.orderRepository = orderRepository;
+        this.orderItemRepository = orderItemRepository;
         this.customerService = customerService;
     }
 
@@ -62,18 +63,76 @@ public class OrderService {
     }
 
     public OrderDTO updateOrder(Long orderId, OrderDTO orderDTO) {
+        // Fetch existing order
         Order existingOrder = getOrderIfExists(orderId);
+
+        // Update order details
         updateOrderWithDTO(existingOrder, orderDTO);
+
+        // Update order items
+        updateOrderItems(existingOrder, orderDTO.getOrderItems());
+
+        // Save
         Order updatedOrder = orderRepository.save(existingOrder);
+
         return convertToDTO(updatedOrder);
     }
 
-    public void deleteOrder(Long orderId) {
-        if (!orderRepository.existsById(orderId)) {
-            throw new ResourceNotFoundException("Order not found with id: " + orderId);
+    private void updateOrderItems(Order existingOrder, List<OrderItemDTO> updatedOrderItems) {
+
+        Map<Long, OrderItem> existingOrderItemsMap = existingOrder.getOrderItems().stream()
+                .collect(Collectors.toMap(OrderItem::getOrderItemId, Function.identity()));
+
+
+        for (OrderItemDTO updatedOrderItem : updatedOrderItems) {
+            Long orderItemId = updatedOrderItem.getOrderItemId();
+
+            // If the updated order item exists in the map, update its quantity
+            if (existingOrderItemsMap.containsKey(orderItemId)) {
+                OrderItem existingOrderItem = existingOrderItemsMap.get(orderItemId);
+                existingOrderItem.setQuantity(updatedOrderItem.getQuantity());
+
+                // Remove the updated order item from the map
+                existingOrderItemsMap.remove(orderItemId);
+            } else {
+                // If the updated order item doesn't exist in the map, create a new one
+                OrderItem newOrderItem = convertToEntity(updatedOrderItem, existingOrder);
+                existingOrder.getOrderItems().add(newOrderItem);
+                System.out.println("New order item added: " + newOrderItem);
+            }
         }
+
+        // Delete order items that are not present in the updated order items
+        for (OrderItem orderItemToRemove : existingOrderItemsMap.values()) {
+            orderItemRepository.delete(orderItemToRemove);
+            System.out.println("Order item removed: " + orderItemToRemove);
+        }
+    }
+
+    public void deleteOrder(Long orderId) {
+        Order existingOrder = getOrderIfExists(orderId);
+
+        // Delete the associated order items
+        List<OrderItem> orderItems = existingOrder.getOrderItems();
+        for (OrderItem orderItem : orderItems) {
+            orderItemRepository.deleteById(orderItem.getOrderItemId());
+        }
+        // Then delete the order
         orderRepository.deleteById(orderId);
     }
+
+    public void deleteOrderItem(Long orderItemId) {
+        // Find the order item by its ID
+        System.out.println("Deleted order item with ID : " + orderItemId);
+
+        OrderItem orderItem = orderItemRepository.findById(orderItemId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order item not found with id: " + orderItemId));
+
+        // Delete the order item
+        orderItemRepository.delete(orderItem);
+    }
+
+
 
     public List<OrderDTO> getOrdersByCustomerId(Long customerId) {
         List<Order> orders = orderRepository.findByCustomerId(customerId);
@@ -85,12 +144,12 @@ public class OrderService {
         return mapOrderListToDTOList(orders);
     }
 
-
     private void updateOrderWithDTO(Order existingOrder, OrderDTO orderDTO) {
+        // Update order details with new information from the DTO
         BeanUtils.copyProperties(orderDTO, existingOrder);
         existingOrder.setUpdatedDate(new Date());
     }
-
+    
     private List<OrderDTO> mapOrderListToDTOList(List<Order> orders) {
         return orders.isEmpty() ? Collections.emptyList() :
                 orders.stream()
@@ -148,6 +207,7 @@ public class OrderService {
         orderItemDTO.setFoodItemId(orderItem.getFoodItem().getFoodId());
         orderItemDTO.setFoodItemName(orderItem.getFoodItem().getFoodName());
         orderItemDTO.setQuantity(orderItem.getQuantity());
+        orderItemDTO.setFoodPrice(orderItem.getFoodItem().getFoodPrice());
         return orderItemDTO;
     }
 

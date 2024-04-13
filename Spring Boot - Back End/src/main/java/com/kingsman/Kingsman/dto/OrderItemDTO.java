@@ -10,4 +10,5 @@ public class OrderItemDTO {
     private Long foodItemId;
     private String foodItemName;
     private int quantity;
+    private double foodPrice;
 }

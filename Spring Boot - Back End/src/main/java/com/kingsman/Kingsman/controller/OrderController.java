@@ -51,7 +51,6 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrdersByPaymentStatus(paymentStatus));
     }
 
-
     @PostMapping
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
         return new ResponseEntity<>(orderService.createOrder(orderDTO), HttpStatus.CREATED);
@@ -67,4 +66,12 @@ public class OrderController {
         orderService.deleteOrder(orderId);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/items/{orderItemId}")
+    public ResponseEntity<Void> deleteOrderItem(@PathVariable("orderItemId") Long orderItemId) {
+        orderService.deleteOrderItem(orderItemId);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }
