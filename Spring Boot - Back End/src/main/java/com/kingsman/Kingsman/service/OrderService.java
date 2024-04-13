@@ -32,9 +32,8 @@ public class OrderService {
     }
 
     public List<OrderDTO> getAllOrders() {
-        return orderRepository.findAllWithOrderItems().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        List<Order> orders = orderRepository.findAll(); // Fetch all orders
+        return mapOrderListToDTOList(orders);
     }
 
     public OrderDTO getOrderById(Long orderId) {

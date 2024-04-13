@@ -31,7 +31,7 @@ public class Customer {
     @JoinColumn(name = "employee_id", referencedColumnName = "id")
     private Employee employee;
 
-    @Column(name = "added_date", nullable = false, updatable = false)
+    @Column(name = "added_date", nullable = true, updatable = false)
     private LocalDateTime addedDate;
 
     @Column(name = "updated_date")

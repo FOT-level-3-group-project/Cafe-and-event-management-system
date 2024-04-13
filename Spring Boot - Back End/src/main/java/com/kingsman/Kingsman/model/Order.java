@@ -27,7 +27,7 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Date orderDateTime;
 
     @Column(nullable = false)
@@ -36,22 +36,22 @@ public class Order {
     @Column(nullable = false)
     private int tableNumber;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private double subTotal;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private double discountValue;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private double discountPercentage;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private double totalAfterDiscount;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String paymentMethod;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private boolean paymentStatus;
 
     @Column(nullable = false, updatable = false)

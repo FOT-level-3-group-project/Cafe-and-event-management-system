@@ -24,6 +24,8 @@ public class InventoryItemUsageLog {
     @Column(name = "decreased_quantity")
     private Long decreasedQuantity;
 
+    private String unit;
+
     @Column(name = "usage_datetime")
     private LocalDateTime usageDateTime;
 }
