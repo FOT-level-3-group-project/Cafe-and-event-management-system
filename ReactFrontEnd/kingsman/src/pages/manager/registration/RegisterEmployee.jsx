@@ -61,13 +61,13 @@ export default function RegisterEmployee() {
         let errorMessage = '';
 
         if (name === 'contact_number' || name === 'emergency_contact') {
-            if (!/^\d+$/.test(value)) {
+            if ( value !== '' && !/^\d+$/.test(value)) {
                 errorMessage('Please enter only numbers for mobile number');
             }else if (value.length > 10) {
             errorMessage('Contact number should not exceed 10 digits');
             }
         } else if (name === 'first_name' || name === 'last_name') {
-            if (!/^[a-zA-Z]+$/.test(value)) {
+            if ( value !== '' && !/^[a-zA-Z]+$/.test(value)) {
                 errorMessage('Please enter only letters for first name and last name');
             }
         }else if (name === 'email') {

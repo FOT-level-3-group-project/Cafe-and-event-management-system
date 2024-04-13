@@ -7,6 +7,7 @@ import ManagerProfile from './ManagerProfile';
 import Header from '../../components/Header';
 import RegisterEmployee from './registration/RegisterEmployee';
 import ViewAllEmployees from './manageEmployees/ViewAllEmployees';
+import AddEvent from './manageEvents/AddEvent';
 
 
 export default function Manager() {
@@ -34,6 +35,9 @@ export default function Manager() {
                 {tab === 'new-employee' && <RegisterEmployee/>}
                 {/* View All Employees */}
                 {tab === 'view-all-employees' && <ViewAllEmployees/>}
+                {/* Add Event */}
+                {tab === 'add-event' && <AddEvent/>}
+
         </div>
     )
 }
