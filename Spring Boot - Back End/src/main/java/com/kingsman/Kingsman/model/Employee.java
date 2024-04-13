@@ -3,8 +3,9 @@ package com.kingsman.Kingsman.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 
-import java.util.Date;
+import java.sql.Date;
 @Entity
 public class Employee {
 
@@ -25,7 +26,9 @@ public class Employee {
     private String uniform_size;
     private String emergency_contact;
     private String profilePicture;
-    private String otp;
+
+//    @Lob
+//    private byte[] image;
 
     public Integer getId() {
         return id;
@@ -143,15 +146,16 @@ public class Employee {
         this.profilePicture = profilePicture;
     }
 
+//    public byte[] getImage() {
+//        return image;
+//    }
+//
+//    public void setImage(byte[] image) {
+//        this.image = image;
+//    }
+
     public void setEmergency_contact(String emergency_contact) {
         this.emergency_contact = emergency_contact;
     }
 
-    public String getOtp() {
-        return otp;
-    }
-
-    public void setOtp(String otp) {
-        this.otp = otp;
-    }
 }

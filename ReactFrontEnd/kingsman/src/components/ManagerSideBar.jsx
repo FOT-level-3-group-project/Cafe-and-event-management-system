@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-
+import { BiCoinStack } from "react-icons/bi";
 import { Sidebar } from "flowbite-react";
 import { HiArrowSmRight, HiUser } from "react-icons/hi";
+
 import { logOutSuccess } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 
@@ -36,13 +37,28 @@ export default function ManagerSideBar() {
             <Sidebar.Items>
                 <Sidebar.ItemGroup>
                     <Link to='/manager?tab=inventory'>
-                        <Sidebar.Item active={tab === 'inventory'} icon={HiUser} as='div' >
+                        <Sidebar.Item active={tab === 'inventory'} icon={BiCoinStack} as='div' >
                             Inventory
                         </Sidebar.Item>
                     </Link>
                     <Link to='/manager?tab=profile'>
-                        <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"User"} labelColor='dark' as='div'>
+                        <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"Manager"} labelColor='dark' as='div'>
                             Profile
+                        </Sidebar.Item>
+                    </Link>
+                    <Link to='/manager?tab=new-employee'>
+                        <Sidebar.Item active={tab === 'new-employee'} icon={HiUser} as='div'>
+                            New Employee
+                        </Sidebar.Item>
+                    </Link>
+                    <Link to='/manager?tab=view-all-employees'>
+                        <Sidebar.Item active={tab === 'view-all-employees'} icon={HiUser} as='div'>
+                            View All Employees
+                        </Sidebar.Item>
+                    </Link>
+                    <Link to='/manager?tab=add-event'>
+                        <Sidebar.Item active={tab === 'add-event'} icon={HiUser} as='div'>
+                            Add Event
                         </Sidebar.Item>
                     </Link>
 

@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function ShowAttendance() {
+function ShowAttendance() {
   return (
-    <div>
-      Attendance
-    </div>
+    <div>ShowAttendance</div>
   )
 }
+
+export default ShowAttendance

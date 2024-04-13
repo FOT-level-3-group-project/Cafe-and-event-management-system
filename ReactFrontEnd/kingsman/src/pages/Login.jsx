@@ -42,6 +42,7 @@ export default function Login() {
             if (data.success == false) {
                 dispatch(logInFailure(data.message)); //error message
                 navigate('/');
+                console.log(logInFailure(data.message));
             }
 
             if (response.status === 200) {
@@ -115,12 +116,12 @@ export default function Login() {
                     {
                         errorMessage && (
                             <Alert className='mt-5' color='failure'>
-                                {errorMessage}
+                                {errorMessage.message}
                             </Alert>
                         )
                     }
                 </div>
             </div>
         </div>
-    )
+    );
 }   
