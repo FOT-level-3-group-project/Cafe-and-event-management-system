@@ -18,6 +18,10 @@ const AddEvent = () => {
   });
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
+  const [durationErrorMessage, setDurationErrorMessage] = useState('');
+  const [budgetErrorMessage, setBudgetErrorMessage] = useState('');
+  const [ticketPriceErrorMessage, setTicketPriceErrorMessage] = useState('');
+  const [ticketQuantityErrorMessage, setTicketQuantityErrorMessage] = useState('');
 
   const handleAddEventForm = () => {
       setFormData({
@@ -33,6 +37,10 @@ const AddEvent = () => {
         description: '',
       }); 
       setErrorMessage('');
+      setBudgetErrorMessage('');
+      setTicketPriceErrorMessage('');
+      setTicketQuantityErrorMessage('');
+      setDurationErrorMessage('');
   };
 
   const handleChange = (e) => {
@@ -40,25 +48,31 @@ const AddEvent = () => {
       const { name, value } = e.target;
       let errorMessage = '';
 
-       // Validation logic for budget
-    if (name === 'budget' && value !== '' && !/^\d+(\.\d{1,2})?$/.test(value)) {
-        errorMessage = 'Budget must be a valid number with up to two decimal places.';
-    }
-
-    // Validation logic for ticket price
-    if (name === 'ticket_price' && value !== '' && !/^\d+(\.\d{1,2})?$/.test(value)) {
-        errorMessage = 'Ticket price must be a valid number with up to two decimal places.';
-    }
-
-    // Validation logic for duration
-    if (name === 'duration' && value !== '' && !/^\d+(\.\d{1,2})?$/.test(value)) {
-        errorMessage = 'Duration must be a valid number with up to two decimal places.';
-    }
-
-    // Validation logic for ticket quantity
-    if (name === 'ticket_quantity' && value !== '' && !/^\d+$/.test(value)) {
-        errorMessage = 'Ticket quantity must be a valid integer.';
-    }
+      if (name === 'budget'){
+        if (value !== '' && !/^\d+(\.\d{1,2})?$/.test(value)) {
+          setBudgetErrorMessage('Budget must be a valid number with up to two decimal places.');
+        }else{
+          setBudgetErrorMessage('');
+        }
+      }else if (name === 'ticket_price'){
+        if (value !== '' && !/^\d+(\.\d{1,2})?$/.test(value)) {
+          setTicketPriceErrorMessage('Ticket price must be a valid number with up to two decimal places.');
+        }else{
+          setTicketPriceErrorMessage('');
+        }
+      }else if (name === 'duration'){
+        if (value !== '' && !/^\d+(\.\d{1,2})?$/.test(value)) {
+          setDurationErrorMessage('Duration must be a valid number with up to two decimal places.');
+        }else{
+          setDurationErrorMessage('');
+        }
+      }else if (name === 'ticket_quantity'){
+        if (value !== '' && !/^\d+$/.test(value)) {
+          setTicketQuantityErrorMessage('Ticket quantity must be a valid integer.');
+        }else{
+          setTicketQuantityErrorMessage('');
+        }
+      }
 
       setFormData({
         ...formData,
@@ -134,18 +148,22 @@ const AddEvent = () => {
                         <div>
                            <Label value='Duration (Hours)' />
                             <TextInput type='text' placeholder='Duration' id='Duration' value={formData.duration} onChange={handleChange} name="duration" />
+                            {durationErrorMessage && <div className="text-red-500">{durationErrorMessage}</div>}
                         </div>
                         <div>
                             <Label value='Budget (Rs.)' />
                             <TextInput type='text' placeholder='Budget' id='Budget' value={formData.budget} onChange={handleChange} name="budget"  />
+                            {budgetErrorMessage && <div className="text-red-500">{budgetErrorMessage}</div>}
                         </div>
                         <div>
                             <Label value='Ticket Price (Rs.)' />
                             <TextInput type='text' placeholder='Ticket Price' id='TicketPrice' value={formData.ticket_price} onChange={handleChange} name="ticket_price" />
+                            {ticketPriceErrorMessage && <div className="text-red-500">{ticketPriceErrorMessage}</div>}
                         </div>
                         <div>
                             <Label value='Ticket Quantity' />
                             <TextInput type='text' placeholder='Ticket Quantity' id='TicketQuantity' value={formData.ticket_quantity} onChange={handleChange} name="ticket_quantity" />
+                            {ticketQuantityErrorMessage && <div className="text-red-500">{ticketQuantityErrorMessage}</div>}
                         </div>
                         <div>
                             <Label value='Entertainer' />
