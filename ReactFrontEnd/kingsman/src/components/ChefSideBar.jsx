@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { BiCoinStack } from "react-icons/bi";
 import { Sidebar } from "flowbite-react";
-import { HiArrowSmRight, HiUser } from "react-icons/hi";
+import { HiArrowSmRight, HiUser, HiClipboardCheck } from "react-icons/hi";
 
 import { logOutSuccess } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
@@ -25,11 +25,11 @@ export default function ChefSideBar() {
     const handleLogOut = async () => {
 
         try {
-          dispatch(logOutSuccess());
+            dispatch(logOutSuccess());
         } catch (error) {
-          console.log(error.message);
+            console.log(error.message);
         }
-      }
+    }
 
 
     return (
@@ -41,6 +41,21 @@ export default function ChefSideBar() {
                             Inventory
                         </Sidebar.Item>
                     </Link>
+                    <Sidebar.Collapse icon={HiClipboardCheck} label="Orders">
+                        <Link to='/chef?tab=allOrders'>
+                            <Sidebar.Item active={tab === 'allOrders'}>All Orders </Sidebar.Item>
+                        </Link>
+                        <Link to='/chef?tab=availableOrders'>
+                            <Sidebar.Item active={tab === 'availableOrders'}>Available Orders </Sidebar.Item>
+                        </Link>
+                        <Link to='/chef?tab=finishedOrders'>
+                            <Sidebar.Item active={tab === 'finishedOrders'}>Finished Orders</Sidebar.Item>
+                        </Link>
+                        <Link to='/chef?tab=canceledOrders'>
+                            <Sidebar.Item active={tab === 'canceledOrders'}>Canceled Orders</Sidebar.Item>
+                        </Link>
+
+                    </Sidebar.Collapse>
                     <Link to='/chef?tab=profile'>
                         <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"Chef"} labelColor='dark' as='div'>
                             Profile

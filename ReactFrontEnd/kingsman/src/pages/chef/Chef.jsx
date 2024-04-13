@@ -4,6 +4,10 @@ import { useEffect, useState } from 'react';
 import ChefProfile from './ChefProfile';
 import ManageInventory from './inventory/ManageInventory';
 import ChefSideBar from '../../components/ChefSideBar';
+import AvailableOrders from './orders/AvailableOrders';
+import FinishedOrders from './orders/FinishedOrders';
+import CancelOrders from './orders/CancelOrders';
+import AllOrders from './orders/AllOrders';
 
 
 export default function Chef() {
@@ -27,6 +31,14 @@ export default function Chef() {
                 {tab === 'inventory' && <ManageInventory/>}
                 {/* profile */}
                 {tab === 'profile' && <ChefProfile/>}
+                {/* availableOrders */}
+                {tab === 'availableOrders' && <AvailableOrders/>}
+                {/* finishedOrders */}
+                {tab === 'finishedOrders' && <FinishedOrders/>}
+                {/* canceledOrders */}
+                {tab === 'canceledOrders' && <CancelOrders/>}
+                {/* All Orders */}
+                {tab === 'allOrders' && <AllOrders/>}
 
         </div>
     )

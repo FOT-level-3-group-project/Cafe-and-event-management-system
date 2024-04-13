@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
+@CrossOrigin("http://localhost:3000")
 public class OrderController {
 
     private final OrderService orderService;
@@ -21,8 +22,8 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderDTO>> getAllOrders() {
-        return ResponseEntity.ok(orderService.getAllOrders());
+    public List<OrderDTO> getAllOrders() {
+        return orderService.getAllOrders();
     }
 
     @GetMapping("/{id}")

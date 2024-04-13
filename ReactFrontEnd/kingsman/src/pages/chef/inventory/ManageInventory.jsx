@@ -169,7 +169,7 @@ export default function ManageInventory() {
                         <Table.Cell className='text-center'>{index + 1}</Table.Cell>
                         <Table.Cell className='text-center'>{usage.itemId}</Table.Cell>
                         <Table.Cell className='text-center'>{usage.itemName}</Table.Cell>
-                        <Table.Cell className='text-center'>{usage.decreasedQuantity}{usage.unit}</Table.Cell>
+                        <Table.Cell className='text-center'>{usage.decreasedQuantity} {usage.unit}</Table.Cell>
                         <Table.Cell className='text-center'>{new Date(usage.usageDateTime).toLocaleString()}</Table.Cell>
 
                       </Table.Row>
