@@ -1,18 +1,20 @@
 package com.kingsman.Kingsman.controller;
 
 import com.kingsman.Kingsman.dto.OrderDTO;
+import com.kingsman.Kingsman.model.Order;
 import com.kingsman.Kingsman.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
 @RequestMapping("/api/orders")
-@CrossOrigin("http://localhost:3000")
 public class OrderController {
 
     private final OrderService orderService;
@@ -73,6 +75,9 @@ public class OrderController {
         orderService.deleteOrderItem(orderItemId);
         return ResponseEntity.noContent().build();
     }
-
+    @GetMapping("/date/{orderDateTime}") //get data using the specific date
+    public List<Order> getOrdersByDate(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date orderDateTime) {
+        return orderService.getOrdersByDate(orderDateTime);
+    }
 
 }

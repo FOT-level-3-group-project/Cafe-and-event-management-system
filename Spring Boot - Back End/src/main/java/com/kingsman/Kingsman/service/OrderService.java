@@ -228,4 +228,8 @@ public class OrderService {
         return orderItem;
     }
 
+    public List<Order> getOrdersByDate(Date orderDateTime) {
+        return orderRepository.findByOrderDateTime(orderDateTime);
+    }
+
 }
