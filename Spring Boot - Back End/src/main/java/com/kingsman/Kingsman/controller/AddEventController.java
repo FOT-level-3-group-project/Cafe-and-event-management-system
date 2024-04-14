@@ -6,20 +6,30 @@ import com.kingsman.Kingsman.repository.AddEventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/api")
 public class AddEventController {
 
     @Autowired
     private AddEventRepository addEventRepository;
 
     @PostMapping("/add-event")
-    public ResponseEntity<?> register(@RequestBody Event event) {
+    public ResponseEntity<?> register(@RequestBody Event event) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        Date parsedTime = sdf.parse(String.valueOf(event.getStartTime()));
+        Time startTime = new Time(parsedTime.getTime());
+
+        // Set the startTime in the Event object
+        event.setStartTime(startTime);
+
         // Check if there's already an event with the same name
         Event existingEventName = addEventRepository.findByEventName(event.getEventName());
         if (existingEventName != null) {
