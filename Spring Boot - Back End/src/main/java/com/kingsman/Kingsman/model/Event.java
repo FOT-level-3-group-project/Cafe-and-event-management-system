@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
 import java.sql.Time;
+import java.time.LocalDate;
 
 @Entity
 public class Event {
@@ -14,13 +15,14 @@ public class Event {
     private Integer eventID;
     private String eventName;
     private String eventType;
-    private String eventDate;
-    private Time eventTime;
-    private float eventDuration;
+
+    private LocalDate eventDate;
+    private Time startTime;
+    private float duration;
     private float budget;
     private float ticketPrice;
     private String entertainer;
-    private Integer capacity;
+    private Integer ticketQuantity;
     private String eventDescription;
 
     public Integer getEventID() {
@@ -47,28 +49,28 @@ public class Event {
         this.eventType = eventType;
     }
 
-    public String getEventDate() {
+    public LocalDate getEventDate() {
         return eventDate;
     }
 
-    public void setEventDate(String eventDate) {
+    public void setEventDate(LocalDate eventDate) {
         this.eventDate = eventDate;
     }
 
-    public Time getEventTime() {
-        return eventTime;
+    public Time getStartTime() {
+        return startTime;
     }
 
-    public void setEventTime(Time eventTime) {
-        this.eventTime = eventTime;
+    public void setStartTime(Time eventTime) {
+        this.startTime = eventTime;
     }
 
-    public float getEventDuration() {
-        return eventDuration;
+    public float getDuration() {
+        return duration;
     }
 
-    public void setEventDuration(float eventDuration) {
-        this.eventDuration = eventDuration;
+    public void setDuration(float eventDuration) {
+        this.duration = eventDuration;
     }
 
     public float getBudget() {
@@ -95,12 +97,12 @@ public class Event {
         this.entertainer = entertainer;
     }
 
-    public Integer getCapacity() {
-        return capacity;
+    public Integer getTicketQuantity() {
+        return ticketQuantity;
     }
 
-    public void setCapacity(Integer capacity) {
-        this.capacity = capacity;
+    public void setTicketQuantity(Integer capacity) {
+        this.ticketQuantity = capacity;
     }
 
     public String getEventDescription() {

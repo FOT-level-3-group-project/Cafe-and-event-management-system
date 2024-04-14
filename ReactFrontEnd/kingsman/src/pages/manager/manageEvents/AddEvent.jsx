@@ -5,14 +5,14 @@ import axios from 'axios';
 
 const AddEvent = () => {
   const [formData, setFormData] = useState({
-    event_name: '',
-    event_type: '',
-    event_date: '',
-    start_time: '',
+    eventName: '',
+    eventType: '',
+    eventDate: '',
+    startTime: '',
     duration: '',
     budget: '',
-    ticket_price: '',
-    ticket_quantity: '',
+    ticketPrice: '',
+    ticketQuantity: '',
     entertainer: '',
     description: '',
   });
@@ -25,14 +25,14 @@ const AddEvent = () => {
 
   const handleAddEventForm = () => {
       setFormData({
-        event_name: '',
-        event_type: '',
-        event_date: '',
-        start_time: '',
+        eventName: '',
+        eventType: '',
+        eventDate: '',
+        startTime: '',
         duration: '',
         budget: '',
-        ticket_price: '',
-        ticket_quantity: '',
+        ticketPrice: '',
+        ticketQuantity: '',
         entertainer: '',
         description: '',
       }); 
@@ -54,7 +54,7 @@ const AddEvent = () => {
         }else{
           setBudgetErrorMessage('');
         }
-      }else if (name === 'ticket_price'){
+      }else if (name === 'ticketPrice'){
         if (value !== '' && !/^\d+(\.\d{1,2})?$/.test(value)) {
           setTicketPriceErrorMessage('Ticket price must be a valid number with up to two decimal places.');
         }else{
@@ -66,7 +66,7 @@ const AddEvent = () => {
         }else{
           setDurationErrorMessage('');
         }
-      }else if (name === 'ticket_quantity'){
+      }else if (name === 'ticketuantity'){
         if (value !== '' && !/^\d+$/.test(value)) {
           setTicketQuantityErrorMessage('Ticket quantity must be a valid integer.');
         }else{
@@ -86,9 +86,9 @@ const AddEvent = () => {
         handleAddEventForm();
 
         try {
-            const response = await axios.post('http://localhost:8080/add-event', formData);
+            const response = await axios.post('http://localhost:8080/api/add-event', formData);
             console.log(response.data);
-            const successMessage = `Successfully added event ${formData.event_name}`;
+            const successMessage = `Successfully added event ${formData.eventName}`;
             setErrorMessage(successMessage);
         } catch (error) {
             if (error.response) {
@@ -118,15 +118,15 @@ const AddEvent = () => {
                     <h1 className='flex justify-center font-bold'> Add New Event</h1> <hr></hr>
                         <div>
                             <Label value='Event Name*' />
-                            <TextInput type='text' placeholder='Event Name' id='EventName' value={formData.event_name} onChange={handleChange} name="event_name" required />
+                            <TextInput type='text' placeholder='Event Name' id='EventName' value={formData.eventName} onChange={handleChange} name="eventName" required />
                         </div>
                         <div>
                             <Label value='Event Type' />
-                            <TextInput type='text' placeholder='Event Type' id='EventType' value={formData.event_type} onChange={handleChange} name="event_type" />
+                            <TextInput type='text' placeholder='Event Type' id='EventType' value={formData.eventType} onChange={handleChange} name="eventType" />
                         </div>
                         <div>
                             <Label value='Event Date*' />
-                             <TextInput type='date' placeholder='Joined Date' id='JoinedDate' className='text-gray-400' value={formData.event_date} onChange={handleChange} name="event_date"/>
+                             <TextInput type='date' placeholder='Event Date' id='EventDate' className='text-gray-400' value={formData.eventDate} onChange={handleChange} name="eventDate"/>
                         </div>
 
                         {/* Time picker */}
@@ -138,7 +138,7 @@ const AddEvent = () => {
                                   <path fillRule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clipRule="evenodd"/>
                               </svg>
                             </div>
-                            <input type="time" id="time" onChange={handleChange} name='start_time'
+                            <input type="time" id="time" onChange={handleChange} name='startTime'
                               className="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                               min="00:00"  max="23:59" 
                               // required 
@@ -157,12 +157,12 @@ const AddEvent = () => {
                         </div>
                         <div>
                             <Label value='Ticket Price (Rs.)' />
-                            <TextInput type='text' placeholder='Ticket Price' id='TicketPrice' value={formData.ticket_price} onChange={handleChange} name="ticket_price" />
+                            <TextInput type='text' placeholder='Ticket Price' id='TicketPrice' value={formData.ticketPrice} onChange={handleChange} name="ticketPrice" />
                             {ticketPriceErrorMessage && <div className="text-red-500">{ticketPriceErrorMessage}</div>}
                         </div>
                         <div>
                             <Label value='Ticket Quantity' />
-                            <TextInput type='text' placeholder='Ticket Quantity' id='TicketQuantity' value={formData.ticket_quantity} onChange={handleChange} name="ticket_quantity" />
+                            <TextInput type='text' placeholder='Ticket Quantity' id='TicketQuantity' value={formData.ticketQuantity} onChange={handleChange} name="ticketQuantity" />
                             {ticketQuantityErrorMessage && <div className="text-red-500">{ticketQuantityErrorMessage}</div>}
                         </div>
                         <div>
