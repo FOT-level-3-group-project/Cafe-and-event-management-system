@@ -45,34 +45,43 @@ const AddEvent = () => {
 
   const handleChange = (e) => {
     console.log("handleChange called");  
-      const { name, value } = e.target;
-      let errorMessage = '';
+    const { name, value } = e.target;
+    let errorMessage = '';
 
-      if (name === 'budget'){
-        if (value !== '' && !/^\d+(\.\d{1,2})?$/.test(value)) {
-          setBudgetErrorMessage('Budget must be a valid number with up to two decimal places.');
-        }else{
-          setBudgetErrorMessage('');
-        }
-      }else if (name === 'ticketPrice'){
-        if (value !== '' && !/^\d+(\.\d{1,2})?$/.test(value)) {
-          setTicketPriceErrorMessage('Ticket price must be a valid number with up to two decimal places.');
-        }else{
-          setTicketPriceErrorMessage('');
-        }
-      }else if (name === 'duration'){
-        if (value !== '' && !/^\d+(\.\d{1,2})?$/.test(value)) {
-          setDurationErrorMessage('Duration must be a valid number with up to two decimal places.');
-        }else{
-          setDurationErrorMessage('');
-        }
-      }else if (name === 'ticketuantity'){
-        if (value !== '' && !/^\d+$/.test(value)) {
-          setTicketQuantityErrorMessage('Ticket quantity must be a valid integer.');
-        }else{
-          setTicketQuantityErrorMessage('');
-        }
+    if (name === 'budget'){
+      if (value !== '' && !/^\d+(\.\d{1,2})?$/.test(value)) {
+        setBudgetErrorMessage('Budget must be a valid number with up to two decimal places.');
+      }else{
+        setBudgetErrorMessage('');
       }
+    }else if (name === 'ticketPrice'){
+      if (value !== '' && !/^\d+(\.\d{1,2})?$/.test(value)) {
+        setTicketPriceErrorMessage('Ticket price must be a valid number with up to two decimal places.');
+      }else{
+        setTicketPriceErrorMessage('');
+      }
+    }else if (name === 'duration'){
+      if (value !== '' && !/^\d+(\.\d{1,2})?$/.test(value)) {
+        setDurationErrorMessage('Duration must be a valid number with up to two decimal places.');
+      }else{
+        setDurationErrorMessage('');
+      }
+    }else if (name === 'ticketuantity'){
+      if (value !== '' && !/^\d+$/.test(value)) {
+        setTicketQuantityErrorMessage('Ticket quantity must be a valid integer.');
+      }else{
+        setTicketQuantityErrorMessage('');
+      }
+    }
+
+    // For the time selects
+    if (name === 'startTime') {
+      // Split the selected time into hours and minutes
+      const [selectedHour, selectedMinute] = value.split(':');
+      // Combine hours and minutes into a single string
+      const selectedTime = `${selectedHour}:${selectedMinute}`;
+    }
+
 
       setFormData({
         ...formData,
@@ -126,24 +135,27 @@ const AddEvent = () => {
                         </div>
                         <div>
                             <Label value='Event Date*' />
-                             <TextInput type='date' placeholder='Event Date' id='EventDate' className='text-gray-400' value={formData.eventDate} onChange={handleChange} name="eventDate"/>
+                             <TextInput type='date' placeholder='Event Date' id='EventDate' value={formData.eventDate} onChange={handleChange} name="eventDate" className='text-gray-400' />
                         </div>
-
-                        {/* Time picker */}
                         <div>
-                          <label htmlFor="time" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Event time:</label>
-                          <div className="relative">
-                            <div className="absolute inset-y-0 end-0 top-0 flex items-center pe-3.5 pointer-events-none">
-                              <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                  <path fillRule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clipRule="evenodd"/>
-                              </svg>
-                            </div>
-                            <input type="time" id="time" onChange={handleChange} name='startTime'
-                              className="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-                              min="00:00"  max="23:59" 
-                              // required 
-                            />
-                          </div>
+                          <Label value='Starting Time' /> <br/>
+                          <select
+                            className="border rounded-md dark:bg-gray-600 dark:font-white"
+                            onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
+                          >
+                            {Array.from({ length: 24 }, (_, i) => (
+                              <option key={i} value={i < 10 ? `0${i}:00` : `${i}:00`}>{i < 10 ? `0${i}` : `${i}`}</option>
+                            ))}
+                          </select>
+                          <span className="text-xl font-bold">:</span>
+                          <select
+                            className="border rounded-md dark:bg-gray-600 dark:font-white"
+                            onChange={(e) => setFormData({ ...formData, startTime: `${formData.startTime.split(':')[0]}:${e.target.value}` })}
+                          >
+                            {Array.from({ length: 60 }, (_, i) => (
+                              <option key={i} value={i < 10 ? `0${i}` : `${i}`}>{i < 10 ? `0${i}` : `${i}`}</option>
+                            ))}
+                          </select>
                         </div>
                         <div>
                            <Label value='Duration (Hours)' />

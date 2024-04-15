@@ -17,7 +17,7 @@ public class Event {
     private String eventType;
 
     private LocalDate eventDate;
-    private Time startTime;
+    private String startTime;
     private float duration;
     private float budget;
     private float ticketPrice;
@@ -57,12 +57,12 @@ public class Event {
         this.eventDate = eventDate;
     }
 
-    public Time getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Time eventTime) {
-        this.startTime = eventTime;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
     }
 
     public float getDuration() {
