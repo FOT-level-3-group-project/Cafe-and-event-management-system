@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Navbar,Accordion,Label, Badge } from "flowbite-react";
+import { Button, Navbar, Accordion, Label, Badge } from "flowbite-react";
 
 export default function AllOrders() {
     return (
@@ -32,38 +32,30 @@ export default function AllOrders() {
                     </Navbar.Collapse>
                 </Navbar>
             </div>
-            <div className='ml-3 mr-3'>
+            <div className='ml-3 mr-3 w-auto'>
                 <Accordion collapseAll>
                     <Accordion.Panel>
                         <Accordion.Title>
-                            <div className="flex justify-between items-center">
-                                <div className='flex space-x-20'>
+                            <div className=" flex items-center justify-between w-full">
+                                <div className='space-x-16 w-full'>
                                     <Label > Order Id #123</Label>
                                     <Label >Table Number: 5</Label>
-                                    <Label >Waiter: Chathumina Dilshan</Label>
-                                    <Label >Customer: Lahiru Prasad</Label>
+                                    <Label >Item : Cheese Pastha</Label>
+                                    <Label >Waiter: Chathumina</Label>
+
                                 </div>
-                                <div>
-                                    <Badge className='ml-56' size='l'>Pending</Badge>
+                                <div className=' ml-80 justify-end'>
+                                    <Badge size='l' color="purple">Preparing</Badge>
                                 </div>
                             </div>
 
                         </Accordion.Title>
                         <Accordion.Content>
-                            <p className="mb-2 text-gray-500 dark:text-gray-400">
-                                Flowbite is an open-source library of interactive components built on top of Tailwind CSS including buttons,
-                                dropdowns, modals, navbars, and more.
-                            </p>
-                            <p className="text-gray-500 dark:text-gray-400">
-                                Check out this guide to learn how to&nbsp;
-                                <a
-                                    href="https://flowbite.com/docs/getting-started/introduction/"
-                                    className="text-cyan-600 hover:underline dark:text-cyan-500"
-                                >
-                                    get started&nbsp;
-                                </a>
-                                and start developing websites even faster with components on top of Tailwind CSS.
-                            </p>
+                            <div className='flex-col flex'>
+                                <Label  className="mb-4"> Customer Name : Thisara  </Label>
+                                <Label  className=""> Ordered Time : 9.50 AM  </Label>
+
+                            </div>
                         </Accordion.Content>
                     </Accordion.Panel>
                 </Accordion>

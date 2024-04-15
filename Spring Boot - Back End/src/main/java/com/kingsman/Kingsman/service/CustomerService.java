@@ -127,4 +127,9 @@ public class CustomerService {
 
         return customer;
     }
+
+    public String getCustomerNameById(Long customerId) {
+        Optional<Customer> customerOptional = customerRepository.findById(customerId);
+        return customerOptional.map(Customer::getCusName).orElse(null);
+    }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Date orderDateTime;
 
     @Column(nullable = false)
@@ -36,41 +37,42 @@ public class Order {
     @Column(nullable = false)
     private int tableNumber;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private double subTotal;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private double discountValue;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private double discountPercentage;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private double totalAfterDiscount;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String paymentMethod;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private boolean paymentStatus;
+
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate;
+    private LocalDateTime createdDate;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date updatedDate;
+    private LocalDateTime updatedDate;
 
     @PrePersist
     protected void onCreate() {
-        createdDate = new Date();
-        updatedDate = new Date();
+        createdDate = LocalDateTime.now();
+        updatedDate = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedDate = new Date();
+        updatedDate = LocalDateTime.now();
     }
 
     public Order() {

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FoodItemService {
@@ -33,4 +34,9 @@ public class FoodItemService {
         foodItemRepository.deleteById(foodItemId);
     }
 
+
+    public String getFoodNameById(Long foodItemId) {
+        Optional<FoodItem> foodItemOptional = foodItemRepository.findById(foodItemId);
+        return foodItemOptional.map(FoodItem::getFoodName).orElse(null);
+    }
 }
