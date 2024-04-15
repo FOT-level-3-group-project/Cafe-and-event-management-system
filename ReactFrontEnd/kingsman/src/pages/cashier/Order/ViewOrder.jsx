@@ -1,9 +1,11 @@
-
+// @flow 
+import * as React from 'react';
 import  { useState,useEffect, } from "react";
 import axios from 'axios';
 
 
-export default function OrderView() {
+export const ViewOrder = () => {
+
 
         const [OrderResponse, setOrderResponse] = useState({});
 
@@ -41,13 +43,14 @@ export default function OrderView() {
                         setTotalAfterDiscount(totalAfterDiscount);
                         if(customer){
                             setCustomerData(customer);
+                            setDiscountPercentage(5);
                         }
                     }else {
-                        window.location.href = "/waiter?tab=manage-orders&error=order-not-found";
+                        window.location.href = "/cashier?tab=orders&error=order-not-found";
                     }
                 })
                 .catch(error => {
-                    window.location.href = "/waiter?tab=manage-orders&error=order-not-found";
+                    window.location.href = "/cashier?tab=orders&error=order-not-found";
                     console.error("Error fetching order details:", error);
                 });
         }, []);
@@ -213,6 +216,7 @@ export default function OrderView() {
                             </div>
 
                             <div className="px-6 py-3">
+                                <hr className="mt-1 mb-3"/>
                                 <div className="flex justify-between">
                                     <p className="text-md">Subtotal</p>
                                     <div>
@@ -224,6 +228,18 @@ export default function OrderView() {
                                     <div>
                                         <p className="mb-1 text-md">LKR {(subtotal * (discountPercentage / 100)).toFixed(2)}</p>
                                     </div>
+                                </div>
+                                <div className="flex justify-between">
+                                        <p className="text-md"></p>
+                                        <div>
+                                            {discountPercentage === 5 ? (
+                                                <p className="top-full left-0 mt-1 text-xs text-gray-500">
+                                                    Member discount applied
+                                                </p>
+                                            ) : (
+                                                ""
+                                            )}
+                                        </div>
                                 </div>
                                 <hr className="mt-2 mb-3"/>
                                 <div className="flex justify-between">
@@ -243,14 +259,16 @@ export default function OrderView() {
 
                                 <div>
                                     <div className='flex items-center justify-between w-full overflow-hidden'>
-                                        <a href="/waiter?tab=manage-orders" className="flex-grow flex items-center justify-center px-3 py-2 bg-cyan-500 text-white font-semibold rounded hover:bg-cyan-600 mx-1">
+                                        <a href="/cashier?tab=orders" className="flex-grow flex items-center justify-center px-3 py-2 bg-cyan-500 text-white font-semibold rounded hover:bg-cyan-600 mx-1">
                                             <i className="ri-arrow-left-s-line"></i>
                                             <span className="ml-1">Back</span>
                                         </a>
-                                        <a  href={`/waiter?tab=update-orders&order=${OrderResponse.orderId}`} className="flex-grow flex items-center justify-center px-3 py-2 bg-amber-500 text-white font-semibold rounded hover:bg-amber-600 mx-1">
-                                            <i className="ri-edit-fill"></i>
-                                            <span className="ml-1">Edit Order</span>
-                                        </a>
+                                        {OrderResponse.orderStatus === "Ready" && (
+                                            <a href={`/cashier?tab=bill&order=${OrderResponse.orderId}`} className="flex-grow flex items-center justify-center px-3 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600 mx-1">
+                                                <span className="mr-1">Process Order</span>
+                                                <i className="ri-arrow-right-s-line"></i>
+                                            </a>
+                                        )}
                                     </div>
                                 </div>
                             </div>
