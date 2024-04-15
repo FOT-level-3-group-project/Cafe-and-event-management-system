@@ -4,7 +4,7 @@ import { Button, Modal } from "flowbite-react";
 import { FcAlarmClock } from "react-icons/fc"; // Importing FcAlarmClock icon
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 
-function Attendance() {
+function OverTime() {
   const [attendance, setAttendance] = useState([
     { id: 1, empName: "John", position: "Manager", inTime: "", outTime: "" },
     { id: 2, empName: "Jane", position: "Server", inTime: "", outTime: "" },
@@ -17,13 +17,6 @@ function Attendance() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState({});
   const [isInTime, setIsInTime] = useState(true); // Track if it's in time or out time
-
-  // Get today's date in the format: DD-MM-YYYY
-  const todayDate = new Date().toLocaleDateString("en-US", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric"
-  });
 
   // Function to handle taking in time or out time
   const handleTakeTime = (employeeId, empName, isInTime) => {
@@ -50,15 +43,15 @@ function Attendance() {
   };
 
   return (
-    <div className="mr-16 ml-16 mt5 mb-5">
+    <div>
       {/* Header */}
       <h1 style={{ fontFamily: "Arial", color: "blue", fontSize: "24px", fontWeight: "bold" }}>
-        Take Attendance (Today's Date: {todayDate})
+        Take Attendance
       </h1>
 
       {/* Table container */}
       <div>
-        <Table hoverable className="my-4 shadow">
+        <Table hoverable className="my-4">
           <Table.Head>
             <Table.HeadCell>#</Table.HeadCell>
             <Table.HeadCell>Emp Name</Table.HeadCell>
@@ -129,4 +122,4 @@ function Attendance() {
   );
 }
 
-export default Attendance;
+export default OverTime;
