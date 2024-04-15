@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import CashierSideBar from '../../components/CashierSideBar';
 import ShowAttendance from './attendance/ShowAttendance';
 import CashierProfile from './CashierProfile';
+import ManageOrder from './Order/ManageOrder';
+import { ViewOrder } from './Order/ViewOrder';
+import Bill from './Order/Bill';
 
 export default function Cashier() {
 
@@ -28,7 +31,11 @@ export default function Cashier() {
 
       {tab === 'profile' && <CashierProfile />}
 
-      
+      {tab === 'orders' && <ManageOrder/>}
+
+      {tab === 'orders-view' && <ViewOrder/>}
+
+      {tab === 'bill' && <Bill/>}
 
     </div >
   )

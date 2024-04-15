@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 
 import { Sidebar } from "flowbite-react";
 import { HiArrowSmRight, HiUser } from "react-icons/hi";
+import { MdOutlineRestaurantMenu } from "react-icons/md";
+
 
 export default function CashierSideBar() {
     const location = useLocation();
@@ -23,6 +25,11 @@ export default function CashierSideBar() {
                     <Link to='/cashier?tab=attendance'>
                         <Sidebar.Item active={tab === 'attendance'} icon={HiUser} as ='div'>
                             Attendance
+                        </Sidebar.Item>
+                    </Link>
+                    <Link to='/cashier?tab=orders'>
+                        <Sidebar.Item active={tab === 'orders'} icon={MdOutlineRestaurantMenu} as ='div'>
+                            Manage Orders
                         </Sidebar.Item>
                     </Link>
                     <Link to='/cashier?tab=profile'>
