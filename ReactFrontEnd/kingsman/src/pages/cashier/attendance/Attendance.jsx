@@ -9,7 +9,7 @@ function Attendance() {
     { id: 2, firstName: "Jane", lastName: "Smith", position: "Server", halfDay: false, fullDay: false },
     { id: 3, firstName: "Michael", lastName: "Johnson", position: "Chef", halfDay: false, fullDay: false },
     { id: 4, firstName: "Emily", lastName: "Brown", position: "Waiter", halfDay: false, fullDay: false },
-    { id: 5, firstName: "David", lastName: "Wilson", position: "Bartender", halfDay: false, fullDay: false },
+    { id: 5, firstName: "Davidd", lastName: "Wilson", position: "Bartender", halfDay: false, fullDay: false },
     // Add more data rows as needed
   ]);
 
