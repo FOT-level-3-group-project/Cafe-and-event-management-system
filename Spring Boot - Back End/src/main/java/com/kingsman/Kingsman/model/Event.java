@@ -2,20 +2,18 @@ package com.kingsman.Kingsman.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-import java.sql.Time;
 import java.time.LocalDate;
 
 @Entity
 public class Event {
-
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer eventID;
     private String eventName;
     private String eventType;
-
     private LocalDate eventDate;
     private String startTime;
     private float duration;
@@ -96,7 +94,6 @@ public class Event {
     public void setEntertainer(String entertainer) {
         this.entertainer = entertainer;
     }
-
     public Integer getTicketQuantity() {
         return ticketQuantity;
     }
