@@ -5,7 +5,7 @@ import ManagerSideBar from '../../components/ManagerSideBar';
 import AllinventoryItem from './inventory/AllinventoryItem';
 import ManagerProfile from './ManagerProfile';
 import Header from '../../components/Header';
-import RegisterEmployee from './registration/RegisterEmployee';
+import RegisterEmployee from './manageEmployees/RegisterEmployee';
 import ViewAllEmployees from './manageEmployees/ViewAllEmployees';
 import AddEvent from './manageEvents/AddEvent';
 import ViewAllEvents from './manageEvents/ViewAllEvents';
