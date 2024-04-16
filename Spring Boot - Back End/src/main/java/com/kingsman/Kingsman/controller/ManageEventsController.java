@@ -1,24 +1,23 @@
 package com.kingsman.Kingsman.controller;
 
 import com.kingsman.Kingsman.model.Event;
-import com.kingsman.Kingsman.repository.ViewEventsRepository;
-import com.kingsman.Kingsman.service.ViewEventsService;
+import com.kingsman.Kingsman.repository.ManageEventsRepository;
+import com.kingsman.Kingsman.service.ManageEventsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/events")
-public class ViewEventsController {
+public class ManageEventsController {
     @Autowired
-    private ViewEventsService viewEventsService;
+    private ManageEventsService viewEventsService;
     @Autowired
-    private ViewEventsRepository viewEventsRepository;
+    private ManageEventsRepository viewEventsRepository;
 
    @GetMapping("/view-events")
     public List<Event> getAllEvents() {
