@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const ViewAllEmployees = () => {
     const [employees, setEmployees] = useState([]);
@@ -31,7 +32,11 @@ const ViewAllEmployees = () => {
     
     return (
         <div className="container mx-auto px-4 py-8">
+        <div className='container mx-auto px-4 py-8 flex justify-between items-center'>
             <h1 className="text-3xl font-bold mb-4">Manage Employees</h1>
+             {/* Add Employee button */} 
+            <Link to="/manager?tab=new-employee" className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 ml-2 rounded  px-4 ">Add Employee</Link>
+            </div>
             <div className="relative overflow-x-auto">
                 <table className="w-full table-auto text-gray-700 dark:text-white-400 border-collapse bg-gray-50 ">
                     <thead className="text-gray-700 text-sm uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-700">
