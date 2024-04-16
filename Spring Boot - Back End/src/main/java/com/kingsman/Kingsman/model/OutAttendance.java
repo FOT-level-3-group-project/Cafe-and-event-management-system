@@ -3,17 +3,22 @@ package com.kingsman.Kingsman.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDate;
 
 @Entity
-public class Attendance {
+public class OutAttendance {
     @GeneratedValue
-
     @Id
     private Long id;
-    private String name;
+
+    private String empID;
     private String position;
-    private String date;
-    private String status;
+
+    @CreatedDate
+    private LocalDate date;
+    private String outTime;
 
     public Long getId() {
         return id;
@@ -23,12 +28,12 @@ public class Attendance {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getEmpID() {
+        return empID;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEmpID(String empID) {
+        this.empID = empID;
     }
 
     public String getPosition() {
@@ -39,19 +44,19 @@ public class Attendance {
         this.position = position;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public String getStatus() {
-        return status;
+    public String getOutTime() {
+        return outTime;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setOutTime(String outTime) {
+        this.outTime = outTime;
     }
 }

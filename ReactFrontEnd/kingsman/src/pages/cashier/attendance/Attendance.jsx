@@ -3,14 +3,15 @@ import { Table } from "flowbite-react";
 import { Button, Modal } from "flowbite-react";
 import { FcAlarmClock } from "react-icons/fc"; // Importing FcAlarmClock icon
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import axios from 'axios';
 
 function Attendance() {
   const [attendance, setAttendance] = useState([
-    { id: 1, empName: "John", position: "Manager", inTime: "", outTime: "" },
-    { id: 2, empName: "Jane", position: "Server", inTime: "", outTime: "" },
-    { id: 3, empName: "Michael", position: "Chef", inTime: "", outTime: "" },
-    { id: 4, empName: "Emily", position: "Waiter", inTime: "", outTime: "" },
-    { id: 5, empName: "Davidd", position: "Bartender", inTime: "", outTime: "" },
+    { id: 1, empName: "EMP001", position: "Manager", inTime: "", outTime: "" },
+    { id: 2, empName: "EMP002", position: "Server", inTime: "", outTime: "" },
+    { id: 3, empName: "EMP003", position: "Chef", inTime: "", outTime: "" },
+    { id: 4, empName: "EMP004", position: "Waiter", inTime: "", outTime: "" },
+    { id: 5, empName: "EMP005", position: "Bartender", inTime: "", outTime: "" },
     // Add more data rows as needed
   ]);
 
@@ -26,27 +27,58 @@ function Attendance() {
   });
 
   // Function to handle taking in time or out time
-  const handleTakeTime = (employeeId, empName, isInTime) => {
-    setSelectedEmployee({ id: employeeId, empName });
+  const handleTakeTime = (employeeId, empName, position, isInTime) => {
+    setSelectedEmployee({ id: employeeId, empName, position });
     setIsInTime(isInTime);
     setOpenModal(true);
   };
 
   // Function to confirm attendance
   const confirmAttendance = () => {
-    const { id, empName } = selectedEmployee;
-    const updatedAttendance = attendance.map(employee => {
-      if (employee.id === id) {
-        if (isInTime) {
-          return { ...employee, inTime: new Date().toLocaleTimeString() };
-        } else {
-          return { ...employee, outTime: new Date().toLocaleTimeString() };
-        }
-      }
-      return employee;
-    });
-    setAttendance(updatedAttendance);
-    setOpenModal(false);
+    const currentTime = new Date().toLocaleTimeString();
+    if (isInTime) {
+      // Mark in attendance
+      axios.post('http://localhost:8080/inAttendance', {
+        empId: selectedEmployee.empName,
+        position: selectedEmployee.position,
+        inTime: currentTime,
+      })
+        .then(response => {
+          const updatedAttendance = attendance.map(emp => {
+            if (emp.id === selectedEmployee.id) {
+              return { ...emp, inTime: response.data.inTime };
+            }
+            return emp;
+          });
+          setAttendance(updatedAttendance);
+          setOpenModal(false);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          setOpenModal(false);
+        });
+    } else {
+      // Mark out attendance
+      axios.post('http://localhost:8080/outAttendance', {
+        empID: selectedEmployee.empName,
+        position: selectedEmployee.position,
+        outTime: currentTime,
+      })
+        .then(response => {
+          const updatedAttendance = attendance.map(emp => {
+            if (emp.id === selectedEmployee.id) {
+              return { ...emp, outTime: response.data.outTime };
+            }
+            return emp;
+          });
+          setAttendance(updatedAttendance);
+          setOpenModal(false);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          setOpenModal(false);
+        });
+    }
   };
 
   return (
@@ -61,7 +93,7 @@ function Attendance() {
         <Table hoverable className="my-4 shadow">
           <Table.Head>
             <Table.HeadCell>#</Table.HeadCell>
-            <Table.HeadCell>Emp Name</Table.HeadCell>
+            <Table.HeadCell>Emp ID</Table.HeadCell>
             <Table.HeadCell>Position</Table.HeadCell>
             <Table.HeadCell>In Time</Table.HeadCell>
             <Table.HeadCell>Action</Table.HeadCell>
@@ -79,25 +111,19 @@ function Attendance() {
                 <Table.Cell className="text-white">{employee.position}</Table.Cell>
                 <Table.Cell>
                   {employee.inTime ? employee.inTime : (
-                    <FcAlarmClock
-                      onClick={() => handleTakeTime(employee.id, employee.empName, true)}
-                      style={{ cursor: 'pointer', fontSize: '24px', color: 'blue' }}
-                    />
+                    <FcAlarmClock style={{ cursor: 'pointer', fontSize: '24px', color: 'blue' }}/>
                   )}
                 </Table.Cell>
                 <Table.Cell>
-                  <Button color="blue" pill>Mark In</Button>
+                  <Button color="blue" pill onClick={() => handleTakeTime(employee.id, employee.empName, employee.position, true)}>Mark In</Button>
                 </Table.Cell>
                 <Table.Cell>
                   {employee.outTime ? employee.outTime : (
-                    <FcAlarmClock
-                      onClick={() => handleTakeTime(employee.id, employee.empName, false)}
-                      style={{ cursor: 'pointer', fontSize: '24px', color: 'red' }}
-                    />
+                    <FcAlarmClock  style={{ cursor: 'pointer', fontSize: '24px', color: 'red' }} />
                   )}
                 </Table.Cell>
                 <Table.Cell>
-                  <Button color="success" pill>Mark Out</Button>
+                  <Button color="success" pill disabled={!employee.inTime} onClick={() => handleTakeTime(employee.id, employee.empName, employee.position, false)}>Mark Out</Button>
                 </Table.Cell>
               </Table.Row>
             ))}
