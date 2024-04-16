@@ -26,7 +26,7 @@ public class ViewEventsController {
     }
 
     @DeleteMapping("/delete/{eventID}")
-    public ResponseEntity<?> deleteEventByEventID(@PathVariable Integer eventID) {
+    public ResponseEntity<?> deleteEventByEventID(@PathVariable String eventID) {
         try {
             Optional<Event> eventOptional = viewEventsRepository.findEventByEventID(eventID); //search employee by id
             if (!eventOptional.isPresent()) {

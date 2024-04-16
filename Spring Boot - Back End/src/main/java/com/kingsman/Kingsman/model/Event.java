@@ -10,8 +10,7 @@ import java.time.LocalDate;
 @Entity
 public class Event {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer eventID;
+    private String eventID;
     private String eventName;
     private String eventType;
     private LocalDate eventDate;
@@ -23,11 +22,11 @@ public class Event {
     private Integer ticketQuantity;
     private String eventDescription;
 
-    public Integer getEventID() {
+    public String getEventID() {
         return eventID;
     }
 
-    public void setEventID(Integer eventID) {
+    public void setEventID(String eventID) {
         this.eventID = eventID;
     }
 
