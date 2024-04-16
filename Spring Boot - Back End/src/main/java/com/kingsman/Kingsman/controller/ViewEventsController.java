@@ -28,17 +28,12 @@ public class ViewEventsController {
     @DeleteMapping("/delete/{eventID}")
     public ResponseEntity<?> deleteEventByEventID(@PathVariable String eventID) {
         try {
-            Optional<Event> eventOptional = viewEventsRepository.findEventByEventID(eventID); //search employee by id
-            if (!eventOptional.isPresent()) {
-                return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
-            }
-
-            String eventName = eventOptional.get().getEventName();
-            // Delete the employee
-            viewEventsRepository.deleteEventByEventID(eventID);
-            return new ResponseEntity<>("Event with name " + eventName + " has been deleted", HttpStatus.OK);
+            // Delegate deletion logic to service layer
+            String deletedEventName = viewEventsService.deleteEventByEventID(eventID);
+            return new ResponseEntity<>("Event with name " + deletedEventName + " has been deleted", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed to delete event!", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Failed to delete event: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-}
+    }
+

@@ -19,8 +19,8 @@ const ViewAllEvents = () => {
         viewEvents();
     }, []);
 
-    const handleDelete = async (eventID, eventName) => {
-        if (window.confirm(`Are you sure you want to delete the event ${eventName}?`)) {
+    const handleDelete = async (eventID) => {
+        if (window.confirm(`Are you sure you want to delete the event with event ID: ${eventID}?`)) {
             try {
                 await axios.delete(`http://localhost:8080/api/events/delete/${eventID}`);
                 setEvents(events.filter(event => event.eventID !== eventID));
@@ -72,7 +72,7 @@ const ViewAllEvents = () => {
                                 <td className="px-4 py-2">{event.eventDescription}</td>
                                 <td className="px-6 py-4 text-right"> <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Update</a> </td>
                                 <td className="px-6 py-4 text-right"> 
-                                    <button onClick={() => handleDelete(event.eventID, event.eventName)} className="font-medium text-red-800 dark:text-red-500 hover:underline">Remove</button>
+                                    <button onClick={() => handleDelete(event.eventID)} className="font-medium text-red-800 dark:text-red-500 hover:underline">Remove</button>
                                 </td>
                             </tr>
                         ))}
