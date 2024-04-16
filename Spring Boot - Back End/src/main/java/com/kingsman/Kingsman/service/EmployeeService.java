@@ -27,5 +27,10 @@ public class EmployeeService {
         }
     }
 
+    public String getEmployeeFirstNameById(Integer id) {
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        return (employee != null) ? employee.getFirst_name() : null;
+    }
+
 
 }

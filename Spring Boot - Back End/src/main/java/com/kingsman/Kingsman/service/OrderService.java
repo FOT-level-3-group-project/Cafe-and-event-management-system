@@ -2,27 +2,36 @@ package com.kingsman.Kingsman.service;
 
 import com.kingsman.Kingsman.dto.CustomerDTO;
 import com.kingsman.Kingsman.dto.OrderDTO;
+import com.kingsman.Kingsman.dto.OrderEmployeeFoodDTO;
 import com.kingsman.Kingsman.dto.OrderItemDTO;
 import com.kingsman.Kingsman.exception.ResourceNotFoundException;
-import com.kingsman.Kingsman.model.Employee;
-import com.kingsman.Kingsman.model.FoodItem;
-import com.kingsman.Kingsman.model.Order;
-import com.kingsman.Kingsman.model.OrderItem;
+import com.kingsman.Kingsman.model.*;
 import com.kingsman.Kingsman.repository.OrderItemRepository;
 import com.kingsman.Kingsman.repository.OrderRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
+    @Autowired
+    private EmployeeService employeeService;
+
+    @Autowired
+    private CustomerService customerService;
+
+    @Autowired
+    private FoodItemService foodItemService;
 
     private final OrderRepository orderRepository;
-    private final CustomerService customerService;
+
     private final OrderItemRepository orderItemRepository;
     @Autowired
     public OrderService(OrderRepository orderRepository, OrderItemRepository orderItemRepository, CustomerService customerService) {
@@ -54,6 +63,7 @@ public class OrderService {
 
     public OrderDTO createOrder(OrderDTO orderDTO) {
         Order order = convertToEntity(orderDTO);
+
         setEmployeeForOrder(order, orderDTO.getEmployeeId());
         List<OrderItem> orderItems = createOrderItems(orderDTO.getOrderItems(), order);
         order.setOrderItems(orderItems);
@@ -146,7 +156,7 @@ public class OrderService {
     private void updateOrderWithDTO(Order existingOrder, OrderDTO orderDTO) {
         // Update order details with new information from the DTO
         BeanUtils.copyProperties(orderDTO, existingOrder);
-        existingOrder.setUpdatedDate(new Date());
+        existingOrder.setUpdatedDate(LocalDateTime.now());
     }
 
     private List<OrderDTO> mapOrderListToDTOList(List<Order> orders) {
@@ -227,5 +237,34 @@ public class OrderService {
         orderItem.setQuantity(itemDTO.getQuantity());
         return orderItem;
     }
+
+//    public List<OrderEmployeeFoodDTO> getOrdersByCreatedDate(LocalDate createdDate) {
+//        List<Order> orders = orderRepository.findByCreatedDate(createdDate);
+//        return mapOrderListToDTOList(orders);
+//    }
+//
+//    private List<OrderEmployeeFoodDTO> mapOrderListToDTOList(List<Order> orders) {
+//        return orders.isEmpty() ? Collections.emptyList() :
+//                orders.stream()
+//                        .map(this::convertToDTO)
+//                        .collect(Collectors.toList());
+//    }
+//
+//    private OrderEmployeeFoodDTO convertToDTO(Order order) {
+//        OrderEmployeeFoodDTO orderDTO = new OrderEmployeeFoodDTO();
+//        // Set properties from Order
+//        orderDTO.setOrderId(order.getOrderId());
+//        orderDTO.setTableNumber(order.getTableNumber());
+//        orderDTO.setOrderStatus(order.getOrderStatus());
+//        // Set additional properties from Employee and Customer if needed
+//        // Example: orderDTO.setEmployeeName(order.getEmployee().getFirstName());
+//        // Example: orderDTO.setCustomerName(order.getCustomer().getName());
+//        // Example: orderDTO.setFoodName(order.getOrderItems().get(0).getFoodItem().getName());
+//        // Add more properties as needed
+//        return orderDTO;
+//    }
+
+
+
 
 }
