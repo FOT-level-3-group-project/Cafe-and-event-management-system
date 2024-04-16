@@ -1,5 +1,6 @@
 import{ useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const ViewAllEvents = () => {
     const [events, setEvents] = useState([]);
@@ -31,11 +32,16 @@ const ViewAllEvents = () => {
 
     return (
         <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto px-4 py-8 flex justify-between items-center">
             <h1 className="text-3xl font-bold mb-4">Manage Events</h1>
-                <div className="relative overflow-x-auto">
+            {/* Add Event button */}
+            <Link to="/manager?tab=add-event" className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 ml-2 rounded  px-4 ">Add Event</Link>
+            </div>
+            <div className="relative overflow-x-auto">
                 <table className="w-full table-auto text-gray-700 dark:text-white-400 border-collapse bg-gray-50 ">
                     <thead className="text-gray-700 text-sm uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-700">
                         <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 dark:border-gray-700">
+                            <th className="px-4 py-2 text-center bg-gray-200">ID</th>
                             <th className="px-4 py-2 text-center bg-gray-200">Name</th>
                             <th className="px-4 py-2 text-center bg-gray-200">Type</th>
                             <th className="px-4 py-2 text-center bg-gray-200">Date</th>
@@ -53,6 +59,7 @@ const ViewAllEvents = () => {
                     <tbody>
                         {events.map((event, index) => (
                             <tr key={event.eventID} className={index % 2 === 0 ? "bg-gray-100 dark:bg-gray-600 dark:text-white" : "bg-gray-200 dark:bg-gray-700 dark:text-white"}>
+                                <td className="px-4 py-2">{event.eventID}</td>
                                 <td className="px-4 py-2">{event.eventName}</td>
                                 <td className="px-4 py-2">{event.eventType}</td>
                                 <td className="px-4 py-2">{event.eventDate}</td>

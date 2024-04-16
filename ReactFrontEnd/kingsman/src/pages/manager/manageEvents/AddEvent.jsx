@@ -5,6 +5,8 @@ import axios from 'axios';
 
 const AddEvent = () => {
   const [formData, setFormData] = useState({
+    eventID: 'event',
+    eventIDNumber: '',
     eventName: '',
     eventType: '',
     eventDate: '',
@@ -25,6 +27,7 @@ const AddEvent = () => {
 
   const handleAddEventForm = () => {
       setFormData({
+        eventIDNumber: '',
         eventName: '',
         eventType: '',
         eventDate: '',
@@ -47,6 +50,16 @@ const AddEvent = () => {
     console.log("handleChange called");  
     const { name, value } = e.target;
     let errorMessage = '';
+
+    if (name === 'eventID') {
+      // Extract the number part of the eventID entered by the user
+      const eventIDNumber = value.replace(/\D/g, '');
+      // Update the eventID in the formData by concatenating the 'event' part and the user-entered number part
+      setFormData({
+        ...formData,
+        eventID: `event${eventIDNumber.padStart(3, '0')}`, // Concatenate 'event' with the updated number part
+      });
+    } 
 
     if (name === 'budget'){
       if (value !== '' && !/^\d+(\.\d{1,2})?$/.test(value)) {
@@ -91,29 +104,32 @@ const AddEvent = () => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        handleAddEventForm();
+      e.preventDefault();
+      handleAddEventForm();
 
-        try {
-            const response = await axios.post('http://localhost:8080/api/add-event', formData);
-            console.log(response.data);
-            const successMessage = `Successfully added event ${formData.eventName}`;
-            setErrorMessage(successMessage);
-        } catch (error) {
-            if (error.response) {
-                // Extract the error message from the response data and display it
-                setErrorMessage(error.response.data);
-            } else if (error.request) {
-                // This usually indicates a network error or the server did not respond
-                console.log(error.request);
-                setErrorMessage('Network error occurred. Please try again later.');
-            } else {
-                // Something happened in setting up the request that triggered an error
-                console.log('Error', error.message);
-                setErrorMessage('Failed to add event. Please try again later.');
-            };
-        }
-    };
+      // Concatenate 'event' with the manually entered number to form the complete event ID
+      const completeEventID = formData.eventID + formData.eventIDNumber.padStart(3, '0');
+
+      try {
+          const response = await axios.post('http://localhost:8080/api/add-event', formData);
+          console.log(response.data);
+          const successMessage = `Successfully added event ${formData.eventName}`;
+          setErrorMessage(successMessage);
+      } catch (error) {
+          if (error.response) {
+              // Extract the error message from the response data and display it
+              setErrorMessage(error.response.data);
+          } else if (error.request) {
+              // This usually indicates a network error or the server did not respond
+              console.log(error.request);
+              setErrorMessage('Network error occurred. Please try again later.');
+          } else {
+              // Something happened in setting up the request that triggered an error
+              console.log('Error', error.message);
+              setErrorMessage('Failed to add event. Please try again later.');
+          };
+      }
+          };
     useEffect(() => {
         setFormData({
             ...formData,
@@ -124,7 +140,11 @@ const AddEvent = () => {
         <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row w-full '>
             <div className='flex-1 flex justify-center'>
                 <form className='flex flex-col gap-4 w-full' onSubmit={handleSubmit}>
-                    <h1 className='flex justify-center font-bold'> Add New Event</h1> <hr></hr>
+                    <h1 className='flex justify-center text-3xl font-bold mb-4 '> Add New Event</h1> <hr></hr>
+                        <div>
+                          <Label value='Event ID*' />
+                          <TextInput type='text' placeholder='Event ID' id='EventID' value={formData.eventID} onChange={handleChange} name="eventID" required />
+                        </div>
                         <div>
                             <Label value='Event Name*' />
                             <TextInput type='text' placeholder='Event Name' id='EventName' value={formData.eventName} onChange={handleChange} name="eventName" required />
@@ -200,5 +220,6 @@ const AddEvent = () => {
         </div>
     );
 }
+
 
 export default AddEvent;

@@ -56,14 +56,14 @@ export default function ManagerSideBar() {
                             View All Employees
                         </Sidebar.Item>
                     </Link>
-                    <Link to='/manager?tab=add-event'>
+                    {/* <Link to='/manager?tab=add-event'>
                         <Sidebar.Item active={tab === 'add-event'} icon={HiUser} as='div'>
                             Add Event
                         </Sidebar.Item>
-                    </Link>
+                    </Link> */}
                     <Link to='/manager?tab=view-all-events'>
                         <Sidebar.Item active={tab === 'view-all-events'} icon={HiUser} as='div'>
-                            View All Events
+                           Events
                         </Sidebar.Item>
                     </Link>
 
