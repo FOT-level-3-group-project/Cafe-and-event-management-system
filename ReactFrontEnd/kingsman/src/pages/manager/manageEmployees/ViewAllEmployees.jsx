@@ -121,7 +121,7 @@ const ViewAllEmployees = () => {
                             <th className="px-4 py-2 text-center bg-gray-200">Email</th>
                             <th className="px-4 py-2 text-center bg-gray-200">Address</th>
                             <th className="px-4 py-2 text-center bg-gray-200">Gender</th>
-                            <th className="px-4 py-2 text-center bg-gray-200">ID Number</th>
+                            {/* <th className="px-4 py-2 text-center bg-gray-200">ID Number</th> */}
                             <th className="px-4 py-2 text-center bg-gray-200 w-32">Joined Date</th>
                             <th className="px-4 py-2 text-center bg-gray-200">Uniform Size</th>
                             <th className="px-4 py-2 text-center bg-gray-200">Emergency Contact</th>
@@ -150,7 +150,7 @@ const ViewAllEmployees = () => {
                                 <td className="px-4 py-2">{employee.email}</td>
                                 <td className="px-4 py-2">{employee.address}</td>
                                 <td className="px-4 py-2">{employee.gender}</td>
-                                <td className="px-4 py-2">{employee.IDNumber}</td>
+                                {/* <td className="px-4 py-2">{employee.IDNumber}</td> */}
                                 <td className="px-4 py-2">{employee.joined_date}</td>
                                 <td className="px-4 py-2">{employee.uniform_size}</td>
                                 <td className="px-4 py-2">{employee.emergency_contact}</td>

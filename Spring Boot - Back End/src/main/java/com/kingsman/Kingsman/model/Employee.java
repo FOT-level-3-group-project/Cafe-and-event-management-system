@@ -3,7 +3,6 @@ package com.kingsman.Kingsman.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 
 import java.sql.Date;
 @Entity

@@ -13,7 +13,7 @@ export default function RegisterEmployee() {
             position: '',
             contact_number: '',
             gender: '',
-            IDNumber: '',
+            // IDNumber: '',
             joined_date: '',
             email: '',
             address: '',
@@ -23,6 +23,8 @@ export default function RegisterEmployee() {
     });
     const [errorMessage, setErrorMessage] = useState('');
     const [emailErrorMessage, setEmailErrorMessage] = useState('');
+    const [contactErrorMessage, setContactErrorMessage] = useState('');
+    const [EmergencyContactErrorMessage, setEmergencyContactErrorMessage] = useState('');   
     const navigate = useNavigate();
 
     const generatePassword = () => {
@@ -45,7 +47,7 @@ export default function RegisterEmployee() {
             position: '',
             contact_number: '',
             gender: '',
-            IDNumber: '',
+            // IDNumber: '',
             joined_date: '',
             email: '',
             address: '',
@@ -62,18 +64,35 @@ export default function RegisterEmployee() {
 
         if (name === 'contact_number' || name === 'emergency_contact') {
             if ( value !== '' && !/^\d+$/.test(value)) {
-                errorMessage('Please enter only numbers for mobile number');
-            }else if (value.length > 10) {
-            errorMessage('Contact number should not exceed 10 digits');
+                // errorMessage('Please enter only numbers for mobile number');
+                errorMessage('');
+            }else if (name === 'contact_number'){
+                if(value.length > 10) {
+                    errorMessage('');
+                }else if (value.length < 10) {
+                    setContactErrorMessage('Mobile number should not be less than 10 digits');
+                }else{
+                    setContactErrorMessage('');
+                }
+            }else if (name === 'emergency_contact') {
+                if(value.length > 10) {
+                    // errorMessage('Emergency contact number should not exceed 10 digits');
+                    errorMessage('');
+                }else if (value.length < 10) {
+                    setEmergencyContactErrorMessage('Mobile number should not be less than 10 digits');
+                }else{
+                    setEmergencyContactErrorMessage('');
+                }
             }
         } else if (name === 'first_name' || name === 'last_name') {
             if ( value !== '' && !/^[a-zA-Z]+$/.test(value)) {
-                errorMessage('Please enter only letters for first name and last name');
+                // errorMessage('Please enter only letters for first name and last name');
+                errorMessage('');
             }
         }else if (name === 'email') {
             if (!/\S+@\S+\.\S+/.test(value)) {
             setEmailErrorMessage('Please enter a valid email address');
-        } else {
+        }else {
             setEmailErrorMessage('');
         }
         }
@@ -159,6 +178,7 @@ export default function RegisterEmployee() {
                         <div>
                             <Label value='Contact Number' />
                             <TextInput type='text' placeholder='Contact Number' id='Contact' value={formData.contact_number} onChange={handleChange} name="contact_number" />
+                            {contactErrorMessage && <div className="text-red-500">{contactErrorMessage}</div>}
                         </div>
                     </div>
 
@@ -177,13 +197,14 @@ export default function RegisterEmployee() {
                                 <option value='other'>Other</option>
                             </select>
                         </div>
-                        <div>
+                       {/* <div>
                             <Label value='ID Number' />
-                            <TextInput type='text' placeholder='ID Number' id='IDNumber' value={formData.IDNumber} onChange={handleChange} name="IDNumber" />
-                        </div>
+                            <TextInput type ='text' placeholder='ID Number' id='IDNumber' value={formData.IDNumber} onChange={handleChange} name='IDNumber' />
+                        </div> */}
+                    
                         <div>
-                            <Label value='Joined Date' />
-                            <TextInput type='date' placeholder='Joined Date' id='JoinedDate' className='text-gray-400' value={formData.joined_date} onChange={handleChange} name="joined_date"/>
+                            <Label value='Joined Date*' />
+                            <TextInput type='date' placeholder='Joined Date' id='JoinedDate' className='text-gray-400' value={formData.joined_date} onChange={handleChange} name="joined_date" required/>
                         </div> 
                         <div>
                             <Label value='Uniform Size' /> <br/>
@@ -200,12 +221,14 @@ export default function RegisterEmployee() {
                         <div>
                             <Label value='Emergency Contact' />
                             <TextInput type='text' placeholder='Emergency Contact' id='EmergencyContact' value={formData.emergency_contact} onChange={handleChange} name="emergency_contact" />
+                            {EmergencyContactErrorMessage && <div className="text-red-500">{EmergencyContactErrorMessage}</div>}
                         </div>
-                    </div>
+                         
                 
                         <div>
                             <Label value='Password' />
                             <TextInput type='text' placeholder='Password' id='Password' value={formData.password} />
+                        </div>
                         </div>
 
                         {/* <div className="flex items-center ">
