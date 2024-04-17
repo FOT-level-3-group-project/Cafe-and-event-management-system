@@ -117,7 +117,7 @@ const ViewAllEvents = () => {
                                 <td className="px-4 py-2">{event.ticketPrice}</td>
                                 <td className="px-4 py-2">{event.ticketQuantity}</td>
                                 <td className="px-4 py-2">{event.entertainer}</td>
-                                <td className="px-4 py-2">{event.eventDescription}</td>
+                                <td className="px-4 py-2">{event.description}</td>
                                 <td className="px-6 py-4 text-right">
                                     <a href="manager?tab=update-event" className="font-medium text-blue-600 dark:text-blue-500 hover:underline" onClick={selectedEventId}>Update</a>
                                     {/* <Link to={`/manager?tab=update-event&eventId=${event.eventID}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Update</Link> */}

@@ -38,7 +38,7 @@ public class ManageEventsService {
         existingEvent.setTicketPrice(event.getTicketPrice());
         existingEvent.setEntertainer(event.getEntertainer());
         existingEvent.setTicketQuantity(event.getTicketQuantity());
-        existingEvent.setEventDescription(event.getEventDescription());
+        existingEvent.setDescription(event.getDescription());
         viewEventsRepository.save(existingEvent);
         return existingEvent.getEventName();
     }
