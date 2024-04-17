@@ -19,12 +19,13 @@ export default function RegisterEmployee() {
             address: '',
             uniform_size: '',
             emergency_contact: '',
-            // profilePicture: ''
+            profilePicture: ''
     });
     const [errorMessage, setErrorMessage] = useState('');
     const [emailErrorMessage, setEmailErrorMessage] = useState('');
     const [contactErrorMessage, setContactErrorMessage] = useState('');
-    const [EmergencyContactErrorMessage, setEmergencyContactErrorMessage] = useState('');   
+    const [EmergencyContactErrorMessage, setEmergencyContactErrorMessage] = useState(''); 
+    const [fileName, setFileName] = useState('No file selected'); 
     const navigate = useNavigate();
 
     const generatePassword = () => {
@@ -53,9 +54,10 @@ export default function RegisterEmployee() {
             address: '',
             uniform_size: '',
             emergency_contact: '',
-            // profilePicture: '',
+            profilePicture: '',
         }); 
             setErrorMessage('');
+            setFileName('No file selected');
     };
 
     const handleChange = (e) => {
@@ -136,10 +138,20 @@ export default function RegisterEmployee() {
         });
     }, []);
 
-    // const handleProfilePictureChange = (e) => {
-    //     const file = e.target.files[0];
-    //     setFormData({ ...formData, profilePicture: file });
-    // };
+     const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setFileName(file.name);
+            handleProfilePictureChange(e); // Call the provided handler function
+        } else {
+            setFileName('No file selected');
+        }
+    };
+
+    const handleProfilePictureChange = (e) => {
+        const file = e.target.files[0];
+        setFormData({ ...formData, profilePicture: file });
+    };
 
 
     return (
@@ -173,12 +185,12 @@ export default function RegisterEmployee() {
                         <div>
                             <Label value='Email*' />
                             <TextInput type='text' placeholder='Email' id='Email' value={formData.email} onChange={handleChange} name="email"  required/>
-                            {emailErrorMessage && <div className="text-red-500">{emailErrorMessage}</div>}
+                            {emailErrorMessage && <div className="text-red-500 text-sm">{emailErrorMessage}</div>}
                         </div>
                         <div>
                             <Label value='Contact Number' />
                             <TextInput type='text' placeholder='Contact Number' id='Contact' value={formData.contact_number} onChange={handleChange} name="contact_number" />
-                            {contactErrorMessage && <div className="text-red-500">{contactErrorMessage}</div>}
+                            {contactErrorMessage && <div className="text-red-500 text-sm">{contactErrorMessage}</div>}
                         </div>
                     </div>
 
@@ -221,7 +233,7 @@ export default function RegisterEmployee() {
                         <div>
                             <Label value='Emergency Contact' />
                             <TextInput type='text' placeholder='Emergency Contact' id='EmergencyContact' value={formData.emergency_contact} onChange={handleChange} name="emergency_contact" />
-                            {EmergencyContactErrorMessage && <div className="text-red-500">{EmergencyContactErrorMessage}</div>}
+                            {EmergencyContactErrorMessage && <div className="text-red-500 text-sm">{EmergencyContactErrorMessage}</div>}
                         </div>
                          
                 
@@ -233,14 +245,23 @@ export default function RegisterEmployee() {
 
                         {/* <div className="flex items-center ">
                             <Label value='Profile Picture' /> <br/>
-                            <input
-                                type='file'
-                                id='profilePicture'
-                                accept='image/*'
-                                onChange={(e) => handleProfilePictureChange(e)}
-                                className="py-2 px-10 text-sm leading-tight"
-                            />
+                            <input type='file' id='profilePicture' accept='image/*' onChange={(e) => handleProfilePictureChange(e)} className="py-2 px-10 text-sm leading-tight " />
                         </div> */}
+
+                        <div className="flex items-center space-x-2">
+                            <Label value='Profile Picture' />
+                            <label htmlFor="profilePicture" className="cursor-pointer bg-green-700 hover:bg-green-900 text-white font-bold text-sm py-2 px-4 rounded">
+                                Choose File
+                            </label>
+                            <span>{fileName}</span>
+                            <input 
+                                type='file' 
+                                id='profilePicture' 
+                                accept='image/*' 
+                                onChange= {handleFileChange} 
+                                className="hidden" 
+                            />
+                        </div>
 
                     <div className="flex justify-between">
                         <button type="reset" className="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 mr-2 rounded w-full md:w-1/2 " id="clearbtn" onClick={handleResetForm}> Clear </button>
