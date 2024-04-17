@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Label, TextInput } from 'flowbite-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Link } from 'react-router-dom'
 
 export default function RegisterEmployee() {
     const [formData, setFormData] = useState({
@@ -18,14 +17,12 @@ export default function RegisterEmployee() {
             email: '',
             address: '',
             uniform_size: '',
-            emergency_contact: '',
-            profilePicture: ''
+            emergency_contact: ''
     });
     const [errorMessage, setErrorMessage] = useState('');
     const [emailErrorMessage, setEmailErrorMessage] = useState('');
     const [contactErrorMessage, setContactErrorMessage] = useState('');
-    const [EmergencyContactErrorMessage, setEmergencyContactErrorMessage] = useState(''); 
-    const [fileName, setFileName] = useState('No file selected'); 
+    const [EmergencyContactErrorMessage, setEmergencyContactErrorMessage] = useState('');   
     const navigate = useNavigate();
 
     const generatePassword = () => {
@@ -53,17 +50,16 @@ export default function RegisterEmployee() {
             email: '',
             address: '',
             uniform_size: '',
-            emergency_contact: '',
-            profilePicture: '',
+            emergency_contact: ''
         }); 
             setErrorMessage('');
-            setFileName('No file selected');
     };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         let errorMessage = '';
 
+        //validate contacts
         if (name === 'contact_number' || name === 'emergency_contact') {
             if ( value !== '' && !/^\d+$/.test(value)) {
                 // errorMessage('Please enter only numbers for mobile number');
@@ -86,11 +82,13 @@ export default function RegisterEmployee() {
                     setEmergencyContactErrorMessage('');
                 }
             }
+        //validate names
         } else if (name === 'first_name' || name === 'last_name') {
             if ( value !== '' && !/^[a-zA-Z]+$/.test(value)) {
                 // errorMessage('Please enter only letters for first name and last name');
                 errorMessage('');
             }
+        //validate email
         }else if (name === 'email') {
             if (!/\S+@\S+\.\S+/.test(value)) {
             setEmailErrorMessage('Please enter a valid email address');
@@ -138,22 +136,6 @@ export default function RegisterEmployee() {
         });
     }, []);
 
-     const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFileName(file.name);
-            handleProfilePictureChange(e); // Call the provided handler function
-        } else {
-            setFileName('No file selected');
-        }
-    };
-
-    const handleProfilePictureChange = (e) => {
-        const file = e.target.files[0];
-        setFormData({ ...formData, profilePicture: file });
-    };
-
-
     return (
         <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row w-full '>
             <div className='flex-1 flex justify-center'>
@@ -185,7 +167,7 @@ export default function RegisterEmployee() {
                         <div>
                             <Label value='Email*' />
                             <TextInput type='text' placeholder='Email' id='Email' value={formData.email} onChange={handleChange} name="email"  required/>
-                            {emailErrorMessage && <div className="text-red-500 text-sm">{emailErrorMessage}</div>}
+                            {emailErrorMessage && <div className="text-red-500 text-sm ">{emailErrorMessage}</div>}
                         </div>
                         <div>
                             <Label value='Contact Number' />
@@ -201,7 +183,6 @@ export default function RegisterEmployee() {
                         </div>
                         <div>
                             <Label value='Gender' /> <br/>
-                            {/* <select id='Gender' value={formData.gender} onChange={handleChange} className='w-full px-3 py-2 border rounded-md bg-gray-700 text-gray-400'> */}
                             <select id='Gender' value={formData.gender} onChange={handleChange} name='gender' className='w-full px-3 py-2 border rounded-md dark:bg-gray-700 '>
                                 <option value=''>Select Gender</option>
                                 <option value='male'>Male</option>
@@ -209,6 +190,7 @@ export default function RegisterEmployee() {
                                 <option value='other'>Other</option>
                             </select>
                         </div>
+
                        {/* <div>
                             <Label value='ID Number' />
                             <TextInput type ='text' placeholder='ID Number' id='IDNumber' value={formData.IDNumber} onChange={handleChange} name='IDNumber' />
@@ -220,7 +202,6 @@ export default function RegisterEmployee() {
                         </div> 
                         <div>
                             <Label value='Uniform Size' /> <br/>
-                            {/* <select id='UniformSize' value={formData.uniform_size} onChange={handleChange} className='w-full px-3 py-2 border rounded-md bg-gray-700 text-gray-400' > */}
                             <select id='UniformSize' value={formData.uniform_size} name='uniform_size' onChange={handleChange} className='w-full px-3 py-2 border rounded-md dark:bg-gray-700' >
                                 <option value=''>Select</option>
                                 <option value='Extra Small'>Extra Small</option>
@@ -233,35 +214,14 @@ export default function RegisterEmployee() {
                         <div>
                             <Label value='Emergency Contact' />
                             <TextInput type='text' placeholder='Emergency Contact' id='EmergencyContact' value={formData.emergency_contact} onChange={handleChange} name="emergency_contact" />
-                            {EmergencyContactErrorMessage && <div className="text-red-500 text-sm">{EmergencyContactErrorMessage}</div>}
+                            {EmergencyContactErrorMessage && <div className="text-red-500 text-sm ">{EmergencyContactErrorMessage}</div>}
                         </div>
                          
-                
                         <div>
                             <Label value='Password' />
                             <TextInput type='text' placeholder='Password' id='Password' value={formData.password} />
                         </div>
-                        </div>
-
-                        {/* <div className="flex items-center ">
-                            <Label value='Profile Picture' /> <br/>
-                            <input type='file' id='profilePicture' accept='image/*' onChange={(e) => handleProfilePictureChange(e)} className="py-2 px-10 text-sm leading-tight " />
-                        </div> */}
-
-                        <div className="flex items-center space-x-2">
-                            <Label value='Profile Picture' />
-                            <label htmlFor="profilePicture" className="cursor-pointer bg-green-700 hover:bg-green-900 text-white font-bold text-sm py-2 px-4 rounded">
-                                Choose File
-                            </label>
-                            <span>{fileName}</span>
-                            <input 
-                                type='file' 
-                                id='profilePicture' 
-                                accept='image/*' 
-                                onChange= {handleFileChange} 
-                                className="hidden" 
-                            />
-                        </div>
+                    </div>
 
                     <div className="flex justify-between">
                         <button type="reset" className="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 mr-2 rounded w-full md:w-1/2 " id="clearbtn" onClick={handleResetForm}> Clear </button>
@@ -272,10 +232,8 @@ export default function RegisterEmployee() {
                     <Alert className='mt-5' color='failure'>
                         {errorMessage}
                     </Alert>
-                )}
+                    )}
                 </form>
-
-                
             </div>
         </div>
     );
