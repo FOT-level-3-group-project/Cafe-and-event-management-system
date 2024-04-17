@@ -1,8 +1,6 @@
 package com.kingsman.Kingsman.model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.time.LocalDate;
@@ -19,7 +17,7 @@ public class Event {
     private float ticketPrice;
     private String entertainer;
     private Integer ticketQuantity;
-    private String eventDescription;
+    private String description;
 
     public String getEventID() {
         return eventID;
@@ -92,11 +90,11 @@ public class Event {
         this.ticketQuantity = capacity;
     }
 
-    public String getEventDescription() {
-        return eventDescription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setEventDescription(String eventDescription) {
-        this.eventDescription = eventDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
