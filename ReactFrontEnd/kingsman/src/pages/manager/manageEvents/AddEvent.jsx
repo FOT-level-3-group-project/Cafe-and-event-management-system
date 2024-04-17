@@ -8,7 +8,6 @@ const AddEvent = () => {
     eventID: 'event',
     eventIDNumber: '',
     eventName: '',
-    eventType: '',
     eventDate: '',
     startTime: '',
     duration: '',
@@ -29,7 +28,6 @@ const AddEvent = () => {
       setFormData({
         eventIDNumber: '',
         eventName: '',
-        eventType: '',
         eventDate: '',
         startTime: '',
         duration: '',
@@ -150,10 +148,6 @@ const AddEvent = () => {
                             <TextInput type='text' placeholder='Event Name' id='EventName' value={formData.eventName} onChange={handleChange} name="eventName" required />
                         </div>
                         <div>
-                            <Label value='Event Type' />
-                            <TextInput type='text' placeholder='Event Type' id='EventType' value={formData.eventType} onChange={handleChange} name="eventType" />
-                        </div>
-                        <div>
                             <Label value='Event Date*' />
                              <TextInput type='date' placeholder='Event Date' id='EventDate' value={formData.eventDate} onChange={handleChange} name="eventDate" className='text-gray-400' />
                         </div>
@@ -207,7 +201,7 @@ const AddEvent = () => {
                         </div>
                     <div className="flex justify-between">
                         <button type="reset" className="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 mr-2 rounded w-full md:w-1/2 " id="clearbtn" onClick={handleAddEventForm}> Clear </button>
-                        <button type="submit" className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 ml-2 rounded w-full md:w-1/2 "> Register Employee </button>
+                        <button type="submit" className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 ml-2 rounded w-full md:w-1/2 "> Add Event </button>
                     </div>
 
                     {errorMessage && (

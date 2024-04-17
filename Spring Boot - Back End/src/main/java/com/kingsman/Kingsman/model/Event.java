@@ -12,7 +12,6 @@ public class Event {
     @Id
     private String eventID;
     private String eventName;
-    private String eventType;
     private LocalDate eventDate;
     private String startTime;
     private float duration;
@@ -36,14 +35,6 @@ public class Event {
 
     public void setEventName(String eventName) {
         this.eventName = eventName;
-    }
-
-    public String getEventType() {
-        return eventType;
-    }
-
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
     }
 
     public LocalDate getEventDate() {
