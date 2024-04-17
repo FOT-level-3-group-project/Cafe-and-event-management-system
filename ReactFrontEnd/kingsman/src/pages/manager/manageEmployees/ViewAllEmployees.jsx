@@ -125,7 +125,8 @@ const ViewAllEmployees = () => {
                             <th className="px-4 py-2 text-center bg-gray-200 w-32">Joined Date</th>
                             <th className="px-4 py-2 text-center bg-gray-200">Uniform Size</th>
                             <th className="px-4 py-2 text-center bg-gray-200">Emergency Contact</th>
-                            <th className="px-4 py-2 text-center bg-gray-200" colSpan='2'>Actions</th>
+                            {/* <th className="px-4 py-2 text-center bg-gray-200" colSpan='2'>Actions</th> */}
+                            <th className="px-4 py-2 text-center bg-gray-200"></th>
                         </tr>
                     </thead>
 
@@ -154,7 +155,7 @@ const ViewAllEmployees = () => {
                                 <td className="px-4 py-2">{employee.joined_date}</td>
                                 <td className="px-4 py-2">{employee.uniform_size}</td>
                                 <td className="px-4 py-2">{employee.emergency_contact}</td>
-                                <td className="px-6 py-4 text-right"> <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Update</a> </td>
+                                {/* <td className="px-6 py-4 text-right"> <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Update</a> </td> */}
                                 <td className="px-6 py-4 text-right"> 
                                     <button onClick={() => handleDelete(employee.id, employee.username)} className="font-medium text-red-800 dark:text-red-500 hover:underline">Remove</button>
                                 </td>
