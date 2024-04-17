@@ -1,9 +1,16 @@
 import{ useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import UpdateEvent from './UpdateEvent';
 
 const ViewAllEvents = () => {
     const [events, setEvents] = useState([]);
+    const [selectedEventId, setSelectedEventId] = useState(null);
+
+  const handleUpdateClick = (eventId) => {
+    setSelectedEventId(eventId);
+  };
+
 
     useEffect(() => {
         const viewEvents = async () => {
@@ -43,7 +50,6 @@ const ViewAllEvents = () => {
                         <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 dark:border-gray-700">
                             <th className="px-4 py-2 text-center bg-gray-200">ID</th>
                             <th className="px-4 py-2 text-center bg-gray-200">Name</th>
-                            <th className="px-4 py-2 text-center bg-gray-200">Type</th>
                             <th className="px-4 py-2 text-center bg-gray-200">Date</th>
                             <th className="px-4 py-2 text-center bg-gray-200">Starting Time</th>
                             <th className="px-4 py-2 text-center bg-gray-200">Duration (h)</th>
@@ -61,7 +67,6 @@ const ViewAllEvents = () => {
                             <tr key={event.eventID} className={index % 2 === 0 ? "bg-gray-100 dark:bg-gray-600 dark:text-white" : "bg-gray-200 dark:bg-gray-700 dark:text-white"}>
                                 <td className="px-4 py-2">{event.eventID}</td>
                                 <td className="px-4 py-2">{event.eventName}</td>
-                                <td className="px-4 py-2">{event.eventType}</td>
                                 <td className="px-4 py-2">{event.eventDate}</td>
                                 <td className="px-4 py-2">{event.startTime}</td>
                                 <td className="px-4 py-2">{event.duration}</td>
@@ -70,7 +75,10 @@ const ViewAllEvents = () => {
                                 <td className="px-4 py-2">{event.ticketQuantity}</td>
                                 <td className="px-4 py-2">{event.entertainer}</td>
                                 <td className="px-4 py-2">{event.eventDescription}</td>
-                                <td className="px-6 py-4 text-right"> <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Update</a> </td>
+                                <td className="px-6 py-4 text-right">
+                                    <a href="manager?tab=update-event" className="font-medium text-blue-600 dark:text-blue-500 hover:underline" onClick={selectedEventId}>Update</a>
+                                    {/* <Link to={`/manager?tab=update-event&eventId=${event.eventID}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Update</Link> */}
+                                </td>
                                 <td className="px-6 py-4 text-right"> 
                                     <button onClick={() => handleDelete(event.eventID)} className="font-medium text-red-800 dark:text-red-500 hover:underline">Remove</button>
                                 </td>

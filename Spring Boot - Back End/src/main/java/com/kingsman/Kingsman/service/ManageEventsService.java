@@ -22,4 +22,24 @@ public class ManageEventsService {
         viewEventsRepository.deleteByEventID(eventID);
         return eventID;
     }
+
+    public Event getEventById(String eventID) {
+        return viewEventsRepository.findEventByEventID(eventID).orElse(null);
+    }
+    public String updateEventByEventID(String eventID, Event event) {
+        Event existingEvent = viewEventsRepository.findEventByEventID(eventID).orElse(null);
+        if (existingEvent == null) {
+            throw new IllegalArgumentException("Event with ID " + eventID + " does not exist");
+        }
+        existingEvent.setEventDate(event.getEventDate());
+        existingEvent.setStartTime(event.getStartTime());
+        existingEvent.setDuration(event.getDuration());
+        existingEvent.setBudget(event.getBudget());
+        existingEvent.setTicketPrice(event.getTicketPrice());
+        existingEvent.setEntertainer(event.getEntertainer());
+        existingEvent.setTicketQuantity(event.getTicketQuantity());
+        existingEvent.setEventDescription(event.getEventDescription());
+        viewEventsRepository.save(existingEvent);
+        return existingEvent.getEventName();
+    }
 }
