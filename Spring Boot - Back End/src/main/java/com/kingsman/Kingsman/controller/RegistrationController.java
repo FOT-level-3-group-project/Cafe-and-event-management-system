@@ -32,33 +32,4 @@ public class RegistrationController {
 
         return ResponseEntity.ok("Employee registered successfully");
     }
-
-    
-
-//    @PostMapping("/register")
-//    public ResponseEntity<?> register(@RequestBody Employee employee, @RequestParam("file") MultipartFile file) {
-//        Employee existingEmployee = registrationRepository.findByUsername(employee.getUsername());
-//        if (existingEmployee != null) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
-//        }
-//
-//        Employee existingEmployeeEmail = registrationRepository.findByEmail(employee.getEmail());
-//        if (existingEmployeeEmail != null) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
-//        }
-//
-//        if (file != null && !file.isEmpty()) {
-//            try {
-//                employee.setProfilePicture(file.getOriginalFilename());
-//                employee.setImage(file.getBytes());
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading profile photo");
-//            }
-//        }
-//
-//        registrationRepository.save(employee);
-//
-//        return ResponseEntity.ok("Employee registered successfully");
-//    }
 }
