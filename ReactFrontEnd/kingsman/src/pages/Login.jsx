@@ -14,6 +14,7 @@ export default function Login() {
     const { loading, error: errorMessage } = useSelector(state => state.user);
     const { currentUser } = useSelector((state) => state.user);
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState('');
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -27,7 +28,8 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData.username || !formData.password) {
-            return dispatch(logInFailure("please fill the all field")); //setErrorMessage is a check the all fields are filled
+            setError("please enter the username and the password!");
+            return;
         }
 
         console.log(formData);
@@ -36,13 +38,13 @@ export default function Login() {
             dispatch(logInStart());
             const response = await axios.post('http://localhost:8080/api/user/login', formData);
             console.log(response);
-
             const data = response.data;
 
             if (data.success == false) {
                 dispatch(logInFailure(data.message)); //error message
                 navigate('/');
                 console.log(logInFailure(data.message));
+                setError(data.message);
             }
 
             if (response.status === 200) {
@@ -60,7 +62,7 @@ export default function Login() {
                     }
             }
         } catch (error) {
-            dispatch(logInFailure("Invalid username or password"));
+            setError("Invalid username or password");
             setFormData({});
         }
     };
@@ -110,13 +112,13 @@ export default function Login() {
                                 ) : 'Log in'
                             }
                         </Button>
-                        <Link to='/ResetPassword' className="resetPassword"> Forgot Password?</Link>
+                        <Link to='/ResetPassword' className="text-red-700 dark:text-slate-400 text-sm"> Forgot Password?</Link>
 
                     </form>
                     {
-                        errorMessage && (
+                        error && (
                             <Alert className='mt-5' color='failure'>
-                                {errorMessage.message}
+                                {error}
                             </Alert>
                         )
                     }
