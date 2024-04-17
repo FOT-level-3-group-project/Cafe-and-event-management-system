@@ -92,7 +92,7 @@ const ViewAllEmployees = () => {
                 {/* Job Role filter */}
                 <div className="container mx-auto px-4 py-2">
                     <select 
-                        className="block w-full py-2 px-4 bg-white border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        className="block py-2 px-4 bg-white border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                         value={selectedJobRole} 
                         onChange={(e) => setSelectedJobRole(e.target.value)}
                     >
@@ -105,7 +105,7 @@ const ViewAllEmployees = () => {
                 </div>
             
                 {/* Add Employee button */} 
-                <Link to="/manager?tab=new-employee" className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 ml-2 rounded  px-4 ">Add Employee</Link>
+                <Link to="/manager?tab=new-employee" className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 ml-2 rounded px-2 w-full text-center">Add Employee</Link>
             </div>
         </div>
 
