@@ -83,15 +83,15 @@ public class OrderController {
         return ResponseEntity.noContent().build();
     }
 
-//    @GetMapping("/created-date")
-//    public ResponseEntity<List<OrderEmployeeFoodDTO>> getOrdersByCreatedDate(
-//            @RequestParam("createdDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDate) {
-//        List<OrderEmployeeFoodDTO> orders = orderService.getOrdersByCreatedDate(createdDate);
-//        if (orders.isEmpty()) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//        return new ResponseEntity<>(orders, HttpStatus.OK);
-//    }
+    @GetMapping("/created-date") // get order details related the specific date
+    public ResponseEntity<List<OrderEmployeeFoodDTO>> getOrderEmployeeFoodByCreatedDate(
+            @RequestParam("createdDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDate) {
+        List<OrderEmployeeFoodDTO> orders = orderService.getOrderEmployeeFoodByCreatedDate(createdDate);
+        if (orders.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
 
 }
 
