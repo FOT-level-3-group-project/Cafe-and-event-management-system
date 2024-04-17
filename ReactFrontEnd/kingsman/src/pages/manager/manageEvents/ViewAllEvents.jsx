@@ -5,26 +5,34 @@ import UpdateEvent from './UpdateEvent';
 
 const ViewAllEvents = () => {
     const [events, setEvents] = useState([]);
+    
+    //search bar
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchCriteria, setSearchCriteria] = useState('name');
+    const [selectedStatus, setSelectedStatus] = useState('Ready');
+
+    //get eventID
     const [selectedEventId, setSelectedEventId] = useState(null);
-
-  const handleUpdateClick = (eventId) => {
-    setSelectedEventId(eventId);
-  };
-
+    const handleUpdateClick = (eventId) => {
+        setSelectedEventId(eventId);
+    };
 
     useEffect(() => {
         const viewEvents = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/events/view-events');
+                let url = 'http://localhost:8080/api/events/view-events';
+                if (searchQuery) {
+                    url += `?${searchCriteria}=${searchQuery}`;
+                }
+                const response = await fetch(url);
                 const data = await response.json();
-                console.log(data);
                 setEvents(data);
             } catch (error) {
                 console.log(error.message);
             }
         };
         viewEvents();
-    }, []);
+    }, [searchQuery, searchCriteria]);
 
     const handleDelete = async (eventID) => {
         if (window.confirm(`Are you sure you want to delete the event with event ID: ${eventID}?`)) {
@@ -37,13 +45,38 @@ const ViewAllEvents = () => {
         }
     }
 
+    //handle search
+    const handleSearch = async () => {
+        try {
+            let url = 'http://localhost:8080/api/events/view-events';
+            if (searchQuery && searchCriteria) {
+                url += `?${searchCriteria}=${searchQuery}`;
+            }
+            const response = await fetch(url);
+            const data = await response.json();
+            setEvents(data);
+            console.log(data);
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
+    
     return (
         <div className="container mx-auto px-4 py-8">
-            <div className="container mx-auto px-4 py-8 flex justify-between items-center">
-            <h1 className="text-3xl font-bold mb-4">Manage Events</h1>
-            {/* Add Event button */}
-            <Link to="/manager?tab=add-event" className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 ml-2 rounded  px-4 ">Add Event</Link>
+            <div className="container mx-auto px-4 py-8 flex justify-between items-center ">
+                <h1 className="text-3xl font-bold mb-4 ">Manage Events</h1>
+
+                <div className="flex items-center">
+                    {/* Add search bar */}
+                    <div className='flex-grow px-4 py-2 border rounded-full dark:bg-gray-600 '>
+                        <input type="search" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} id="search"   className='flex-grow px-4 py-2 border-none outline-none focus:ring-0 dark:bg-gray-600 dark:text-white' />   
+                    </div>
+            
+                    {/* Add Event button */}
+                    <Link to="/manager?tab=add-event" className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 ml-2 rounded  px-4 ">Add Event</Link>
+                </div>
             </div>
+
             <div className="relative overflow-x-auto">
                 <table className="w-full table-auto text-gray-700 dark:text-white-400 border-collapse bg-gray-50 ">
                     <thead className="text-gray-700 text-sm uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-700">
@@ -63,7 +96,19 @@ const ViewAllEvents = () => {
                     </thead>
 
                     <tbody>
-                        {events.map((event, index) => (
+                        {events.filter(event => {
+                            // Filter events based on the search query
+                            if (!searchQuery) {
+                                return true; // Return all events if there's no search query
+                            } else {
+                                // Check if any of the event properties contain the search query
+                                return Object.values(event).some( value =>
+                                    value && value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+                                );
+                            }
+                        })
+                        .map((event, index) => (
+
                             <tr key={event.eventID} className={index % 2 === 0 ? "bg-gray-100 dark:bg-gray-600 dark:text-white" : "bg-gray-200 dark:bg-gray-700 dark:text-white"}>
                                 <td className="px-4 py-2">{event.eventID}</td>
                                 <td className="px-4 py-2">{event.eventName}</td>
@@ -93,3 +138,5 @@ const ViewAllEvents = () => {
 
 
 export default ViewAllEvents;
+
+                        {/* {events.map((event, index) => ( */}
