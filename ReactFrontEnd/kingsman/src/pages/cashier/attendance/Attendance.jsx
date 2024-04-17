@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Table } from "flowbite-react";
 import { Button, Modal } from "flowbite-react";
 import { FcAlarmClock } from "react-icons/fc"; // Importing FcAlarmClock icon
@@ -6,15 +6,7 @@ import { HiOutlineExclamationCircle } from "react-icons/hi";
 import axios from 'axios';
 
 function Attendance() {
-  const [attendance, setAttendance] = useState([
-    { id: 1, empName: "EMP001", position: "Manager", inTime: "", outTime: "" },
-    { id: 2, empName: "EMP002", position: "Server", inTime: "", outTime: "" },
-    { id: 3, empName: "EMP003", position: "Chef", inTime: "", outTime: "" },
-    { id: 4, empName: "EMP004", position: "Waiter", inTime: "", outTime: "" },
-    { id: 5, empName: "EMP005", position: "Bartender", inTime: "", outTime: "" },
-    // Add more data rows as needed
-  ]);
-
+  const [attendance, setAttendance] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState({});
   const [isInTime, setIsInTime] = useState(true); // Track if it's in time or out time
@@ -26,9 +18,29 @@ function Attendance() {
     year: "numeric"
   });
 
+  // Function to fetch employee data from the backend
+  const fetchEmployeeData = () => {
+    axios.get('http://localhost:8080/employeeIdsAndPositions')
+      .then(response => {
+        setAttendance(response.data.map(employee => ({
+          empId: employee[0],
+          position: employee[1],
+          inTime: "",
+          outTime: ""
+        })));
+      })
+      .catch(error => {
+        console.error('Error fetching employee data:', error);
+      });
+  };
+
+  useEffect(() => {
+    fetchEmployeeData();
+  }, []); // Run only once on component mount
+
   // Function to handle taking in time or out time
-  const handleTakeTime = (employeeId, empName, position, isInTime) => {
-    setSelectedEmployee({ id: employeeId, empName, position });
+  const handleTakeTime = (empId, position, isInTime) => {
+    setSelectedEmployee({ empId, position });
     setIsInTime(isInTime);
     setOpenModal(true);
   };
@@ -39,13 +51,13 @@ function Attendance() {
     if (isInTime) {
       // Mark in attendance
       axios.post('http://localhost:8080/inAttendance', {
-        empId: selectedEmployee.empName,
+        empId: selectedEmployee.empId,
         position: selectedEmployee.position,
         inTime: currentTime,
       })
         .then(response => {
           const updatedAttendance = attendance.map(emp => {
-            if (emp.id === selectedEmployee.id) {
+            if (emp.empId === selectedEmployee.empId) {
               return { ...emp, inTime: response.data.inTime };
             }
             return emp;
@@ -54,19 +66,19 @@ function Attendance() {
           setOpenModal(false);
         })
         .catch(error => {
-          console.error('Error:', error);
+          console.error('Error marking in attendance:', error);
           setOpenModal(false);
         });
     } else {
       // Mark out attendance
       axios.post('http://localhost:8080/outAttendance', {
-        empID: selectedEmployee.empName,
+        empID: selectedEmployee.empId,
         position: selectedEmployee.position,
         outTime: currentTime,
       })
         .then(response => {
           const updatedAttendance = attendance.map(emp => {
-            if (emp.id === selectedEmployee.id) {
+            if (emp.empId === selectedEmployee.empId) {
               return { ...emp, outTime: response.data.outTime };
             }
             return emp;
@@ -75,7 +87,7 @@ function Attendance() {
           setOpenModal(false);
         })
         .catch(error => {
-          console.error('Error:', error);
+          console.error('Error marking out attendance:', error);
           setOpenModal(false);
         });
     }
@@ -101,13 +113,13 @@ function Attendance() {
             <Table.HeadCell>Action</Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
-            {attendance.map(employee => (
+            {attendance.map((employee, index) => (
               <Table.Row 
-                key={employee.id} 
+                key={index} 
                 className="bg-slate-900 hover:bg-emerald-400"
               >
-                <Table.Cell className="text-white">{employee.id}</Table.Cell>
-                <Table.Cell className="text-white">{employee.empName}</Table.Cell>
+                <Table.Cell className="text-white">{index + 1}</Table.Cell>
+                <Table.Cell className="text-white">{employee.empId}</Table.Cell>
                 <Table.Cell className="text-white">{employee.position}</Table.Cell>
                 <Table.Cell>
                   {employee.inTime ? employee.inTime : (
@@ -115,7 +127,7 @@ function Attendance() {
                   )}
                 </Table.Cell>
                 <Table.Cell>
-                  <Button color="blue" pill onClick={() => handleTakeTime(employee.id, employee.empName, employee.position, true)}>Mark In</Button>
+                  <Button color="blue" pill onClick={() => handleTakeTime(employee.empId, employee.position, true)}>Mark In</Button>
                 </Table.Cell>
                 <Table.Cell>
                   {employee.outTime ? employee.outTime : (
@@ -123,7 +135,7 @@ function Attendance() {
                   )}
                 </Table.Cell>
                 <Table.Cell>
-                  <Button color="success" pill disabled={!employee.inTime} onClick={() => handleTakeTime(employee.id, employee.empName, employee.position, false)}>Mark Out</Button>
+                  <Button color="success" pill disabled={!employee.inTime} onClick={() => handleTakeTime(employee.empId, employee.position, false)}>Mark Out</Button>
                 </Table.Cell>
               </Table.Row>
             ))}
@@ -138,7 +150,7 @@ function Attendance() {
           <div className="text-center">
             <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
             <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-              {isInTime ? `Confirm in time for ${selectedEmployee.empName}?` : `Confirm out time for ${selectedEmployee.empName}?`}
+              {isInTime ? `Confirm in time for ${selectedEmployee.empId}?` : `Confirm out time for ${selectedEmployee.empId}?`}
             </h3>
             <div className="flex justify-center gap-4">
               <Button color="success" onClick={confirmAttendance}>
