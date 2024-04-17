@@ -8,8 +8,7 @@ const ViewAllEvents = () => {
     
     //search bar
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchCriteria, setSearchCriteria] = useState('name');
-    const [selectedStatus, setSelectedStatus] = useState('Ready');
+    const [searchCriteria, setSearchCriteria] = useState('');
 
     //get eventID
     const [selectedEventId, setSelectedEventId] = useState(null);
@@ -69,7 +68,7 @@ const ViewAllEvents = () => {
                 <div className="flex items-center">
                     {/* Add search bar */}
                     <div className='flex-grow px-4 py-2 border rounded-full dark:bg-gray-600 '>
-                        <input type="search" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} id="search"   className='flex-grow px-4 py-2 border-none outline-none focus:ring-0 dark:bg-gray-600 dark:text-white' />   
+                        <input type="search" placeholder="Search Event..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} id="search"   className='flex-grow px-4 py-2 border-none outline-none focus:ring-0 dark:bg-gray-600 dark:text-white' />   
                     </div>
             
                     {/* Add Event button */}
@@ -108,7 +107,6 @@ const ViewAllEvents = () => {
                             }
                         })
                         .map((event, index) => (
-
                             <tr key={event.eventID} className={index % 2 === 0 ? "bg-gray-100 dark:bg-gray-600 dark:text-white" : "bg-gray-200 dark:bg-gray-700 dark:text-white"}>
                                 <td className="px-4 py-2">{event.eventID}</td>
                                 <td className="px-4 py-2">{event.eventName}</td>
@@ -138,5 +136,3 @@ const ViewAllEvents = () => {
 
 
 export default ViewAllEvents;
-
-                        {/* {events.map((event, index) => ( */}
