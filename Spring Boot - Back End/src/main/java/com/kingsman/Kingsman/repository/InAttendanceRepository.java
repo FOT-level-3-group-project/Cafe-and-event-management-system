@@ -11,4 +11,6 @@ public interface InAttendanceRepository extends JpaRepository<InAttendance, Long
 
 
     Optional<InAttendance> findByEmpIdAndDate(String empId, LocalDate date);
+
+    List<InAttendance> findByDate(LocalDate currentDate);
 }

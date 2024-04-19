@@ -1,11 +1,11 @@
 package com.kingsman.Kingsman.controller;
 
+import com.kingsman.Kingsman.model.Attendance;
 import com.kingsman.Kingsman.model.Employee;
 import com.kingsman.Kingsman.model.InAttendance;
 import com.kingsman.Kingsman.model.OutAttendance;
+import com.kingsman.Kingsman.repository.AttendanceRepository;
 import com.kingsman.Kingsman.repository.EmployeeRepository;
-import com.kingsman.Kingsman.repository.InAttendanceRepository;
-import com.kingsman.Kingsman.repository.OutAttendanceRepository;
 import com.kingsman.Kingsman.service.AttendanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,37 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
 public class AttendanceController {
 
-    //send inTime Attendance
-    @Autowired
-    private InAttendanceRepository inAttendanceRepository;
-    @PostMapping("/inAttendance")
-    public InAttendance newAttendance(@RequestBody InAttendance newAttendance) {
-        // Manually set the date before saving
-        newAttendance.setDate(LocalDate.now());
-        return inAttendanceRepository.save(newAttendance);
-    }
 
-
-    //send inTime Attendance
-    @Autowired
-    private OutAttendanceRepository outAttendanceRepository;
-
-    @PostMapping("/outAttendance")
-    public OutAttendance newAttendance(@RequestBody OutAttendance newAttendance) {
-        // Manually set the date before saving
-        newAttendance.setDate(LocalDate.now());
-        return outAttendanceRepository.save(newAttendance);
-    }
 
     //get Employee Ids
     @Autowired
@@ -54,75 +31,159 @@ public class AttendanceController {
         // Fetch all employees from the repository
         List<Employee> employees = employeeRepository.findAll();
 
-        // Extract and return the IDs and positions as separate lists
+        // Extract and return the IDs, names, and positions as separate lists
         return employees.stream()
-                .map(employee -> Arrays.asList("EMP0" + String.format("%02d", employee.getId()), employee.getPosition()))
+                .map(employee -> {
+                    List<String> employeeInfo = Arrays.asList(
+                            "EMP" + String.format("%03d", employee.getId()),
+                            employee.getFirst_name() + " " + employee.getLast_name(),
+                            employee.getPosition()
+                    );
+                    return employeeInfo;
+                })
                 .collect(Collectors.toList());
     }
 
 
 
 
-    //get in and out times from different table
-    //here i used services
-@Autowired
-private AttendanceService attendanceService;
 
-    @GetMapping("/TodayAttendance")
-    public List<Object[]> getTodayAttendanceData() {
-        return attendanceService.getAttendanceData();
+
+
+
+
+
+    //test
+
+    @Autowired
+    private AttendanceRepository attendanceRepository;
+
+    @PostMapping("/attendance/in")
+    public ResponseEntity<String> addInTime(@RequestBody Attendance attendance) {
+        try {
+            // Set the date
+            attendance.setDate(LocalDate.now()); // You might want to adjust the date logic as per your requirement
+
+            // Save the attendance record
+            attendanceRepository.save(attendance);
+
+            return ResponseEntity.ok("In time recorded successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to record in time.");
+        }
+    }
+
+    @PostMapping("/attendance/out")
+    public ResponseEntity<String> addOutTime(@RequestBody Attendance attendance) {
+        try {
+            // Fetch the attendance record by employee ID and date
+            Attendance existingAttendance = attendanceRepository.findByEmpIdAndDate(attendance.getEmpId(), LocalDate.now());
+
+            if (existingAttendance != null) {
+                // Update the existing attendance record with out time
+                existingAttendance.setOutTime(attendance.getOutTime());
+                attendanceRepository.save(existingAttendance);
+                return ResponseEntity.ok("Out time recorded successfully.");
+            } else {
+                // Handle case where no matching in-time record is found
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No matching in-time record found for employee: " + attendance.getEmpId());
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to record out time.");
+        }
+    }
+
+    //Today attendance
+
+    private final AttendanceService attendanceService;
+
+
+    // Constructor injection of AttendanceService
+    public AttendanceController(AttendanceService attendanceService) {
+        this.attendanceService = attendanceService;
+    }
+
+    @GetMapping("/current-date")
+    public List<AttendanceDTO> getAttendanceForCurrentDate() {
+        return attendanceService.getAttendanceForCurrentDate();
     }
 
 
-
-    @PutMapping("/edit")
-    public ResponseEntity<String> editAttendance(@RequestBody AttendanceRequest request) {
-        String empId = request.getEmpId();
-        LocalDate date = LocalDate.parse(request.getDate());
-        String inTime = request.getInTime();
-        String outTime = request.getOutTime();
-
-        // Update inTime in InAttendance table
-        Optional<InAttendance> inAttendanceOptional = inAttendanceRepository.findByEmpIdAndDate(empId, date);
-        if (inAttendanceOptional.isPresent()) {
-            InAttendance inAttendance = inAttendanceOptional.get();
-            inAttendance.setInTime(inTime);
-            inAttendanceRepository.save(inAttendance);
-        } else {
-            return new ResponseEntity<>("No inAttendance found for empId: " + empId + " and date: " + date, HttpStatus.NOT_FOUND);
+//update
+    @PutMapping("/update")
+    public ResponseEntity<String> updateAttendance(@RequestBody AttendanceUpdateRequest request) {
+        // Validate input
+        if (request.getEmpId() == null || request.getDate() == null ||
+                request.getInTime() == null || request.getOutTime() == null) {
+            return ResponseEntity.badRequest().body("Required fields are missing.");
         }
 
-        // Update outTime in OutAttendance table
-        Optional<OutAttendance> outAttendanceOptional = outAttendanceRepository.findByEmpIDAndDate(empId, date);
-        if (outAttendanceOptional.isPresent()) {
-            OutAttendance outAttendance = outAttendanceOptional.get();
-            outAttendance.setOutTime(outTime);
-            outAttendanceRepository.save(outAttendance);
-        } else {
-            return new ResponseEntity<>("No outAttendance found for empId: " + empId + " and date: " + date, HttpStatus.NOT_FOUND);
+        // Fetch attendance record
+        Attendance attendance = attendanceRepository.findByEmpIdAndDate(request.getEmpId(), request.getDate());
+        if (attendance == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Attendance record not found.");
         }
 
-        return new ResponseEntity<>("Attendance updated successfully", HttpStatus.OK);
+        // Update attendance record
+        attendance.setInTime(request.getInTime());
+        attendance.setOutTime(request.getOutTime());
+
+        // Save changes
+        attendanceRepository.save(attendance);
+
+        return ResponseEntity.ok("Attendance record updated successfully.");
     }
+
+    //delete
+
+
 
     @DeleteMapping("/DeleteAttendance/{empId}/{date}")
     public ResponseEntity<String> deleteAttendance(@PathVariable String empId, @PathVariable String date) {
-        // Find and delete the attendance record from InAttendance table
-        InAttendance inAttendance = inAttendanceRepository.findByEmpIdAndDate(empId, LocalDate.parse(date))
-                .orElse(null);
-        if (inAttendance != null) {
-            inAttendanceRepository.delete(inAttendance);
-        }
+        try {
+            // Parse the date string into a LocalDate object
+            LocalDate attendanceDate = LocalDate.parse(date);
 
-        // Find and delete the attendance record from OutAttendance table
-        OutAttendance outAttendance = outAttendanceRepository.findByEmpIDAndDate(empId, LocalDate.parse(date))
-                .orElse(null);
-        if (outAttendance != null) {
-            outAttendanceRepository.delete(outAttendance);
-        }
+            // Delete the attendance record based on empId and date
+            attendanceService.deleteAttendance(empId, attendanceDate);
 
-        return ResponseEntity.ok("Attendance records for empId: " + empId + " and date: " + date + " deleted successfully");
+            return ResponseEntity.ok("Attendance record deleted successfully.");
+        } catch (Exception e) {
+            // Handle any exceptions and return an error response
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete attendance record.");
+        }
     }
 
+
+//absenties search
+
+
+    @GetMapping("/Absent-Employees")
+    public List<EmployeeDTO> compareEmployeeAttendance() {
+        // Fetch data from Employee table
+        List<Employee> employees = employeeRepository.findAll();
+
+        // Fetch data from Attendance table
+        List<Attendance> attendanceList = attendanceRepository.findAll();
+
+        // Get list of employee IDs present in the Attendance table
+        List<String> attendanceEmpIds = attendanceList.stream()
+                .map(Attendance::getEmpId)
+                .collect(Collectors.toList());
+
+        // Create a list to store the result
+        List<EmployeeDTO> resultList = new ArrayList<>();
+
+        // Iterate over employees
+        for (Employee employee : employees) {
+            // Format data and add to result list if employee ID not present in the Attendance table
+            String empId = "EMP" + String.format("%03d", employee.getId());
+            if (!attendanceEmpIds.contains(empId)) {
+                resultList.add(EmployeeDTO.fromEmployee(employee));
+            }
+        }
+
+        return resultList;
+    }
 
 }
