@@ -5,10 +5,11 @@ import ManagerSideBar from '../../components/ManagerSideBar';
 import AllinventoryItem from './inventory/AllinventoryItem';
 import ManagerProfile from './ManagerProfile';
 import Header from '../../components/Header';
-import RegisterEmployee from './registration/RegisterEmployee';
+import RegisterEmployee from './manageEmployees/RegisterEmployee';
 import ViewAllEmployees from './manageEmployees/ViewAllEmployees';
 import AddEvent from './manageEvents/AddEvent';
 import ViewAllEvents from './manageEvents/ViewAllEvents';
+import UpdateEvent from './manageEvents/UpdateEvent';
 
 
 export default function Manager() {
@@ -40,6 +41,8 @@ export default function Manager() {
                 {tab === 'add-event' && <AddEvent/>}
                 {/* View All Events */}
                 {tab === 'view-all-events' && <ViewAllEvents/>}
+                {/* Update Event */}
+                {tab === 'update-event' && <UpdateEvent/>}
 
         </div>
     )

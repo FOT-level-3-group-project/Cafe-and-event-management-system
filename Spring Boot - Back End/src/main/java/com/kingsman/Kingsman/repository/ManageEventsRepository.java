@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ViewEventsRepository extends JpaRepository<Event, Integer> {
-    Optional<Event> findEventByEventID(Integer eventID);
-    void deleteEventByEventID(Integer eventID);
+public interface ManageEventsRepository extends JpaRepository<Event, String> {
+    Optional<Event> findEventByEventID(String eventID);
+    void deleteByEventID(String eventID);
 }

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Label, TextInput } from 'flowbite-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Link } from 'react-router-dom'
 
 export default function RegisterEmployee() {
     const [formData, setFormData] = useState({
@@ -13,16 +12,17 @@ export default function RegisterEmployee() {
             position: '',
             contact_number: '',
             gender: '',
-            IDNumber: '',
+            // IDNumber: '',
             joined_date: '',
             email: '',
             address: '',
             uniform_size: '',
-            emergency_contact: '',
-            // profilePicture: ''
+            emergency_contact: ''
     });
     const [errorMessage, setErrorMessage] = useState('');
     const [emailErrorMessage, setEmailErrorMessage] = useState('');
+    const [contactErrorMessage, setContactErrorMessage] = useState('');
+    const [EmergencyContactErrorMessage, setEmergencyContactErrorMessage] = useState('');   
     const navigate = useNavigate();
 
     const generatePassword = () => {
@@ -45,13 +45,12 @@ export default function RegisterEmployee() {
             position: '',
             contact_number: '',
             gender: '',
-            IDNumber: '',
+            // IDNumber: '',
             joined_date: '',
             email: '',
             address: '',
             uniform_size: '',
-            emergency_contact: '',
-            // profilePicture: '',
+            emergency_contact: ''
         }); 
             setErrorMessage('');
     };
@@ -60,20 +59,40 @@ export default function RegisterEmployee() {
         const { name, value } = e.target;
         let errorMessage = '';
 
+        //validate contacts
         if (name === 'contact_number' || name === 'emergency_contact') {
             if ( value !== '' && !/^\d+$/.test(value)) {
-                errorMessage('Please enter only numbers for mobile number');
-            }else if (value.length > 10) {
-            errorMessage('Contact number should not exceed 10 digits');
+                // errorMessage('Please enter only numbers for mobile number');
+                errorMessage('');
+            }else if (name === 'contact_number'){
+                if(value.length > 10) {
+                    errorMessage('');
+                }else if (value.length < 10) {
+                    setContactErrorMessage('Mobile number should not be less than 10 digits');
+                }else{
+                    setContactErrorMessage('');
+                }
+            }else if (name === 'emergency_contact') {
+                if(value.length > 10) {
+                    // errorMessage('Emergency contact number should not exceed 10 digits');
+                    errorMessage('');
+                }else if (value.length < 10) {
+                    setEmergencyContactErrorMessage('Mobile number should not be less than 10 digits');
+                }else{
+                    setEmergencyContactErrorMessage('');
+                }
             }
+        //validate names
         } else if (name === 'first_name' || name === 'last_name') {
             if ( value !== '' && !/^[a-zA-Z]+$/.test(value)) {
-                errorMessage('Please enter only letters for first name and last name');
+                // errorMessage('Please enter only letters for first name and last name');
+                errorMessage('');
             }
+        //validate email
         }else if (name === 'email') {
             if (!/\S+@\S+\.\S+/.test(value)) {
             setEmailErrorMessage('Please enter a valid email address');
-        } else {
+        }else {
             setEmailErrorMessage('');
         }
         }
@@ -117,12 +136,6 @@ export default function RegisterEmployee() {
         });
     }, []);
 
-    // const handleProfilePictureChange = (e) => {
-    //     const file = e.target.files[0];
-    //     setFormData({ ...formData, profilePicture: file });
-    // };
-
-
     return (
         <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row w-full '>
             <div className='flex-1 flex justify-center'>
@@ -154,11 +167,12 @@ export default function RegisterEmployee() {
                         <div>
                             <Label value='Email*' />
                             <TextInput type='text' placeholder='Email' id='Email' value={formData.email} onChange={handleChange} name="email"  required/>
-                            {emailErrorMessage && <div className="text-red-500">{emailErrorMessage}</div>}
+                            {emailErrorMessage && <div className="text-red-500 text-sm ">{emailErrorMessage}</div>}
                         </div>
                         <div>
                             <Label value='Contact Number' />
                             <TextInput type='text' placeholder='Contact Number' id='Contact' value={formData.contact_number} onChange={handleChange} name="contact_number" />
+                            {contactErrorMessage && <div className="text-red-500 text-sm">{contactErrorMessage}</div>}
                         </div>
                     </div>
 
@@ -169,7 +183,6 @@ export default function RegisterEmployee() {
                         </div>
                         <div>
                             <Label value='Gender' /> <br/>
-                            {/* <select id='Gender' value={formData.gender} onChange={handleChange} className='w-full px-3 py-2 border rounded-md bg-gray-700 text-gray-400'> */}
                             <select id='Gender' value={formData.gender} onChange={handleChange} name='gender' className='w-full px-3 py-2 border rounded-md dark:bg-gray-700 '>
                                 <option value=''>Select Gender</option>
                                 <option value='male'>Male</option>
@@ -177,17 +190,18 @@ export default function RegisterEmployee() {
                                 <option value='other'>Other</option>
                             </select>
                         </div>
-                        <div>
+
+                       {/* <div>
                             <Label value='ID Number' />
-                            <TextInput type='text' placeholder='ID Number' id='IDNumber' value={formData.IDNumber} onChange={handleChange} name="IDNumber" />
-                        </div>
+                            <TextInput type ='text' placeholder='ID Number' id='IDNumber' value={formData.IDNumber} onChange={handleChange} name='IDNumber' />
+                        </div> */}
+                    
                         <div>
-                            <Label value='Joined Date' />
-                            <TextInput type='date' placeholder='Joined Date' id='JoinedDate' className='text-gray-400' value={formData.joined_date} onChange={handleChange} name="joined_date"/>
+                            <Label value='Joined Date*' />
+                            <TextInput type='date' placeholder='Joined Date' id='JoinedDate' className='text-gray-400' value={formData.joined_date} onChange={handleChange} name="joined_date" required/>
                         </div> 
                         <div>
                             <Label value='Uniform Size' /> <br/>
-                            {/* <select id='UniformSize' value={formData.uniform_size} onChange={handleChange} className='w-full px-3 py-2 border rounded-md bg-gray-700 text-gray-400' > */}
                             <select id='UniformSize' value={formData.uniform_size} name='uniform_size' onChange={handleChange} className='w-full px-3 py-2 border rounded-md dark:bg-gray-700' >
                                 <option value=''>Select</option>
                                 <option value='Extra Small'>Extra Small</option>
@@ -200,24 +214,14 @@ export default function RegisterEmployee() {
                         <div>
                             <Label value='Emergency Contact' />
                             <TextInput type='text' placeholder='Emergency Contact' id='EmergencyContact' value={formData.emergency_contact} onChange={handleChange} name="emergency_contact" />
+                            {EmergencyContactErrorMessage && <div className="text-red-500 text-sm ">{EmergencyContactErrorMessage}</div>}
                         </div>
-                    </div>
-                
+                         
                         <div>
                             <Label value='Password' />
                             <TextInput type='text' placeholder='Password' id='Password' value={formData.password} />
                         </div>
-
-                        {/* <div className="flex items-center ">
-                            <Label value='Profile Picture' /> <br/>
-                            <input
-                                type='file'
-                                id='profilePicture'
-                                accept='image/*'
-                                onChange={(e) => handleProfilePictureChange(e)}
-                                className="py-2 px-10 text-sm leading-tight"
-                            />
-                        </div> */}
+                    </div>
 
                     <div className="flex justify-between">
                         <button type="reset" className="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 mr-2 rounded w-full md:w-1/2 " id="clearbtn" onClick={handleResetForm}> Clear </button>
@@ -228,10 +232,8 @@ export default function RegisterEmployee() {
                     <Alert className='mt-5' color='failure'>
                         {errorMessage}
                     </Alert>
-                )}
+                    )}
                 </form>
-
-                
             </div>
         </div>
     );

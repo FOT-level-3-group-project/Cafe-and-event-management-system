@@ -34,6 +34,7 @@ public class EmployeeService {
         }
     }
 
+
 //Absent Employees
     @Autowired
     private InAttendanceRepository inAttendanceRepository;
@@ -64,6 +65,13 @@ public class EmployeeService {
                 .collect(Collectors.toList());
 
         return employeesWithPositions;
+    }
+
+
+
+    public String getEmployeeFirstNameById(Integer id) {
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        return (employee != null) ? employee.getFirst_name() : null;
     }
 
 

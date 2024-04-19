@@ -46,24 +46,24 @@ export default function ManagerSideBar() {
                             Profile
                         </Sidebar.Item>
                     </Link>
-                    <Link to='/manager?tab=new-employee'>
+                    {/* <Link to='/manager?tab=new-employee'>
                         <Sidebar.Item active={tab === 'new-employee'} icon={HiUser} as='div'>
                             New Employee
                         </Sidebar.Item>
-                    </Link>
+                    </Link> */}
                     <Link to='/manager?tab=view-all-employees'>
                         <Sidebar.Item active={tab === 'view-all-employees'} icon={HiUser} as='div'>
-                            View All Employees
+                            Employees
                         </Sidebar.Item>
                     </Link>
-                    <Link to='/manager?tab=add-event'>
+                    {/* <Link to='/manager?tab=add-event'>
                         <Sidebar.Item active={tab === 'add-event'} icon={HiUser} as='div'>
                             Add Event
                         </Sidebar.Item>
-                    </Link>
+                    </Link> */}
                     <Link to='/manager?tab=view-all-events'>
                         <Sidebar.Item active={tab === 'view-all-events'} icon={HiUser} as='div'>
-                            View All Events
+                           Events
                         </Sidebar.Item>
                     </Link>
 
