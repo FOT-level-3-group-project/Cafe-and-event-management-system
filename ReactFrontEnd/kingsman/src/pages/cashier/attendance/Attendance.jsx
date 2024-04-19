@@ -24,7 +24,8 @@ function Attendance() {
       .then(response => {
         setAttendance(response.data.map(employee => ({
           empId: employee[0],
-          position: employee[1],
+          empName: employee[1],
+          position: employee[2],
           inTime: "",
           outTime: ""
         })));
@@ -38,60 +39,64 @@ function Attendance() {
     fetchEmployeeData();
   }, []); // Run only once on component mount
 
-  // Function to handle taking in time or out time
-  const handleTakeTime = (empId, position, isInTime) => {
-    setSelectedEmployee({ empId, position });
-    setIsInTime(isInTime);
-    setOpenModal(true);
-  };
 
-  // Function to confirm attendance
-  const confirmAttendance = () => {
-    const currentTime = new Date().toLocaleTimeString();
-    if (isInTime) {
-      // Mark in attendance
-      axios.post('http://localhost:8080/inAttendance', {
-        empId: selectedEmployee.empId,
-        position: selectedEmployee.position,
-        inTime: currentTime,
+  // Function to handle taking in time or out time
+const handleTakeTime = (empId, empName, position, isInTime) => {
+  setSelectedEmployee({ empId, empName, position });
+  setIsInTime(isInTime);
+  setOpenModal(true);
+};
+
+
+const confirmAttendance = () => {
+  const currentTime = new Date().toLocaleTimeString();
+  console.log("Current Time:", currentTime); // Check if currentTime is correct
+  if (isInTime) {
+    // Mark in attendance
+    axios.post('http://localhost:8080/attendance/in', {
+      empId: selectedEmployee.empId,
+      empName: selectedEmployee.empName,
+      position: selectedEmployee.position,
+      inTime: currentTime,
+    })
+      .then(response => {
+        setAttendance(prevAttendance => prevAttendance.map(emp => {
+          if (emp.empId === selectedEmployee.empId) {
+            return { ...emp, inTime: currentTime };
+          }
+          return emp;
+        }));
+        setOpenModal(false);
       })
-        .then(response => {
-          const updatedAttendance = attendance.map(emp => {
-            if (emp.empId === selectedEmployee.empId) {
-              return { ...emp, inTime: response.data.inTime };
-            }
-            return emp;
-          });
-          setAttendance(updatedAttendance);
-          setOpenModal(false);
-        })
-        .catch(error => {
-          console.error('Error marking in attendance:', error);
-          setOpenModal(false);
-        });
-    } else {
-      // Mark out attendance
-      axios.post('http://localhost:8080/outAttendance', {
-        empID: selectedEmployee.empId,
-        position: selectedEmployee.position,
-        outTime: currentTime,
+      .catch(error => {
+        console.error('Error marking in attendance:', error);
+        setOpenModal(false);
+      });
+  } else {
+    // Mark out attendance
+    axios.post('http://localhost:8080/attendance/out', {
+      empId: selectedEmployee.empId, // Corrected field name to empId
+      empName: selectedEmployee.empName,
+      position: selectedEmployee.position,
+      outTime: currentTime,
+    })
+      .then(response => {
+        console.log("Out Time Set:", currentTime); // Check if outTime is being set correctly
+        setAttendance(prevAttendance => prevAttendance.map(emp => {
+          if (emp.empId === selectedEmployee.empId) {
+            return { ...emp, outTime: currentTime };
+          }
+          return emp;
+        }));
+        setOpenModal(false);
       })
-        .then(response => {
-          const updatedAttendance = attendance.map(emp => {
-            if (emp.empId === selectedEmployee.empId) {
-              return { ...emp, outTime: response.data.outTime };
-            }
-            return emp;
-          });
-          setAttendance(updatedAttendance);
-          setOpenModal(false);
-        })
-        .catch(error => {
-          console.error('Error marking out attendance:', error);
-          setOpenModal(false);
-        });
-    }
-  };
+      .catch(error => {
+        console.error('Error marking out attendance:', error);
+        setOpenModal(false);
+      });
+  }
+};
+
 
   return (
     <div className="mr-16 ml-16 mt5 mb-5">
@@ -106,6 +111,7 @@ function Attendance() {
           <Table.Head>
             <Table.HeadCell>#</Table.HeadCell>
             <Table.HeadCell>Emp ID</Table.HeadCell>
+            <Table.HeadCell>Emp Name</Table.HeadCell>
             <Table.HeadCell>Position</Table.HeadCell>
             <Table.HeadCell>In Time</Table.HeadCell>
             <Table.HeadCell>Action</Table.HeadCell>
@@ -120,6 +126,7 @@ function Attendance() {
               >
                 <Table.Cell className="text-white">{index + 1}</Table.Cell>
                 <Table.Cell className="text-white">{employee.empId}</Table.Cell>
+                <Table.Cell className="text-white">{employee.empName}</Table.Cell>
                 <Table.Cell className="text-white">{employee.position}</Table.Cell>
                 <Table.Cell>
                   {employee.inTime ? employee.inTime : (
@@ -127,7 +134,7 @@ function Attendance() {
                   )}
                 </Table.Cell>
                 <Table.Cell>
-                  <Button color="blue" pill onClick={() => handleTakeTime(employee.empId, employee.position, true)}>Mark In</Button>
+                  <Button color="blue" pill onClick={() => handleTakeTime(employee.empId, employee.empName, employee.position, true)}>Mark In</Button>
                 </Table.Cell>
                 <Table.Cell>
                   {employee.outTime ? employee.outTime : (
@@ -135,7 +142,7 @@ function Attendance() {
                   )}
                 </Table.Cell>
                 <Table.Cell>
-                  <Button color="success" pill disabled={!employee.inTime} onClick={() => handleTakeTime(employee.empId, employee.position, false)}>Mark Out</Button>
+                  <Button color="success" pill disabled={!employee.inTime} onClick={() => handleTakeTime(employee.empId, employee.empName, employee.position, false)}>Mark Out</Button>
                 </Table.Cell>
               </Table.Row>
             ))}

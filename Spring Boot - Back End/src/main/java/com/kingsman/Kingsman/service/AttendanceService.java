@@ -1,8 +1,17 @@
 package com.kingsman.Kingsman.service;
 
+import com.kingsman.Kingsman.controller.AttendanceDTO;
+import com.kingsman.Kingsman.model.Attendance;
+import com.kingsman.Kingsman.model.InAttendance;
+import com.kingsman.Kingsman.model.OutAttendance;
+import com.kingsman.Kingsman.repository.AttendanceRepository;
+import com.kingsman.Kingsman.repository.InAttendanceRepository;
+import com.kingsman.Kingsman.repository.OutAttendanceRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,6 +19,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -59,5 +70,44 @@ public class AttendanceService {
         return resultList;
     }
 
+    private final AttendanceRepository attendanceRepository;
+
+    // Constructor injection of AttendanceRepository
+    public AttendanceService(AttendanceRepository attendanceRepository) {
+        this.attendanceRepository = attendanceRepository;
+    }
+
+    public List<AttendanceDTO> getAttendanceForCurrentDate() {
+        LocalDate currentDate = LocalDate.now();
+        List<Attendance> attendanceList = attendanceRepository.findByDate(currentDate);
+
+        // Convert Attendance entities to custom DTOs
+        return attendanceList.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Helper method to map Attendance entity to custom DTO
+    private AttendanceDTO mapToDTO(Attendance attendance) {
+        AttendanceDTO dto = new AttendanceDTO();
+        dto.setEmpId(attendance.getEmpId());
+        dto.setEmpName(attendance.getEmpName());
+        dto.setPosition(attendance.getPosition());
+        dto.setDate(attendance.getDate());
+        dto.setInTime(attendance.getInTime());
+        dto.setOutTime(attendance.getOutTime());
+        return dto;
+    }
+
+    //delete
+
+
+
+
+    public void deleteAttendance(String empId, LocalDate date) {
+        attendanceRepository.deleteByEmpIdAndDate(empId, date);
+    }
 
 }
+
+

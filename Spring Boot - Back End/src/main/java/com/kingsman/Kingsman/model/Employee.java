@@ -158,4 +158,13 @@ public class Employee {
         this.emergency_contact = emergency_contact;
     }
 
+
+
+
+    //absent Employees
+    public void setEmpId(String s) {
+    }
+
+    public void setEmpName(String s) {
+    }
 }

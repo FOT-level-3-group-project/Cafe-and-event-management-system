@@ -1,25 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { Table } from "flowbite-react";
-import { FaEdit, FaTrash } from 'react-icons/fa';
-import { Modal, TextInput, Button, Label } from "flowbite-react"; // Import modal and form components
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Table, Button, Modal } from "flowbite-react";
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import EditModal from './EditModal';
+import AbsentiesModal from './AbsentiesModal';
 
 function ViewAttendance() {
-  // State variables
-  const [attendanceData, setAttendanceData] = useState([]); // Stores attendance data fetched from the backend
-  const [selectedAttendance, setSelectedAttendance] = useState(null); // Stores the selected attendance data for editing
-  const [openModal, setOpenModal] = useState(false); // Controls the visibility of the edit modal
-  const [inTime, setInTime] = useState('');
-  const [outTime, setOutTime] = useState('');
+  const [attendanceData, setAttendanceData] = useState([]);
+  const [selectedAttendance, setSelectedAttendance] = useState(null);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false); // State to control delete confirmation modal
+  const [openAbsentiesModal, setOpenAbsentiesModal] = useState(false); // State to control AbsentiesModal visibility
 
-  // Fetch attendance data from the backend when the component mounts
   useEffect(() => {
     fetchAttendanceData();
   }, []);
 
-  // Function to fetch attendance data from the backend
   const fetchAttendanceData = () => {
-    axios.get('http://localhost:8080/TodayAttendance')
+    axios.get('http://localhost:8080/current-date')
       .then(response => {
         setAttendanceData(response.data);
       })
@@ -28,50 +26,61 @@ function ViewAttendance() {
       });
   };
 
-  // Function to handle click on the edit icon
   const handleEditClick = (attendance) => {
-    setSelectedAttendance(attendance); // Set the selected attendance data
-    setInTime(attendance[3]);
-    setOutTime(attendance[4]);
-    setOpenModal(true); // Open the edit modal
+    setSelectedAttendance(attendance);
+    setOpenEditModal(true);
   };
 
-  // Function to close the edit modal
-  const handleCloseModal = () => {
-    setOpenModal(false); // Close the modal
-    setSelectedAttendance(null); // Reset selected attendance data
+  const handleDeleteClick = (empId, date) => {
+    setSelectedAttendance({ empId, date }); // Set selected attendance for deletion
+    setConfirmDelete(true); // Show delete confirmation modal
   };
 
-  // Function to handle form submission
-  const handleSubmit = () => {
-    // Prepare the data to be sent to the backend
-    const formData = {
-      empId: selectedAttendance ? selectedAttendance[0] : '', // Assuming empId is stored in the first position of selectedAttendance array
-      date: selectedAttendance ? selectedAttendance[2] : '', // Assuming date is stored in the third position of selectedAttendance array
-      inTime: inTime,
-      outTime: outTime
-    };
+  const handleCloseEditModal = () => {
+    setOpenEditModal(false);
+    setSelectedAttendance(null);
+  };
 
-    // Make a PUT request to the backend
-    axios.put('http://localhost:8080/edit', formData)
+  const handleSubmitEdit = (formData) => {
+    axios.put('http://localhost:8080/update', formData)
       .then(response => {
         console.log('Attendance updated successfully:', response.data);
-        handleCloseModal(); // Close the modal after successful submission
-        fetchAttendanceData(); // Fetch updated attendance data from the backend
+        handleCloseEditModal();
+        fetchAttendanceData();
       })
       .catch(error => {
         console.error('Error updating attendance:', error);
-        // Handle error (e.g., show error message to the user)
+      });
+  };
+
+  const handleConfirmDelete = () => {
+    const { empId, date } = selectedAttendance;
+    axios.delete(`http://localhost:8080/DeleteAttendance/${empId}/${date}`)
+      .then(response => {
+        console.log('Attendance deleted successfully:', response.data);
+        setConfirmDelete(false); // Close delete confirmation modal
+        fetchAttendanceData();
+      })
+      .catch(error => {
+        console.error('Error deleting attendance:', error);
       });
   };
 
   return (
     <div>
-      {/* Attendance Table */}
+      {/* Absentees button */}
+      <div className="mt-10 text-right flex justify-end mr-10">
+        <Button outline gradientDuoTone="cyanToBlue" onClick={() => setOpenAbsentiesModal(true)}>
+          Absentees
+        </Button>
+      </div>
+
+      {/* Attendance table */}
       <div className="mt-5 ml-10 mr-10 shadow border">
         <Table hoverable>
           <Table.Head>
             <Table.HeadCell>Emp ID</Table.HeadCell>
+            <Table.HeadCell>Emp Name</Table.HeadCell>
             <Table.HeadCell>Position</Table.HeadCell>
             <Table.HeadCell>Date</Table.HeadCell>
             <Table.HeadCell>In Time</Table.HeadCell>
@@ -81,14 +90,15 @@ function ViewAttendance() {
           <Table.Body className="divide-y">
             {attendanceData.map((attendance, index) => (
               <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                <Table.Cell>{attendance[0]}</Table.Cell>
-                <Table.Cell>{attendance[1]}</Table.Cell>
-                <Table.Cell>{attendance[2]}</Table.Cell>
-                <Table.Cell>{attendance[3]}</Table.Cell>
-                <Table.Cell>{attendance[4]}</Table.Cell>
+                <Table.Cell>{attendance.empId}</Table.Cell>
+                <Table.Cell>{attendance.empName}</Table.Cell>
+                <Table.Cell>{attendance.position}</Table.Cell>
+                <Table.Cell>{attendance.date}</Table.Cell>
+                <Table.Cell>{attendance.inTime}</Table.Cell>
+                <Table.Cell>{attendance.outTime}</Table.Cell>
                 <Table.Cell className="flex">
                   <FaEdit className="text-blue-500 mr-3 hover:text-blue-700 cursor-pointer text-lg" onClick={() => handleEditClick(attendance)} />
-                  <FaTrash className="text-red-500 hover:text-red-700 cursor-pointer text-lg" />
+                  <FaTrash className="text-red-500 hover:text-red-700 cursor-pointer text-lg" onClick={() => handleDeleteClick(attendance.empId, attendance.date)} />
                 </Table.Cell>
               </Table.Row>
             ))}
@@ -96,60 +106,44 @@ function ViewAttendance() {
         </Table>
       </div>
 
-      {/* Edit Modal */}
-      <Modal show={openModal} size="md" onClose={handleCloseModal} popup>
+      {/* Delete confirmation modal */}
+      <Modal show={confirmDelete} size="md" onClose={() => setConfirmDelete(false)} popup>
         <Modal.Header />
         <Modal.Body>
-          <div className="space-y-6">
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">Edit Attendance</h3>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="empId" value="Emp ID" />
-              </div>
-              <TextInput
-                id="empId"
-                value={selectedAttendance ? selectedAttendance[0] : ''}
-                disabled
-              />
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="date" value="Date" />
-              </div>
-              <TextInput
-                id="date"
-                value={selectedAttendance ? selectedAttendance[2] : ''}
-                disabled
-              />
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="inTime" value="In Time" />
-              </div>
-              <TextInput
-                id="inTime"
-                type="time"
-                value={inTime}
-                onChange={(event) => setInTime(event.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <div className="mb-2 block">
-                <Label htmlFor="outTime" value="Out Time" />
-              </div>
-              <TextInput
-                id="outTime"
-                type="time"
-                value={outTime}
-                onChange={(event) => setOutTime(event.target.value)}
-                required
-              />
-            </div>
-            <div className="w-full">
-              <Button onClick={handleSubmit}>Submit</Button>
+          <div className="text-center">
+            <h3 className="mb-2 text-lg font-normal text-gray-500 dark:text-gray-400">
+              Are you sure you want to delete the attendance record for employee {selectedAttendance ? selectedAttendance.empId : ''}?
+            </h3>
+            <p className="mb-5 text-sm text-gray-400 dark:text-gray-500">
+              This action cannot be undone.
+            </p>
+            <div className="flex justify-center gap-4">
+              <Button color="failure" onClick={handleConfirmDelete}>
+                {"Yes, I'm sure"}
+              </Button>
+              <Button color="gray" onClick={() => setConfirmDelete(false)}>
+                No, cancel
+              </Button>
             </div>
           </div>
+        </Modal.Body>
+      </Modal>
+
+      {/* Render the EditModal component */}
+      <EditModal
+        isOpen={openEditModal}
+        onClose={handleCloseEditModal}
+        onSubmit={handleSubmitEdit}
+        selectedAttendance={selectedAttendance}
+        empId={selectedAttendance ? selectedAttendance.empId : ''}
+        date={selectedAttendance ? selectedAttendance.date : ''}
+      />
+
+      {/* AbsentiesModal component */}
+      <Modal show={openAbsentiesModal} size="lg" onClose={() => setOpenAbsentiesModal(false)} popup>
+        <Modal.Header>Absentees</Modal.Header>
+        <Modal.Body>
+          <AbsentiesModal />
         </Modal.Body>
       </Modal>
     </div>
