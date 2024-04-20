@@ -11,4 +11,6 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     List<Attendance> findByDate(LocalDate date);
     void deleteByEmpIdAndDate(String empId, LocalDate date);
+
+    List<Attendance> findByDateBetween(LocalDate startDate, LocalDate endDate);
 }
