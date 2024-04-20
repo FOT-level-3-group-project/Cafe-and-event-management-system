@@ -114,9 +114,9 @@ const AddEvent = () => {
           const successMessage = `Successfully added event ${formData.eventName}`;
           setErrorMessage(successMessage);
       } catch (error) {
-          if (error.response) {
+          if (error.response && error.response.data && error.response.data.error) {
               // Extract the error message from the response data and display it
-              setErrorMessage(error.response.data);
+              setErrorMessage(error.response);
           } else if (error.request) {
               // This usually indicates a network error or the server did not respond
               console.log(error.request);
@@ -155,10 +155,10 @@ const AddEvent = () => {
                           <Label value='Starting Time' /> <br/>
                           <select
                             className="border rounded-md dark:bg-gray-600 dark:font-white"
-                            onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
+                            onChange={(e) => setFormData({ ...formData, startTime:`${formData.startTime.split(':')[0]}:${e.target.value}` })}
                           >
                             {Array.from({ length: 24 }, (_, i) => (
-                              <option key={i} value={i < 10 ? `0${i}:00` : `${i}:00`}>{i < 10 ? `0${i}` : `${i}`}</option>
+                              <option key={i} value={i < 10 ? `0${i}` : `${i}`}>{i < 10 ? `0${i}` : `${i}`}</option>
                             ))}
                           </select>
                           <span className="text-xl font-bold">:</span>
