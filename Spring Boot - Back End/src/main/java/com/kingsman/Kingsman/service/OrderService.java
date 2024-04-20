@@ -243,6 +243,17 @@ public class OrderService {
         return orderEmployeeFoodDTOs;
     }
 
+    public boolean updateOrderStatus(Long orderId, String orderStatus){
+
+        Optional<Order> existingOrderOptional = orderRepository.findById(orderId);
+        if (existingOrderOptional.isPresent()){
+            Order existingOrder = existingOrderOptional.get();
+            existingOrder.setOrderStatus(orderStatus);
+            orderRepository.save(existingOrder);
+        }
+        return true;
+    }
+
 
 
 

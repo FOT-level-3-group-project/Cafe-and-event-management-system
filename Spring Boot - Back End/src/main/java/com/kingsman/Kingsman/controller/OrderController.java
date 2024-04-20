@@ -2,6 +2,7 @@ package com.kingsman.Kingsman.controller;
 
 import com.kingsman.Kingsman.dto.OrderDTO;
 import com.kingsman.Kingsman.dto.OrderEmployeeFoodDTO;
+import com.kingsman.Kingsman.exception.ItemNotFoundExeption;
 import com.kingsman.Kingsman.model.InventoryItemUsageLog;
 import com.kingsman.Kingsman.model.Order;
 import com.kingsman.Kingsman.service.OrderService;
@@ -92,6 +93,18 @@ public class OrderController {
         }
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
+
+    @PutMapping("/status-update/{orderId}/{orderStatus}") //update the order status
+    public ResponseEntity<String> updateOrderStatus(@PathVariable long orderId, @PathVariable String orderStatus){
+        boolean success = orderService.updateOrderStatus(orderId,orderStatus);
+        if (success){
+            return ResponseEntity.ok("Order Status updated successfully");
+        }else {
+            throw new ItemNotFoundExeption(orderId);
+        }
+    }
+
+
 
 }
 

@@ -24,5 +24,6 @@ public class OrderDTO {
     private boolean paymentStatus;
     private Date createdDate;
     private Date updatedDate;
+    private String specialNote;
     private CustomerDTO customer;
 }

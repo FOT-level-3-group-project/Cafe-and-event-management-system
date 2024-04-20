@@ -70,6 +70,7 @@ public class InventoryController {
             throw new ItemNotFoundExeption(itemId);
         }
     }
+    
     @GetMapping("/inventory-usage-log/{date}")
     public ResponseEntity<List<InventoryItemUsageLog>> getInventoryUsageLogForDate(@PathVariable @DateTimeFormat(iso =DateTimeFormat.ISO.DATE)LocalDate date){
         List<InventoryItemUsageLog> inventoryItemUsageLogs = inventoryService.getInventoryUsageForDate(date);
