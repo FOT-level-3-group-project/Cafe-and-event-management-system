@@ -108,6 +108,14 @@ public class AttendanceController {
         return attendanceService.getAttendanceForCurrentDate();
     }
 
+    //current Month attendance
+
+    @GetMapping("/current-month")
+    public ResponseEntity<List<Attendance>> getAttendanceForCurrentMonth() {
+        List<Attendance> attendanceList = attendanceService.getAttendanceForCurrentMonth();
+        return new ResponseEntity<>(attendanceList, HttpStatus.OK);
+    }
+
 
 //update
     @PutMapping("/update")
@@ -185,5 +193,21 @@ public class AttendanceController {
 
         return resultList;
     }
+
+    //Marking Absent Employees
+
+
+    @PostMapping("/attendances")
+    public ResponseEntity<String> saveAttendances(@RequestBody List<Attendance> attendances) {
+        try {
+            // Save all attendances
+            attendanceRepository.saveAll(attendances);
+            return ResponseEntity.ok("Attendances saved successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save attendances: " + e.getMessage());
+        }
+    }
+
+
 
 }

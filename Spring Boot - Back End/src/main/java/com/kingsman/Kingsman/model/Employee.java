@@ -159,9 +159,9 @@ public class Employee {
   
   
   
-    public void setEmergency_contact(String emergency_contact) {
-        this.emergency_contact = emergency_contact;
-    }
+//    public void setEmergency_contact(String emergency_contact) {
+//        this.emergency_contact = emergency_contact;
+//    }
 
 
 

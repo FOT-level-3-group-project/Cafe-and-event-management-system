@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
@@ -106,6 +107,24 @@ public class AttendanceService {
 
     public void deleteAttendance(String empId, LocalDate date) {
         attendanceRepository.deleteByEmpIdAndDate(empId, date);
+    }
+
+
+    //current month attendance
+
+
+    public List<Attendance> getAttendanceForCurrentMonth() {
+        // Get the current year and month
+        YearMonth currentYearMonth = YearMonth.now();
+
+        // Get the first day of the current month
+        LocalDate firstDayOfMonth = currentYearMonth.atDay(1);
+
+        // Get the last day of the current month
+        LocalDate lastDayOfMonth = currentYearMonth.atEndOfMonth();
+
+        // Retrieve attendance records within the current month
+        return attendanceRepository.findByDateBetween(firstDayOfMonth, lastDayOfMonth);
     }
 
 }
