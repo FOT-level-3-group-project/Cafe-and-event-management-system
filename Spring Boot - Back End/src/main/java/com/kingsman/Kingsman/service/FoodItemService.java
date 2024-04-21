@@ -39,4 +39,17 @@ public class FoodItemService {
         Optional<FoodItem> foodItemOptional = foodItemRepository.findById(foodItemId);
         return foodItemOptional.map(FoodItem::getFoodName).orElse(null);
     }
+
+    public boolean updateFoodAvailability(long foodId){
+        Optional<FoodItem> existingFoodItemOptional = foodItemRepository.findById(foodId);
+        if(existingFoodItemOptional.isPresent()){
+            FoodItem existingFoodItem = existingFoodItemOptional.get();
+
+            boolean newAvailability = !existingFoodItem.isAvailable(); // Toggle the availability
+            existingFoodItem.setAvailable(newAvailability); // Save the updated food item
+            foodItemRepository.save(existingFoodItem);
+            return true;
+        }
+        return false;
+    }
 }
