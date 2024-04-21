@@ -1,9 +1,6 @@
 package com.kingsman.Kingsman.controller;
 
-import com.kingsman.Kingsman.model.Attendance;
-import com.kingsman.Kingsman.model.Employee;
-import com.kingsman.Kingsman.model.InAttendance;
-import com.kingsman.Kingsman.model.OutAttendance;
+import com.kingsman.Kingsman.model.*;
 import com.kingsman.Kingsman.repository.AttendanceRepository;
 import com.kingsman.Kingsman.repository.EmployeeRepository;
 import com.kingsman.Kingsman.service.AttendanceService;
@@ -166,33 +163,47 @@ public class AttendanceController {
 //absenties search
 
 
-    @GetMapping("/Absent-Employees")
-    public List<EmployeeDTO> compareEmployeeAttendance() {
-        // Fetch data from Employee table
+
+
+
+    @Autowired
+    public AttendanceController(EmployeeRepository employeeRepository, AttendanceRepository attendanceRepository, AttendanceService attendanceService) {
+        this.employeeRepository = employeeRepository;
+        this.attendanceRepository = attendanceRepository;
+        this.attendanceService = attendanceService;
+    }
+
+    @GetMapping("/employeeDetails")
+    public List<String[]> getEmployeeDetails() {
+        // Get all employees
         List<Employee> employees = employeeRepository.findAll();
 
-        // Fetch data from Attendance table
-        List<Attendance> attendanceList = attendanceRepository.findAll();
+        // Get attendance records for the current date
+        LocalDate currentDate = LocalDate.now();
+        List<Attendance> attendanceRecords = attendanceRepository.findByDate(currentDate);
 
-        // Get list of employee IDs present in the Attendance table
-        List<String> attendanceEmpIds = attendanceList.stream()
+        // Extract empIds from attendance records for comparison
+        List<String> attendedEmployeeIds = attendanceRecords.stream()
                 .map(Attendance::getEmpId)
                 .collect(Collectors.toList());
 
-        // Create a list to store the result
-        List<EmployeeDTO> resultList = new ArrayList<>();
+        // Filter employees who are not in the attendance records for the current date
+        List<Employee> employeesNotAttended = employees.stream()
+                .filter(employee -> !attendedEmployeeIds.contains("EMP" + String.format("%03d", employee.getId())))
+                .collect(Collectors.toList());
 
-        // Iterate over employees
-        for (Employee employee : employees) {
-            // Format data and add to result list if employee ID not present in the Attendance table
-            String empId = "EMP" + String.format("%03d", employee.getId());
-            if (!attendanceEmpIds.contains(empId)) {
-                resultList.add(EmployeeDTO.fromEmployee(employee));
-            }
-        }
+        // Map employee details to the desired format
+        List<String[]> employeeDetails = employeesNotAttended.stream()
+                .map(employee -> new String[]{
+                        "EMP" + String.format("%03d", employee.getId()), // Format ID as EMPXXX
+                        employee.getFirst_name() + " " + employee.getLast_name(), // Concatenate first and last name
+                        employee.getPosition()
+                })
+                .collect(Collectors.toList());
 
-        return resultList;
+        return employeeDetails;
     }
+
 
     //Marking Absent Employees
 
@@ -208,6 +219,39 @@ public class AttendanceController {
         }
     }
 
+    // get attendance acording to date range
+
+    @GetMapping("/fetch-by-date-range/{startDate}/{endDate}")
+    public ResponseEntity<List<Attendance>> fetchAttendanceByDateRange(
+            @PathVariable("startDate") String startDate,
+            @PathVariable("endDate") String endDate) {
+        // Convert date strings to LocalDate objects
+        LocalDate start = LocalDate.parse(startDate);
+        LocalDate end = LocalDate.parse(endDate);
+
+        // Fetch attendance data from the repository within the specified date range
+        List<Attendance> attendanceList = attendanceRepository.findByDateBetween(start, end);
+
+        // Return the fetched attendance data with a success status code
+        return new ResponseEntity<>(attendanceList, HttpStatus.OK);
+    }
+
+
+    //Emp Ids (EMP001.EMP002)
+
+
+    @GetMapping("/employeeIds")
+    public List<String> getAllEmployeeIds() {
+        // Fetch all employees from the repository
+        List<Employee> employees = employeeRepository.findAll();
+
+        // Map the employee IDs to the "EMPXXX" format
+        List<String> formattedEmployeeIds = employees.stream()
+                .map(employee -> "EMP" + String.format("%03d", employee.getId()))
+                .collect(Collectors.toList());
+
+        return formattedEmployeeIds;
+    }
 
 
 }

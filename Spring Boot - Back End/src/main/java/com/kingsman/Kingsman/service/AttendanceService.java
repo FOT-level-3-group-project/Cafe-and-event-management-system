@@ -127,6 +127,10 @@ public class AttendanceService {
         return attendanceRepository.findByDateBetween(firstDayOfMonth, lastDayOfMonth);
     }
 
+//absenties
+
+
+
 }
 
 
