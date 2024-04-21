@@ -1,6 +1,5 @@
 package com.kingsman.Kingsman.controller;
 
-import com.kingsman.Kingsman.exception.ItemNotFoundExeption;
 import com.kingsman.Kingsman.model.FoodItem;
 import com.kingsman.Kingsman.service.FoodItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +46,17 @@ public class FoodItemController {
         foodItemService.deleteFoodItem(id);
         return ResponseEntity.noContent().build();
     }
+    @PutMapping("/update-availability/{foodId}") //toggle food item availability
+    public boolean updateFoodAvailability(@PathVariable Long foodId){
+        return foodItemService.updateFoodAvailability(foodId);
+    }
+    @DeleteMapping("/delete/{foodId}")//delete food item by Id
+    public ResponseEntity<String> deleteFoodItemById(@PathVariable Long foodId){
+        foodItemService.deleteFoodItem(foodId);
+        return ResponseEntity.ok("FoodItem Successfully Deleted");
+    }
+
+    
 
 
 }
