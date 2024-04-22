@@ -75,6 +75,7 @@ export default function AllFood() {
 
     const handleUpdateSubmit = (updatedItem) => {
         fetchFoods();
+        setIsEditPopupOpen(false);
         console.log('Updated item:', updatedItem);
     }
 
