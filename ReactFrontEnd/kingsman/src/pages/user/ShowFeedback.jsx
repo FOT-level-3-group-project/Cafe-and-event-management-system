@@ -1,93 +1,51 @@
-import { Button, Timeline } from "flowbite-react";
-import { HiArrowNarrowRight } from "react-icons/hi";
+import React, { useState, useEffect } from 'react';
+import { Timeline } from "flowbite-react";
+import { Rating } from '@mui/material';
+import axios from 'axios'; // Import Axios for making HTTP requests
 
 export default function ShowFeedback() {
+  const [feedbackList, setFeedbackList] = useState([]); // State to store feedback data
+
+  useEffect(() => {
+    // Function to fetch feedback data from the backend
+    const fetchFeedback = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/showFeedback');
+        setFeedbackList(response.data); // Update feedbackList state with data from the backend
+      } catch (error) {
+        console.error('Error fetching feedback:', error);
+      }
+    };
+
+    // Call fetchFeedback when the component mounts and whenever the feedbackList changes
+    fetchFeedback();
+  }, [feedbackList]); // Dependency array includes feedbackList, so the effect will re-run whenever feedbackList changes
+
   return (
-    <Timeline className="ml-5 mt-12 ml-10">
-      <Timeline.Item>
-        <Timeline.Point />
-        <Timeline.Content>
-          <Timeline.Time>Thisara Bandara</Timeline.Time>
-          <Timeline.Title>Chicken Biryani</Timeline.Title>
-          <Timeline.Body>
-          I wanted to take a moment to share my feedback on the Chicken Biryani I had at your cafe today. 
-          It was simply outstanding! The flavors were authentic and vibrant, and the chicken was tender and flavorful.
-         The portion size was just right, and the presentation was impeccable. Overall, it was a delightful culinary experience, and I thoroughly enjoyed every bite.
-          <div>4 stars</div>
-          </Timeline.Body>
-        </Timeline.Content>
-      </Timeline.Item>
-      
-      <Timeline.Item>
-        <Timeline.Point />
-        <Timeline.Content>
-          <Timeline.Time>Chathumina Dilshan </Timeline.Time>
-          <Timeline.Title>Buttered rice</Timeline.Title>
-          <Timeline.Body>
-          I wanted to take a moment to share my feedback on the Buttered rice I had at your cafe today. It was simply outstanding! The flavors were rich and authentic, and the rice was perfectly cooked. The portion size was generous, and the presentation was impeccable. Overall, it was a delightful culinary experience, and I thoroughly enjoyed every bite.
-          </Timeline.Body>
-        </Timeline.Content>
-      </Timeline.Item>
-      <Timeline.Item>
-        <Timeline.Point />
-        <Timeline.Content>
-          <Timeline.Time>Dhananjaya</Timeline.Time>
-          <Timeline.Title>Roast Chicken Kottu</Timeline.Title>
-          <Timeline.Body>
-            The Roast Chicken Kottu was exceptional! Bold flavors, tender chicken, and perfect balance. Generous portion size and beautiful presentation. A truly satisfying meal experience! 
-          </Timeline.Body>
-        </Timeline.Content>
-      </Timeline.Item>
-      <Timeline.Item>
-        <Timeline.Point />
-        <Timeline.Content>
-          <Timeline.Time>Dhananjaya</Timeline.Time>
-          <Timeline.Title>Roast Chicken Kottu</Timeline.Title>
-          <Timeline.Body>
-            The Roast Chicken Kottu was exceptional! Bold flavors, tender chicken, and perfect balance. Generous portion size and beautiful presentation. A truly satisfying meal experience! 
-          </Timeline.Body>
-        </Timeline.Content>
-      </Timeline.Item>
-      <Timeline.Item>
-        <Timeline.Point />
-        <Timeline.Content>
-          <Timeline.Time>Dhananjaya</Timeline.Time>
-          <Timeline.Title>Roast Chicken Kottu</Timeline.Title>
-          <Timeline.Body>
-            The Roast Chicken Kottu was exceptional! Bold flavors, tender chicken, and perfect balance. Generous portion size and beautiful presentation. A truly satisfying meal experience! 
-          </Timeline.Body>
-        </Timeline.Content>
-      </Timeline.Item>
-      <Timeline.Item>
-        <Timeline.Point />
-        <Timeline.Content>
-          <Timeline.Time>Dhananjaya</Timeline.Time>
-          <Timeline.Title>Roast Chicken Kottu</Timeline.Title>
-          <Timeline.Body>
-            The Roast Chicken Kottu was exceptional! Bold flavors, tender chicken, and perfect balance. Generous portion size and beautiful presentation. A truly satisfying meal experience! 
-          </Timeline.Body>
-        </Timeline.Content>
-      </Timeline.Item>
-      <Timeline.Item>
-        <Timeline.Point />
-        <Timeline.Content>
-          <Timeline.Time>Dhananjaya</Timeline.Time>
-          <Timeline.Title>Roast Chicken Kottu</Timeline.Title>
-          <Timeline.Body>
-            The Roast Chicken Kottu was exceptional! Bold flavors, tender chicken, and perfect balance. Generous portion size and beautiful presentation. A truly satisfying meal experience! 
-          </Timeline.Body>
-        </Timeline.Content>
-      </Timeline.Item>
-      <Timeline.Item>
-        <Timeline.Point />
-        <Timeline.Content>
-          <Timeline.Time>Dhananjaya</Timeline.Time>
-          <Timeline.Title>Roast Chicken Kottu</Timeline.Title>
-          <Timeline.Body>
-            The Roast Chicken Kottu was exceptional! Bold flavors, tender chicken, and perfect balance. Generous portion size and beautiful presentation. A truly satisfying meal experience! 
-          </Timeline.Body>
-        </Timeline.Content>
-      </Timeline.Item>
+    <Timeline className="mt-12 ml-10">
+      {feedbackList.map((feedbackItem, index) => (
+        <Timeline.Item key={index}>
+          <Timeline.Point />
+          <Timeline.Content>
+            <Timeline.Title>{feedbackItem.name}</Timeline.Title>
+            <Timeline.Time className='flex justify-self-start'>
+              <div className="flex justify-center items-center">
+                {/* Display star rating dynamically */}
+                <Rating 
+                  name="foods-rating"
+                  value={feedbackItem.rate}
+                  precision={0.5} // Allow half-star increments
+                  sx={{ fontSize: '32px' }} // Increase the size of stars
+                  readOnly // Make the rating read-only
+                />
+              </div>
+            </Timeline.Time>
+            <Timeline.Body>
+              {feedbackItem.feedback}
+            </Timeline.Body>
+          </Timeline.Content>
+        </Timeline.Item>
+      ))}
     </Timeline>
   );
 }

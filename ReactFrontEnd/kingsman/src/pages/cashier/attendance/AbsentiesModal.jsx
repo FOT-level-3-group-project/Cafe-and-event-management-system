@@ -11,9 +11,13 @@ function AbsentiesModal({ onClose, reloadAttendance }) {
   }, []);
 
   const fetchAbsentees = () => {
-    axios.get(`http://localhost:8080/Absent-Employees?date=${currentDate}`)
+    axios.get(`http://localhost:8080/employeeDetails`)
       .then(response => {
-        setAbsentees(response.data);
+        setAbsentees(response.data.map(employee => ({
+          empId: employee[0],
+          empName: employee[1],
+          position: employee[2]
+        })));
       })
       .catch(error => {
         console.error('Error fetching absentees:', error);
