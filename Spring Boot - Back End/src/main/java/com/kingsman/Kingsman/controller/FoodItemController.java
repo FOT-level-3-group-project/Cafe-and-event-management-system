@@ -1,6 +1,8 @@
 package com.kingsman.Kingsman.controller;
 
+import com.kingsman.Kingsman.exception.ItemNotFoundExeption;
 import com.kingsman.Kingsman.model.FoodItem;
+import com.kingsman.Kingsman.model.InventoryItem;
 import com.kingsman.Kingsman.service.FileStorageService;
 import com.kingsman.Kingsman.service.FoodItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +75,7 @@ public class FoodItemController {
         }
     }
 
-    @PostMapping("/food/upload-image/{foodId}") //update food Item image by foodId
+    @PostMapping("/upload-image/{foodId}") //update food Item image by foodId
     public ResponseEntity<String> uploadFoodItemImage(@PathVariable Long foodId, @RequestParam("file") MultipartFile file) throws IOException {
         String imageUrl = null;
         imageUrl = fileStorageService.storeFile(file);
@@ -84,6 +86,17 @@ public class FoodItemController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(imageUrl);
     }
+
+    @PutMapping("/edit/{foodId}") //edit food item by Id
+    public ResponseEntity<String> editFoodItem(@PathVariable long foodId, @RequestBody FoodItem updateFood){
+        if(foodItemService.editFoodItem(foodId,updateFood)){
+            return ResponseEntity.ok("Food Item Updated Successfully");
+        }else {
+            throw new ItemNotFoundExeption(foodId); //throw exception
+            //return ResponseEntity.notFound().build();
+        }
+    }
+
 
 
 

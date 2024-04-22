@@ -1,6 +1,7 @@
 package com.kingsman.Kingsman.service;
 
 import com.kingsman.Kingsman.model.FoodItem;
+import com.kingsman.Kingsman.model.InventoryItem;
 import com.kingsman.Kingsman.repository.FoodItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,5 +56,22 @@ public class FoodItemService {
     public FoodItem getFoodItemById(Long foodId) {
         Optional<FoodItem> foodItemOptional = foodItemRepository.findById(foodId);
         return foodItemOptional.orElse(null);
+    }
+
+    public boolean editFoodItem(long foodId, FoodItem updatedFood){
+        Optional<FoodItem> existingItemOptional = foodItemRepository.findById(foodId); //find the existing Food item in repo using Id
+
+        FoodItem existingItem = existingItemOptional.get();
+
+        existingItem.setFoodName(updatedFood.getFoodName());
+        existingItem.setFoodPrice(updatedFood.getFoodPrice());
+        foodItemRepository.save(existingItem);
+
+        if (existingItemOptional.isPresent()) {
+
+            return true;
+        }else {
+            return false;
+        }
     }
 }

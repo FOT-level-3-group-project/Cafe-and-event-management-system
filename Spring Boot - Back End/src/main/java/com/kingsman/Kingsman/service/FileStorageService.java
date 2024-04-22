@@ -33,7 +33,7 @@ public class FileStorageService {
             Files.copy(file.getInputStream(), filePath);
 
             // Return the URL of the stored file
-            return "/images/" + uniqueFileName; // Assuming the images are served from a directory named "images"
+            return uniqueFileName; // Assuming the images are served from a directory named "images"
         } catch (IOException ex) {
             throw new RuntimeException("Failed to store file " + fileName, ex);
         }

@@ -41,7 +41,7 @@ public class InventoryController {
             throw new ItemNotFoundExeption(itemId); //throw exception
         }
     }
-    @PutMapping("/edit/{itemId}")
+    @PutMapping("/edit/{itemId}")//edit item by id
     public ResponseEntity<String> editInventoryItem(@PathVariable long itemId, @RequestBody InventoryItem updateItem){
         if(inventoryService.editInventoryItem(itemId,updateItem)){
             return ResponseEntity.ok("Inventory Item Updated Successfully");
