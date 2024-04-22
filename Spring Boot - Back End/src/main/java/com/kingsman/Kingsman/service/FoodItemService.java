@@ -35,9 +35,8 @@ public class FoodItemService {
     }
 
 
-    public String getFoodNameById(Long foodItemId) {
-        Optional<FoodItem> foodItemOptional = foodItemRepository.findById(foodItemId);
-        return foodItemOptional.map(FoodItem::getFoodName).orElse(null);
+    public Optional<FoodItem> getFoodNameById(Long foodItemId) {
+        return foodItemRepository.findById(foodItemId);
     }
 
     public boolean updateFoodAvailability(long foodId){
@@ -51,5 +50,10 @@ public class FoodItemService {
             return true;
         }
         return false;
+    }
+
+    public FoodItem getFoodItemById(Long foodId) {
+        Optional<FoodItem> foodItemOptional = foodItemRepository.findById(foodId);
+        return foodItemOptional.orElse(null);
     }
 }
