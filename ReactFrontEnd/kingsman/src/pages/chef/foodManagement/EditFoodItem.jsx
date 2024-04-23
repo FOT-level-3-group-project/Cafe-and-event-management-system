@@ -125,7 +125,7 @@ function EditFoodItem({ foodId, onSubmit, onCancel }) {
                                 <Label htmlFor="image" value="Change Image" />
                             </div>
                             {imageUrl && (
-                                <img src={imageUrl} alt="Food Image" style={{ width: '100px' }} />
+                                <img src={`http://localhost:8080/api/food/image/${imageUrl}`} alt="Food Image" style={{ width: '100px' }} />
                             )}
                             <FileInput id="file" helperText=" A Food Image"  accept=".png, .jpeg, jpg" onChange={handleImageChange}/>
    

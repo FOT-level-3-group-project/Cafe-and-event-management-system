@@ -99,7 +99,7 @@ export default function AllFood() {
                             <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">{food.foodId}</Table.Cell>
                             <Table.Cell>{food.foodName}</Table.Cell>
                             <Table.Cell>
-                                <img src={food.foodImageURL} alt={food.foodName} style={{ width: '100px' }} />
+                                <img src={`http://localhost:8080/api/food/image/${food.foodImageURL}`} alt={food.foodName} style={{ width: '100px' }} />
                                 {console.log(food.foodImageURL)}
                             </Table.Cell>
                             <Table.Cell>{food.foodCategory}</Table.Cell>
