@@ -133,7 +133,7 @@ function EditFoodItem({ foodId, onSubmit, onCancel }) {
 
 
                         <div className="w-full">
-                            <Button onClick={handleUpdateItem}>Update</Button>
+                            <Button onClick={handleUpdateItem} className="bg bg-green-400">Update</Button>
                         </div>
 
                     </div>

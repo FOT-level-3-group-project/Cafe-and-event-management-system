@@ -80,9 +80,9 @@ export default function AllFood() {
     }
 
     return (
-        <div className="overflow-x-auto mt-4">
+        <div className="overflow-x-auto mt-4 drop-shadow-md mr-3">
             <Table>
-                <Table.Head>
+                <Table.Head className=''>
                     <Table.HeadCell>Food Id</Table.HeadCell>
                     <Table.HeadCell>Name</Table.HeadCell>
                     <Table.HeadCell>Image</Table.HeadCell>
@@ -104,9 +104,9 @@ export default function AllFood() {
                             </Table.Cell>
                             <Table.Cell>{food.foodCategory}</Table.Cell>
                             <Table.Cell>{food.foodPrice}</Table.Cell>
-                            <Table.Cell>
+                            <Table.Cell className=''>
 
-                                <ToggleSwitch checked={food.available} color='success' label="" onChange={() => handleAvailability(food.foodId)} />
+                                <ToggleSwitch className='' checked={food.available} color='success' label="" onChange={() => handleAvailability(food.foodId)} />
 
 
                             </Table.Cell>

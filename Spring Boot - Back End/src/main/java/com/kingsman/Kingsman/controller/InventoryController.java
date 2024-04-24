@@ -8,6 +8,7 @@ import com.sun.jdi.event.StepEvent;
 import org.aspectj.apache.bcel.util.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,7 +73,10 @@ public class InventoryController {
     }
     
     @GetMapping("/inventory-usage-log/{date}")
-    public ResponseEntity<List<InventoryItemUsageLog>> getInventoryUsageLogForDate(@PathVariable @DateTimeFormat(iso =DateTimeFormat.ISO.DATE)LocalDate date){
+    public ResponseEntity<?> getInventoryUsageLogForDate(@PathVariable @DateTimeFormat(iso =DateTimeFormat.ISO.DATE)LocalDate date){
+        if (date == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please select the date");
+        }
         List<InventoryItemUsageLog> inventoryItemUsageLogs = inventoryService.getInventoryUsageForDate(date);
         return ResponseEntity.ok(inventoryItemUsageLogs);
     }
