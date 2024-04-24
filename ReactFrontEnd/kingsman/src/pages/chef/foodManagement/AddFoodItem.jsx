@@ -1,6 +1,6 @@
 
 import { set } from "firebase/database";
-import { Button, Checkbox, Label, Modal, TextInput, Alert, FileInput } from "flowbite-react";
+import { Button, Checkbox, Label, Modal, TextInput, Alert, FileInput, Dropdown } from "flowbite-react";
 import { useState } from "react";
 import { HiInformationCircle } from "react-icons/hi";
 import axios from "axios";
@@ -11,25 +11,64 @@ export function AddFoodItem({ onClose }) {
     const [foodPrice, setFoodPrice] = useState('');
     const [showAlert, setShowAlert] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
+    const [selectedCat, setSelectedCat] = useState('');
+    const [file, setFile] = useState(null);
 
-    const handleImageChange = async (event) => {
-        const file = event.target.files[0];
-        const formData = new FormData();
-        formData.append('file', file);
 
-        try {
-            const response = await axios.post(`http://localhost:8080/api/food/upload-image/${foodId}`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
+    const handleImageChange = (event) => {
+        setFile(event.target.files[0]);
+        console.log(event.target.files[0]);
+
+    }
+
+    const handleCategorySelect = (category) => {
+        setSelectedCat(category);
+        console.log(category);
+    }
+
+    const handleAddFood = async () => {
+        if (foodName && foodPrice && selectedCat && file) {
+            const addItem = {
+                foodName,
+                foodPrice,
+                foodCategory: selectedCat,
+            };
+
+            try {
+                const response = await axios.post('http://localhost:8080/api/food/add', addItem);
+                console.log(response.data);
+            
+
+
+                // Upload the image after adding the food item
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    const imgRes = await axios.post(`http://localhost:8080/api/food/upload-image/${response.data.foodId}`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+
+
+                    console.log('Image uploaded:', imgRes.data);
+
+                } catch (error) {
+                    console.error('Error updating item:', error);
                 }
-            });
-
-            setImageUrl(response.data);
-            console.log('Image uploaded:', response.data);
-
-        } catch (error) {
-            console.error('Error updating item:', error);
+                
+                onClose();
+            } catch (error) {
+                console.error('Error adding food:', error);
+            }
+        } else {
+            alert('Please fill in all fields before adding a food item.');
         }
+    }
+
+    const handleAddImage = async () => {
+
     }
 
 
@@ -94,16 +133,23 @@ export function AddFoodItem({ onClose }) {
                                 <img src={`http://localhost:8080/api/food/image/${imageUrl}`} alt="Food Image" style={{ width: '100px' }} />
                             )}
                         </div>
+                        <div>
+                            <div className="mb-2 block">
+                                <Label htmlFor="foodCategory" value="Food Category" />
+                            </div>
+                            <Dropdown color='success' outline dismissOnClick={true} label={selectedCat || "Select Category"}>
+                                <Dropdown.Item onClick={() => handleCategorySelect("Main Dish")}>Main Dish</Dropdown.Item>
+                                <Dropdown.Item onClick={() => handleCategorySelect("Side Dish")}>Side Dish</Dropdown.Item>
+                                <Dropdown.Item onClick={() => handleCategorySelect("Beverage")}>Beverage</Dropdown.Item>
+                                <Dropdown.Item onClick={() => handleCategorySelect("Dessert")}>Dessert</Dropdown.Item>
+                            </Dropdown>
+                        </div>
+
 
                         <div className="w-full">
-                            <Button>Log in to your account</Button>
+                            <Button className=" bg-green-400" color='success' onClick={handleAddFood}>Add</Button>
                         </div>
-                        <div className="flex justify-between text-sm font-medium text-gray-500 dark:text-gray-300">
-                            Not registered?&nbsp;
-                            <a href="#" className="text-cyan-700 hover:underline dark:text-cyan-500">
-                                Create account
-                            </a>
-                        </div>
+
                     </div>
                 </Modal.Body>
             </Modal>

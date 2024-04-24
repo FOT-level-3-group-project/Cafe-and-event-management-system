@@ -1,16 +1,18 @@
 
-import { Button, Navbar } from "flowbite-react";
+import {  Navbar } from "flowbite-react";
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import AddFoodItem from "../pages/chef/foodManagement/AddFoodItem";
+import { Link, useLocation, } from 'react-router-dom';
+
+
+
 
 function ChefFoodNavBar() {
 
   const location = useLocation();
   const [tab, setTab] = useState('');
   const [addFoodPopup, setAddFoodPopup] = useState(false);
-
+  const [itemSuccessfullyAdded, setItemSuccessfullyAdded] = useState(false);
+ 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabFromUrl = urlParams.get('tab');
@@ -19,14 +21,6 @@ function ChefFoodNavBar() {
     }
   }, [location.search]);
 
-  const handleAddFood = () => {
-    setAddFoodPopup(true);
-    
-  }
-
-  const cancelAddFood = () => {
-    setAddFoodPopup(false);
-  }
 
   return (
     <div className="justify-between flex">
@@ -47,16 +41,7 @@ function ChefFoodNavBar() {
           </Navbar.Collapse>
         </Navbar>
       </div>
-      <div className="mr-3"> 
-        <Link>
-          <Button color='success' className=" bg-green-500" onClick={handleAddFood}> Add Food </Button>
-        </Link>
-      </div>
-      {addFoodPopup && (
-        <AddFoodItem
-        onClose = {cancelAddFood}/>
-        
-        )}
+      
     </div>
   );
 }
