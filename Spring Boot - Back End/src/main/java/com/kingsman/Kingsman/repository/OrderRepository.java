@@ -1,5 +1,6 @@
 package com.kingsman.Kingsman.repository;
 
+import com.kingsman.Kingsman.dto.OrderEmployeeFoodDTO;
 import com.kingsman.Kingsman.model.InventoryItemUsageLog;
 import com.kingsman.Kingsman.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,6 +27,24 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByOrderStatusOrderByOrderDateTimeDesc(String orderStatus);
 
     List<Order> findByPaymentStatusOrderByOrderDateTimeDesc(boolean paymentStatus);
+
+    @Query("SELECT new com.kingsman.Kingsman.dto.OrderEmployeeFoodDTO(o.orderId , o.tableNumber, f.foodName, e.first_name, o.orderStatus,c.cusName,o.specialNote ) " +
+            " FROM "
+            + "    Order o "
+            + "JOIN "
+            + "    OrderItem oi ON o.orderId = oi.order.orderId "
+            + "JOIN "
+            + "    FoodItem f ON oi.foodItem.foodId = f.foodId "
+            + "JOIN "
+            + "    Employee e ON o.employee.id = e.id "
+            + "LEFT JOIN "
+            + "    Customer c ON o.customerId = c.cusId "
+            + "WHERE "
+            + "    DATE(o.createdDate) = :createdDate")
+    List<OrderEmployeeFoodDTO> getOrderEmployeeFoodByCreatedDate(@Param("createdDate") LocalDate createdDate);
+
+
+
 
 
 }

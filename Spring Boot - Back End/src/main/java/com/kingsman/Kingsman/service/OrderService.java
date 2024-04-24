@@ -238,31 +238,23 @@ public class OrderService {
         return orderItem;
     }
 
-//    public List<OrderEmployeeFoodDTO> getOrdersByCreatedDate(LocalDate createdDate) {
-//        List<Order> orders = orderRepository.findByCreatedDate(createdDate);
-//        return mapOrderListToDTOList(orders);
-//    }
-//
-//    private List<OrderEmployeeFoodDTO> mapOrderListToDTOList(List<Order> orders) {
-//        return orders.isEmpty() ? Collections.emptyList() :
-//                orders.stream()
-//                        .map(this::convertToDTO)
-//                        .collect(Collectors.toList());
-//    }
-//
-//    private OrderEmployeeFoodDTO convertToDTO(Order order) {
-//        OrderEmployeeFoodDTO orderDTO = new OrderEmployeeFoodDTO();
-//        // Set properties from Order
-//        orderDTO.setOrderId(order.getOrderId());
-//        orderDTO.setTableNumber(order.getTableNumber());
-//        orderDTO.setOrderStatus(order.getOrderStatus());
-//        // Set additional properties from Employee and Customer if needed
-//        // Example: orderDTO.setEmployeeName(order.getEmployee().getFirstName());
-//        // Example: orderDTO.setCustomerName(order.getCustomer().getName());
-//        // Example: orderDTO.setFoodName(order.getOrderItems().get(0).getFoodItem().getName());
-//        // Add more properties as needed
-//        return orderDTO;
-//    }
+    public List<OrderEmployeeFoodDTO> getOrderEmployeeFoodByCreatedDate(LocalDate createdDate) {
+        List<OrderEmployeeFoodDTO> orderEmployeeFoodDTOs = orderRepository.getOrderEmployeeFoodByCreatedDate(createdDate);
+        return orderEmployeeFoodDTOs;
+    }
+
+    public boolean updateOrderStatus(Long orderId, String orderStatus){
+
+        Optional<Order> existingOrderOptional = orderRepository.findById(orderId);
+        if (existingOrderOptional.isPresent()){
+            Order existingOrder = existingOrderOptional.get();
+            existingOrder.setOrderStatus(orderStatus);
+            orderRepository.save(existingOrder);
+        }
+        return true;
+    }
+
+
 
 
 
