@@ -55,6 +55,9 @@ public class Order {
     @Column(nullable = false)
     private boolean paymentStatus;
 
+    @Column(nullable = false)
+    private String specialNote;
+
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)

@@ -1,10 +1,8 @@
 
-"use client";
 
 import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { set } from "firebase/database";
 
 function EditInventoryItem({ itemId, onSubmit, onCancel }) {
     const [openModal, setOpenModal] = useState(true);
