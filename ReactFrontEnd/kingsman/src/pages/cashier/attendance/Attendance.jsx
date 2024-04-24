@@ -142,7 +142,8 @@ const confirmAttendance = () => {
                   )}
                 </Table.Cell>
                 <Table.Cell>
-                  <Button color="success" pill disabled={!employee.inTime} onClick={() => handleTakeTime(employee.empId, employee.empName, employee.position, false)}>Mark Out</Button>
+                  <Button color="success" pill onClick={() => handleTakeTime(employee.empId, employee.empName, employee.position, false)}>Mark Out</Button>
+                  {/* pill disabled={!employee.inTime} */}
                 </Table.Cell>
               </Table.Row>
             ))}
