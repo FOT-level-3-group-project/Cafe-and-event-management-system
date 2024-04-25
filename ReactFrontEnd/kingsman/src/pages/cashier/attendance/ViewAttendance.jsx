@@ -71,9 +71,9 @@ function ViewAttendance() {
   };
 
   return (
-    <div>
+    <div className='w-full'>
       {/* Absentees button */}
-      <div className="mt-10 text-right flex justify-end mr-10">
+      <div className="mt-10 text-right flex justify-end mr-10 ">
         <Button outline gradientDuoTone="cyanToBlue" onClick={() => setOpenAbsentiesModal(true)}>
           Absentees
         </Button>

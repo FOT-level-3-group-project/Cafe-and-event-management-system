@@ -18,17 +18,22 @@ export default function CashierSideBar() {
             setTab(tabFromUrl);
         }
     }, [location.search]);
-  return (
-    <Sidebar className='w-full md:w-56'>
+    return (
+        <Sidebar className='w-full md:w-56'>
             <Sidebar.Items>
                 <Sidebar.ItemGroup>
-                    <Link to='/cashier?tab=attendance'>
-                        <Sidebar.Item active={tab === 'attendance'} icon={HiUser} as ='div'>
-                            Attendance
-                        </Sidebar.Item>
-                    </Link>
+                    <Sidebar.Collapse label='Attendance' icon={HiUser}>
+                        <Link to='/cashier?tab=addAttendance'>
+                            <Sidebar.Item active={tab === 'addAttendance'} icon={HiUser} as='div'> Add Attendance </Sidebar.Item>
+                        </Link>
+                        <Link to='/cashier?tab=viewAttendance'>
+                            <Sidebar.Item active={tab === 'viewAttendance'} icon={HiUser} as='div'> View Attendance </Sidebar.Item>
+                        </Link>
+
+                    </Sidebar.Collapse>
+
                     <Link to='/cashier?tab=orders'>
-                        <Sidebar.Item active={tab === 'orders'} icon={MdOutlineRestaurantMenu} as ='div'>
+                        <Sidebar.Item active={tab === 'orders'} icon={MdOutlineRestaurantMenu} as='div'>
                             Manage Orders
                         </Sidebar.Item>
                     </Link>
@@ -46,5 +51,5 @@ export default function CashierSideBar() {
                 </Sidebar.ItemGroup>
             </Sidebar.Items>
         </Sidebar>
-  )
+    )
 }

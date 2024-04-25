@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from 'axios'; // Import axios for HTTP requests
-import { Table, Button, Modal, TextInput, Label, Pagination } from "flowbite-react";
+import { Table, Button, Modal, TextInput, Label, Pagination} from "flowbite-react";
 import { FaUserEdit, FaTrash } from "react-icons/fa"; // Importing user edit icon
 import { DeleteConfirmationModal } from "./DeleteConfirmationModal"; // Import the new confirmation modal component
 
@@ -146,7 +146,7 @@ function AttendanceFrManager() {
   };
 
   return (
-    <div className="flex flex-col mt-4 p-10 ">
+    <div className="flex flex-col mt-7  mr-10 w-full ml-5">
     {/* Filter controls */}
     <div className="flex items-center justify-between border-b pb-2">
       {/* Dropdown for Name */}
@@ -171,13 +171,13 @@ function AttendanceFrManager() {
           </select>
         </div>
         {/* Submit button */}
-        <button className="px-4 py-2 bg-blue-600 hover:bg-blue-800 text-white rounded-md">Submit</button>
+        <Button color='success' size='s' className="px-4 py-2 bg-green-600 hover:bg-blue-800 text-white rounded-md">Submit</Button>
       </div>
       {/* Buttons for predefined time periods */}
       <div className="flex gap-4">
-        <button className="px-4 py-2 bg-blue-600 hover:bg-blue-800 text-white rounded-md" onClick={handleCurrentDateClick}>Today</button>
-        <button className="px-4 py-2 bg-blue-600 hover:bg-blue-800 text-white rounded-md" onClick={handleThisMonthClick}>This Month</button>
-        <button className="px-4 py-2 bg-blue-600 hover:bg-blue-800 text-white rounded-md" onClick={() => setShowModal(true)}>By Date Range</button>
+        <Button color='success' size='s' className="px-4 py-2 bg-green-500 hover:bg-blue-800 text-white rounded-md" onClick={handleCurrentDateClick}>Today</Button>
+        <Button color='success' size='s' className="px-4 py-2 bg-green-500 hover:bg-blue-800 text-white rounded-md" onClick={handleThisMonthClick}>This Month</Button>
+        <Button color='success' size='s' className="px-4 py-2 bg-green-500 hover:bg-blue-800 text-white rounded-md" onClick={() => setShowModal(true)}>By Date Range</Button>
       </div>
     </div>
     

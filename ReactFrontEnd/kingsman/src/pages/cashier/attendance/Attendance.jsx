@@ -118,9 +118,9 @@ function Attendance() {
 
 
   return (
-    <div className="mr-16 ml-16 mt5 mb-5">
+    <div className="mr-16 ml-16 mt-5 mb-5 w-full">
       {/* Header */}
-      <h1 style={{ fontFamily: "Arial", color: "blue", fontSize: "24px", fontWeight: "bold" }}>
+      <h1 style={{ fontFamily: "Arial", fontSize: "24px", fontWeight: "bold" }}>
         Take Attendance (Today's Date: {todayDate})
       </h1>
 
@@ -141,7 +141,7 @@ function Attendance() {
             {attendance.map((employee, index) => (
               <Table.Row 
                 key={index} 
-                className="bg-slate-900 hover:bg-emerald-400"
+                className="bg-slate-800 hover:bg-emerald-400"
               >
                 <Table.Cell className="text-white">{index + 1}</Table.Cell>
                 <Table.Cell className="text-white">{employee.empId}</Table.Cell>

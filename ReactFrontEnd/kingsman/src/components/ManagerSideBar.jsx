@@ -41,9 +41,9 @@ export default function ManagerSideBar() {
                             Inventory
                         </Sidebar.Item>
                     </Link>
-                    <Link to='/manager?tab=profile'>
-                        <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"Manager"} labelColor='dark' as='div'>
-                            Profile
+                    <Link to='/manager?tab=attendance'>
+                        <Sidebar.Item active={tab === 'attendance'} icon={HiUser}  as='div'>
+                            Attendance
                         </Sidebar.Item>
                     </Link>
                     {/* <Link to='/manager?tab=new-employee'>
@@ -64,6 +64,11 @@ export default function ManagerSideBar() {
                     <Link to='/manager?tab=view-all-events'>
                         <Sidebar.Item active={tab === 'view-all-events'} icon={HiUser} as='div'>
                            Events
+                        </Sidebar.Item>
+                    </Link>
+                    <Link to='/manager?tab=profile'>
+                        <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"Manager"} labelColor='dark' as='div'>
+                            Profile
                         </Sidebar.Item>
                     </Link>
 
