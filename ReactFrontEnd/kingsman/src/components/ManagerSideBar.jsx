@@ -25,11 +25,11 @@ export default function ManagerSideBar() {
     const handleLogOut = async () => {
 
         try {
-          dispatch(logOutSuccess());
+            dispatch(logOutSuccess());
         } catch (error) {
-          console.log(error.message);
+            console.log(error.message);
         }
-      }
+    }
 
 
     return (
@@ -42,7 +42,7 @@ export default function ManagerSideBar() {
                         </Sidebar.Item>
                     </Link>
                     <Link to='/manager?tab=attendance'>
-                        <Sidebar.Item active={tab === 'attendance'} icon={HiUser}  as='div'>
+                        <Sidebar.Item active={tab === 'attendance'} icon={HiUser} as='div'>
                             Attendance
                         </Sidebar.Item>
                     </Link>
@@ -63,13 +63,15 @@ export default function ManagerSideBar() {
                     </Link> */}
                     <Link to='/manager?tab=view-all-events'>
                         <Sidebar.Item active={tab === 'view-all-events'} icon={HiUser} as='div'>
-                           Events
+                            Events
                         </Sidebar.Item>
                     </Link>
 
                     <Link to='/manager?tab=profile'>
                         <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"Manager"} labelColor='dark' as='div'>
                             Profile
+                        </Sidebar.Item>
+                    </Link>
 
                     <Link to='/manager?tab=monthly-income'>
                         <Sidebar.Item active={tab === 'monthly-income'} icon={HiUser} as='div'>
