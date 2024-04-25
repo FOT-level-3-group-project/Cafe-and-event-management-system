@@ -58,13 +58,18 @@ public class AttendanceController {
     @PostMapping("/attendance/in")
     public ResponseEntity<String> addInTime(@RequestBody Attendance attendance) {
         try {
-            // Set the date
-            attendance.setDate(LocalDate.now()); // You might want to adjust the date logic as per your requirement
+            // Check if an in-time record already exists for the employee ID and date
+            Attendance existingInTime = attendanceRepository.findByEmpIdAndDate(attendance.getEmpId(), LocalDate.now());
 
-            // Save the attendance record
-            attendanceRepository.save(attendance);
-
-            return ResponseEntity.ok("In time recorded successfully.");
+            if (existingInTime != null) {
+                // If an in-time record already exists for the same employee ID and date, return an error response
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An in-time record already exists for employee: " + attendance.getEmpId());
+            } else {
+                // Save the in-time record
+                attendance.setDate(LocalDate.now()); // You might want to adjust the date logic as per your requirement
+                attendanceRepository.save(attendance);
+                return ResponseEntity.ok("In time recorded successfully.");
+            }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to record in time.");
         }
@@ -73,14 +78,20 @@ public class AttendanceController {
     @PostMapping("/attendance/out")
     public ResponseEntity<String> addOutTime(@RequestBody Attendance attendance) {
         try {
-            // Fetch the attendance record by employee ID and date
-            Attendance existingAttendance = attendanceRepository.findByEmpIdAndDate(attendance.getEmpId(), LocalDate.now());
+            // Fetch the in-time record by employee ID and date
+            Attendance existingInTime = attendanceRepository.findByEmpIdAndDate(attendance.getEmpId(), LocalDate.now());
 
-            if (existingAttendance != null) {
-                // Update the existing attendance record with out time
-                existingAttendance.setOutTime(attendance.getOutTime());
-                attendanceRepository.save(existingAttendance);
-                return ResponseEntity.ok("Out time recorded successfully.");
+            if (existingInTime != null) {
+                // Check if an out-time record already exists for the same employee ID and date
+                if (existingInTime.getOutTime() != null) {
+                    // If an out-time record already exists for the same employee ID and date, return an error response
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An out-time record already exists for employee: " + attendance.getEmpId());
+                } else {
+                    // Update the existing in-time record with out time
+                    existingInTime.setOutTime(attendance.getOutTime());
+                    attendanceRepository.save(existingInTime);
+                    return ResponseEntity.ok("Out time recorded successfully.");
+                }
             } else {
                 // Handle case where no matching in-time record is found
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No matching in-time record found for employee: " + attendance.getEmpId());
@@ -89,6 +100,8 @@ public class AttendanceController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to record out time.");
         }
     }
+
+
 
     //Today attendance
 
