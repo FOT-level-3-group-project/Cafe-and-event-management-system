@@ -128,7 +128,7 @@ export default function ManageInventory() {
                         <Table.Cell>{item.itemName}</Table.Cell>
                         <Table.Cell className='text-center'><span>{item.quantity} {item.unit}</span></Table.Cell>
                         <Table.Cell className='text-center'>{item.vendorId}</Table.Cell>
-                        <Table.Cell><Button color='success' className=' bg-green-500' onClick={() => handleUseItem(item.id)}>Use</Button></Table.Cell>
+                        <Table.Cell><Button size='md' color='success' className=' bg-green-500' onClick={() => handleUseItem(item.id)}>Use</Button></Table.Cell>
                       </Table.Row>
                     ))
                   )}
