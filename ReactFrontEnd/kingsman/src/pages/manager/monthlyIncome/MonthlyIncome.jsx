@@ -33,17 +33,69 @@ export const MonthlyIncome = () => {
   };
 
   return (
-    <div className='w-1/2  border border-black border-solid'>
-        <div className='flex justify-between'>
-            <h1>Kingsman Cafe </h1>
-            <h1>Monthly Income Statement</h1>
-        </div>
-        <div>
-            <table className='w-full'>
-                <th colSpan={2}> Revenue</th>
-                <td> Events</td>
-            </table>
-        </div>
+    <div className="w-1/2 ">
+      <div className="flex justify-center p-4">
+        {/* <h1 className='font-bold'>Kingsman Vila</h1> */}
+        <h2 className='font-bold'>Income Statement for January 2024 </h2>
+      </div>
+      <table className='w-full '>
+        <tbody>
+          <tr className=''>
+            <td className="flex justify-normal bg-blue-900 text-white py-2">Revenue</td>
+            <td className=" bg-blue-900"></td>
+          </tr>
+          <tr>
+            <td className=" py-2">Sales</td>
+            <td className=' text-right '> Rs. xxxxxx</td>
+          </tr>
+          <tr>
+            <td className="py-2">Events</td>
+            <td className=' text-right'> Rs. xxxxxx</td>
+          </tr>
+          <tr>
+            <td className="py-2">Others</td>
+            <td className=' text-right'> Rs. xxxxxx</td>
+          </tr>
+          <tr>
+            <td className="bg-blue-200 py-2">Total Revenues</td>
+            <td className="bg-blue-200 text-right"> Rs. xxxxxx</td>
+          </tr>
+          <tr>
+            <td className="flex justify-normal bg-blue-900 text-white py-2">Expenses</td>
+            <td className=" bg-blue-900 "></td>
+          </tr>
+          <tr>
+            <td className="py-2">Salary</td>
+            <td className=' text-right'> Rs. xxxxxx</td>
+          </tr>
+          <tr>
+            <td className="py-2">Inventory</td>
+            <td className=' text-right'> Rs. xxxxxx</td>
+          </tr>
+          <tr>
+            <td className="py-2">Electricity</td>
+            <td className=' text-right'> Rs. xxxxxx</td>
+          </tr>
+          <tr>
+            <td className="py-2">Water</td>
+            <td className=' text-right'> Rs. xxxxxx</td>
+          </tr>
+          <tr>
+            <td className="py-2">Others</td>
+            <td className=' text-right'> Rs. xxxxxx</td>
+          </tr>
+          <tr>
+            <td className="bg-blue-200 py-2">Total Expenses</td>
+            <td className="bg-blue-200 text-right"> Rs. xxxxxx</td>
+          </tr>
+          <tr>
+            <td className="bg-blue-900 text-white py-2">Profit/Loss</td>
+            <td className="bg-blue-900 text-white text-right" > Rs. xxxxxx</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 };
+
+
