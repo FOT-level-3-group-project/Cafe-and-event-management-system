@@ -66,9 +66,14 @@ export default function ManagerSideBar() {
                            Events
                         </Sidebar.Item>
                     </Link>
+
                     <Link to='/manager?tab=profile'>
                         <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"Manager"} labelColor='dark' as='div'>
                             Profile
+
+                    <Link to='/manager?tab=monthly-income'>
+                        <Sidebar.Item active={tab === 'monthly-income'} icon={HiUser} as='div'>
+                            Monthly Income
                         </Sidebar.Item>
                     </Link>
 
