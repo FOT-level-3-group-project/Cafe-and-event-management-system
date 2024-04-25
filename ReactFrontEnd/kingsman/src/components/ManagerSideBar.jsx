@@ -66,6 +66,11 @@ export default function ManagerSideBar() {
                            Events
                         </Sidebar.Item>
                     </Link>
+                    <Link to='/manager?tab=monthly-income'>
+                        <Sidebar.Item active={tab === 'monthly-income'} icon={HiUser} as='div'>
+                            Monthly Income
+                        </Sidebar.Item>
+                    </Link>
 
                     <Sidebar.Item icon={HiArrowSmRight} className='cursor-pointer' onClick={handleLogOut} >
                         Log Out
