@@ -87,7 +87,7 @@ export default function ManageInventory() {
   return (
     <Fragment>
       <section>
-        <div className='h-screen w-full flex grid-rows-2 md:grid-cols-2 '>
+        <div className='h-screen w-full flex grid-rows-2 md:grid-cols-2 bg-gray-100 dark:bg-gray-700'>
 
           <div className='h-full w-2/3 md:h-screen p-4 border-r-2 border-l-2'>
             <div className='flex justify-between border-b-2'>
@@ -106,7 +106,7 @@ export default function ManageInventory() {
               />
             </div>
             {/* inventory Table */}
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto drop-shadow-md">
               <Table striped>
                 <Table.Head>
                   <Table.HeadCell className='text-center'>#</Table.HeadCell>
@@ -128,7 +128,7 @@ export default function ManageInventory() {
                         <Table.Cell>{item.itemName}</Table.Cell>
                         <Table.Cell className='text-center'><span>{item.quantity} {item.unit}</span></Table.Cell>
                         <Table.Cell className='text-center'>{item.vendorId}</Table.Cell>
-                        <Table.Cell><Button color='success' onClick={() => handleUseItem(item.id)}>Use</Button></Table.Cell>
+                        <Table.Cell><Button color='success' className=' bg-green-500' onClick={() => handleUseItem(item.id)}>Use</Button></Table.Cell>
                       </Table.Row>
                     ))
                   )}
@@ -142,7 +142,7 @@ export default function ManageInventory() {
 
           {/* Right column */}
           <div className=' h-full w-auto md:h-screen  p-4 flex flex-col justify-start items-center'>
-            <div className='flex justify-between border-b-2'>
+            <div className='flex  border-b-2 w-full'>
               <h2 className="text-3xl">Today Item Usage</h2>
 
 
@@ -150,7 +150,7 @@ export default function ManageInventory() {
 
 
             {/* daily usage show table */}
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto shadow-md mt-16">
               <Table striped>
                 <Table.Head>
                   <Table.HeadCell className='text-center'>#</Table.HeadCell>
