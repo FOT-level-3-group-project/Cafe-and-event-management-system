@@ -3,6 +3,7 @@ import { Button, Navbar } from "flowbite-react";
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Accordion, Label, Badge } from "flowbite-react";
+import { Link } from 'react-router-dom';
 
 
 export default function CancelOrders() {
@@ -43,30 +44,30 @@ export default function CancelOrders() {
         // Top buttons 
         < div className='w-screen h-screen'>
             <div className='flex flex-wrap gap-2 mt-6 ml-5 mb-5'>
-                <Navbar fluid rounded>
+            <Navbar fluid rounded>
                     <Navbar.Collapse>
-                        <Navbar.Link href="/chef?tab=allOrders" >
-                            <Button color="blue" pill outline>
+                        <Link to="/chef?tab=allOrders" >
+                            <Button color="success" className=' bg-green-500' pill outline>
                                 All : 15
                             </Button>
-                        </Navbar.Link>
-                        <Navbar.Link href="/chef?tab=availableOrders" >
+                        </Link>
+                        <Link to="/chef?tab=availableOrders" >
                             <Button color="warning" pill outline>
                                 Available Orders : 5
+
                             </Button>
-                        </Navbar.Link>
-                        <Navbar.Link href="/chef?tab=finishedOrders" >
-                            <Button color="success" pill outline>
+                        </Link>
+                        <Link to="/chef?tab=finishedOrders">
+                            <Button color="success" pill outline >
                                 Finished Orders : 5
                             </Button>
-                        </Navbar.Link>
-                        <Navbar.Link href="/chef?tab=canceledOrders" active>
-                            <Button color="failure" pill >
+                        </Link>
+                        <Link to="/chef?tab=canceledOrders">
+                            <Button color="failure" pill active>
                                 Canceled Orders : 5
                             </Button>
-                        </Navbar.Link>
+                        </Link>
                     </Navbar.Collapse>
-
                 </Navbar>
             </div>
 
@@ -78,20 +79,22 @@ export default function CancelOrders() {
                                 <Accordion.Panel key={order.orderId}>
                                     <Accordion.Title>
                                         <div className=" flex  justify-between ">
-                                            <div className='space-x-16 w-full'>
-                                                <Label > Order Id #{order.orderId}</Label>
-                                                <Label >Table Number: {order.tableNumber}</Label>
-                                                <Label >Item : {order.foodName}</Label>
-                                                <Label >Waiter: {order.firstName}</Label>
-
-                                            </div>
-                                            <div className='ml-80 '>
+                                        <div className='mr-10 '>
                                                 <Badge size='l' color={order.orderStatus === 'Canceled' ? "failure" :
                                                     order.orderStatus === 'Finished' ? "success" : "warning"}>
                                                     {order.orderStatus === 'Canceled' ? "Canceled" :
                                                         order.orderStatus === 'Finished' ? "Finished" : "Pending"}
                                                 </Badge>
                                             </div>
+                                            <div className='space-x-16 w-full'>
+                                                <Label > Order Id #{order.orderId}</Label>
+                                                <Label >Table Number: {order.tableNumber}</Label>
+                                                <Label >Waiter: {order.firstName}</Label>
+                                                <Label >Item : {order.foodName}</Label>
+                                                
+
+                                            </div>
+                                            
                                         </div>
 
                                     </Accordion.Title>

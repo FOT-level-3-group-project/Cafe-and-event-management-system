@@ -41,7 +41,7 @@ export default function ChefSideBar() {
                             Inventory
                         </Sidebar.Item>
                     </Link>
-                    <Link to='/chef/foodMenu?tab=allFood'>
+                    <Link to='/chef?tab=allFood'>
                         <Sidebar.Item active={tab === 'allFood'} icon={BiCoinStack} as='div' >
                             Food Menu
                         </Sidebar.Item>

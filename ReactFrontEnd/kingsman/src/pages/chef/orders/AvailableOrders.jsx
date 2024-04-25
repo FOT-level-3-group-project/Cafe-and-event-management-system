@@ -1,8 +1,10 @@
 import React from 'react'
-import { Accordion, Button, Label, Navbar } from "flowbite-react";
+import { Accordion, Button, Label, Navbar} from "flowbite-react";
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Badge } from 'flowbite-react';
+import { Link } from 'react-router-dom';
+
 
 export default function AvailableOrders() {
     const [orders, setOrders] = useState([]);
@@ -65,27 +67,27 @@ export default function AvailableOrders() {
             <div className='flex flex-wrap gap-2 mt-6 ml-5 mb-5'>
                 <Navbar fluid rounded>
                     <Navbar.Collapse>
-                        <Navbar.Link href="/chef?tab=allOrders" >
-                            <Button color="blue" pill outline>
+                        <Link to="/chef?tab=allOrders" >
+                            <Button color="success" className=' bg-green-500' pill outline>
                                 All : 15
                             </Button>
-                        </Navbar.Link>
-                        <Navbar.Link href="/chef?tab=availableOrders" active>
+                        </Link>
+                        <Link to="/chef?tab=availableOrders" active>
                             <Button color="warning" pill >
                                 Available Orders : 5
 
                             </Button>
-                        </Navbar.Link>
-                        <Navbar.Link href="/chef?tab=finishedOrders">
+                        </Link>
+                        <Link to="/chef?tab=finishedOrders">
                             <Button color="success" pill outline >
                                 Finished Orders : 5
                             </Button>
-                        </Navbar.Link>
-                        <Navbar.Link href="/chef?tab=canceledOrders">
+                        </Link>
+                        <Link to="/chef?tab=canceledOrders">
                             <Button color="failure" pill outline>
                                 Canceled Orders : 5
                             </Button>
-                        </Navbar.Link>
+                        </Link>
                     </Navbar.Collapse>
                 </Navbar>
             </div>
@@ -93,7 +95,7 @@ export default function AvailableOrders() {
 
             <div className='ml-3 mr-3 w-auto'>
                 <Accordion collapseAll>
-                    {orders.length === 0 || orders.some(order => order.orderStatus === 'Finished') ? (
+                    {(orders.length  === 0)  ? (
                         <h3>No available orders</h3>
                     ) : (
                         orders
@@ -102,20 +104,22 @@ export default function AvailableOrders() {
                                 <Accordion.Panel key={order.orderId}>
                                     <Accordion.Title>
                                         <div className=" flex  justify-between ">
-                                            <div className='space-x-16 w-full'>
-                                                <Label > Order Id #{order.orderId}</Label>
-                                                <Label >Table Number: {order.tableNumber}</Label>
-                                                <Label >Item : {order.foodName}</Label>
-                                                <Label >Waiter: {order.firstName}</Label>
-
-                                            </div>
-                                            <div className='ml-80 '>
+                                        <div className='mr-10 '>
                                                 <Badge size='l' color={order.orderStatus === 'Canceled' ? "failure" :
                                                     order.orderStatus === 'Finished' ? "success" : "warning"}>
                                                     {order.orderStatus === 'Canceled' ? "Canceled" :
                                                         order.orderStatus === 'Finished' ? "Finished" : "Pending"}
                                                 </Badge>
                                             </div>
+                                            <div className='space-x-16 w-full'>
+                                                <Label className=''> Order Id #{order.orderId}</Label>
+                                                <Label >Table Number: {order.tableNumber}</Label>
+                                                <Label >Waiter: {order.firstName}</Label>
+                                                <Label >Item : {order.foodName}</Label>
+                                                
+
+                                            </div>
+                                            
                                         </div>
 
                                     </Accordion.Title>

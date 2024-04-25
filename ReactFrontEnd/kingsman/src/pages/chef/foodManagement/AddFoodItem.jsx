@@ -27,7 +27,7 @@ export function AddFoodItem({ onClose }) {
     }
 
     const handleAddFood = async () => {
-        if (foodName && foodPrice && selectedCat && file) {
+        if (foodName && foodPrice && selectedCat) {
             const addItem = {
                 foodName,
                 foodPrice,
@@ -37,7 +37,7 @@ export function AddFoodItem({ onClose }) {
             try {
                 const response = await axios.post('http://localhost:8080/api/food/add', addItem);
                 console.log(response.data);
-            
+
 
 
                 // Upload the image after adding the food item
@@ -57,7 +57,7 @@ export function AddFoodItem({ onClose }) {
                 } catch (error) {
                     console.error('Error updating item:', error);
                 }
-                
+
                 onClose();
             } catch (error) {
                 console.error('Error adding food:', error);
