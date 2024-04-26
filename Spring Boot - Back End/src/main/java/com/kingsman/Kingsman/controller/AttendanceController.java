@@ -5,6 +5,7 @@ import com.kingsman.Kingsman.repository.AttendanceRepository;
 import com.kingsman.Kingsman.repository.EmployeeRepository;
 import com.kingsman.Kingsman.service.AttendanceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -264,6 +265,29 @@ public class AttendanceController {
                 .collect(Collectors.toList());
 
         return formattedEmployeeIds;
+    }
+
+
+    //search acording to empId an This month or Today
+
+
+
+    @GetMapping("/attendance/{empId}/{dateRange}")
+    public ResponseEntity<List<Attendance>> getAttendance(@PathVariable String empId, @PathVariable String dateRange) {
+        LocalDate today = LocalDate.now();
+        LocalDate startDate, endDate;
+
+        if (dateRange.equals("Today")) {
+            startDate = endDate = today;
+        } else if (dateRange.equals("This Month")) {
+            startDate = today.withDayOfMonth(1);
+            endDate = today.withDayOfMonth(today.getMonth().maxLength());
+        } else {
+            return ResponseEntity.badRequest().body(null); // Handle invalid date range
+        }
+
+        List<Attendance> attendanceList = attendanceRepository.findByEmpIdAndDateBetween(empId, startDate, endDate);
+        return ResponseEntity.ok(attendanceList);
     }
 
 

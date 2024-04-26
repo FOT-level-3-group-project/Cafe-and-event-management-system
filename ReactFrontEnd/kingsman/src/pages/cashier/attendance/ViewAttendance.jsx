@@ -71,7 +71,7 @@ function ViewAttendance() {
   };
 
   return (
-    <div className='w-full'>
+    <div className='w-full bg-gray-100' >
       {/* Absentees button */}
       <div className="mt-10 text-right flex justify-end mr-10 ">
         <Button outline gradientDuoTone="cyanToBlue" onClick={() => setOpenAbsentiesModal(true)}>
@@ -80,7 +80,7 @@ function ViewAttendance() {
       </div>
 
       {/* Attendance table */}
-      <div className="mt-5 ml-10 mr-10 shadow border">
+      <div className="mt-5 ml-10 mr-10 shadow  ">
         <Table hoverable>
           <Table.Head>
             <Table.HeadCell>Emp ID</Table.HeadCell>

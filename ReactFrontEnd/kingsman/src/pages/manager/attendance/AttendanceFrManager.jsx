@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from 'axios'; // Import axios for HTTP requests
-import { Table, Button, Modal, TextInput, Label, Pagination} from "flowbite-react";
+import { Table, Button, Modal, TextInput, Label, Pagination,Alert} from "flowbite-react";
 import { FaUserEdit, FaTrash } from "react-icons/fa"; // Importing user edit icon
 import { DeleteConfirmationModal } from "./DeleteConfirmationModal"; // Import the new confirmation modal component
+import { HiInformationCircle } from "react-icons/hi";
+ 
 
 function AttendanceFrManager() {
   const [attendance, setAttendance] = useState([]); // State to hold attendance data
@@ -145,6 +147,39 @@ function AttendanceFrManager() {
       });
   };
 
+  const handleFilterSubmit = () => {
+    // Get selected EMP ID and Type values
+    const empId = document.getElementById("attendanceType").value;
+    const type = document.getElementById("department").value;
+  
+    // Check if either EMP ID or Type is not selected
+    if (empId === "select" || type === "select") {
+      alert("Please select both EMP ID and Type.");
+      return;
+    }
+  
+    // Define the endpoint based on selected Type
+    let endpoint = "";
+    if (type === "today") {
+      endpoint = `http://localhost:8080/attendance/${empId}/Today`;
+    } else if (type === "this") {
+      endpoint = `http://localhost:8080/attendance/${empId}/This%20Month`;
+    }
+  
+    // Make GET request to fetch attendance data based on EMP ID and Type
+    axios.get(endpoint)
+      .then(response => {
+        setAttendance(response.data); // Set fetched data to state
+      })
+      .catch(error => {
+        console.error('Error fetching attendance data based on filter:', error); // Log error if request fails
+      });
+  };
+  
+
+
+
+
   return (
     <div className="flex flex-col mt-7  mr-10 w-full ml-5">
     {/* Filter controls */}
@@ -165,13 +200,14 @@ function AttendanceFrManager() {
           <label htmlFor="department" className="text-lg font-semibold">Type: </label>
           <select id="department" name="department" className="p-2 border border-gray-300 rounded-md w-40">
             <option value="select">-- Select --</option>
-            <option value="management">Today</option>
-            <option value="staff" onClick={handleThisMonthClick}>This Month</option>
+            <option value="today">Today</option>
+            <option value="this">This Month</option>
+              
             {/* Add more options as needed */}
           </select>
         </div>
         {/* Submit button */}
-        <Button color='success' size='s' className="px-4 py-2 bg-green-600 hover:bg-blue-800 text-white rounded-md">Submit</Button>
+        <Button color='success' size='s' className="px-4 py-2 bg-green-600 hover:bg-blue-800 text-white rounded-md" onClick={handleFilterSubmit}>Submit</Button>
       </div>
       {/* Buttons for predefined time periods */}
       <div className="flex gap-4">
