@@ -4,12 +4,15 @@ import { Button, Modal } from "flowbite-react";
 import { FcAlarmClock } from "react-icons/fc"; // Importing FcAlarmClock icon
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import axios from 'axios';
+import { Alert } from "flowbite-react";
+import { HiInformationCircle } from "react-icons/hi";
 
 function Attendance() {
   const [attendance, setAttendance] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState({});
   const [isInTime, setIsInTime] = useState(true); // Track if it's in time or out time
+  const [errorMessage, setErrorMessage] = useState(""); // State for error message
 
   // Get today's date in the format: DD-MM-YYYY
   const todayDate = new Date().toLocaleDateString("en-US", {
@@ -41,67 +44,83 @@ function Attendance() {
 
 
   // Function to handle taking in time or out time
-const handleTakeTime = (empId, empName, position, isInTime) => {
-  setSelectedEmployee({ empId, empName, position });
-  setIsInTime(isInTime);
-  setOpenModal(true);
-};
+  const handleTakeTime = (empId, empName, position, isInTime) => {
+    setSelectedEmployee({ empId, empName, position });
+    setIsInTime(isInTime);
+    setOpenModal(true);
+  };
 
 
-const confirmAttendance = () => {
-  const currentTime = new Date().toLocaleTimeString();
-  console.log("Current Time:", currentTime); // Check if currentTime is correct
-  if (isInTime) {
-    // Mark in attendance
-    axios.post('http://localhost:8080/attendance/in', {
-      empId: selectedEmployee.empId,
-      empName: selectedEmployee.empName,
-      position: selectedEmployee.position,
-      inTime: currentTime,
-    })
-      .then(response => {
-        setAttendance(prevAttendance => prevAttendance.map(emp => {
-          if (emp.empId === selectedEmployee.empId) {
-            return { ...emp, inTime: currentTime };
-          }
-          return emp;
-        }));
-        setOpenModal(false);
+  const confirmAttendance = () => {
+    const currentTime = new Date().toLocaleTimeString();
+    console.log("Current Time:", currentTime); // Check if currentTime is correct
+    if (isInTime) {
+      // Mark in attendance
+      axios.post('http://localhost:8080/attendance/in', {
+        empId: selectedEmployee.empId,
+        empName: selectedEmployee.empName,
+        position: selectedEmployee.position,
+        inTime: currentTime,
       })
-      .catch(error => {
-        console.error('Error marking in attendance:', error);
-        setOpenModal(false);
-      });
-  } else {
-    // Mark out attendance
-    axios.post('http://localhost:8080/attendance/out', {
-      empId: selectedEmployee.empId, // Corrected field name to empId
-      empName: selectedEmployee.empName,
-      position: selectedEmployee.position,
-      outTime: currentTime,
-    })
-      .then(response => {
-        console.log("Out Time Set:", currentTime); // Check if outTime is being set correctly
-        setAttendance(prevAttendance => prevAttendance.map(emp => {
-          if (emp.empId === selectedEmployee.empId) {
-            return { ...emp, outTime: currentTime };
+        .then(response => {
+          setAttendance(prevAttendance => prevAttendance.map(emp => {
+            if (emp.empId === selectedEmployee.empId) {
+              return { ...emp, inTime: currentTime };
+            }
+            return emp;
+          }));
+          setOpenModal(false);
+        })
+        .catch(error => {
+          console.error('Error marking in attendance:', error);
+          setOpenModal(false);
+          if (error.response && error.response.status === 400) {
+            // Set error message state
+            setErrorMessage(error.response.data);
+            // Clear error message after 1 second
+            setTimeout(() => {
+              setErrorMessage("");
+            }, 1500);
           }
-          return emp;
-        }));
-        setOpenModal(false);
+        });
+    } else {
+      // Mark out attendance
+      axios.post('http://localhost:8080/attendance/out', {
+        empId: selectedEmployee.empId, // Corrected field name to empId
+        empName: selectedEmployee.empName,
+        position: selectedEmployee.position,
+        outTime: currentTime,
       })
-      .catch(error => {
-        console.error('Error marking out attendance:', error);
-        setOpenModal(false);
-      });
-  }
-};
+        .then(response => {
+          console.log("Out Time Set:", currentTime); // Check if outTime is being set correctly
+          setAttendance(prevAttendance => prevAttendance.map(emp => {
+            if (emp.empId === selectedEmployee.empId) {
+              return { ...emp, outTime: currentTime };
+            }
+            return emp;
+          }));
+          setOpenModal(false);
+        })
+        .catch(error => {
+          console.error('Error marking out attendance:', error);
+          setOpenModal(false);
+          if (error.response && error.response.status === 400) {
+            // Set error message state
+            setErrorMessage(error.response.data);
+            // Clear error message after 1 second
+            setTimeout(() => {
+              setErrorMessage("");
+            }, 1500);
+          }
+        });
+    }
+  };
 
 
   return (
-    <div className="mr-16 ml-16 mt5 mb-5">
+    <div className="mr-16 ml-16 mt-5 mb-5 w-full">
       {/* Header */}
-      <h1 style={{ fontFamily: "Arial", color: "blue", fontSize: "24px", fontWeight: "bold" }}>
+      <h1 style={{ fontFamily: "Arial", fontSize: "24px", fontWeight: "bold" }}>
         Take Attendance (Today's Date: {todayDate})
       </h1>
 
@@ -122,7 +141,7 @@ const confirmAttendance = () => {
             {attendance.map((employee, index) => (
               <Table.Row 
                 key={index} 
-                className="bg-slate-900 hover:bg-emerald-400"
+                className="bg-slate-800 hover:bg-emerald-400"
               >
                 <Table.Cell className="text-white">{index + 1}</Table.Cell>
                 <Table.Cell className="text-white">{employee.empId}</Table.Cell>
@@ -142,13 +161,21 @@ const confirmAttendance = () => {
                   )}
                 </Table.Cell>
                 <Table.Cell>
-                  <Button color="success" pill disabled={!employee.inTime} onClick={() => handleTakeTime(employee.empId, employee.empName, employee.position, false)}>Mark Out</Button>
+                  <Button color="success" pill onClick={() => handleTakeTime(employee.empId, employee.empName, employee.position, false)}>Mark Out</Button>
+                  {/* pill disabled={!employee.inTime} */}
                 </Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>
         </Table>
       </div>
+
+      {/* Error Alert */}
+      {errorMessage && (
+        <Alert color="failure" icon={HiInformationCircle}>
+          <span className="font-medium">Error!</span> {errorMessage}
+        </Alert>
+      )}
 
       {/* Confirmation Modal */}
       <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>

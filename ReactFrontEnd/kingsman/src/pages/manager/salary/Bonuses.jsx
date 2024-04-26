@@ -6,11 +6,15 @@ import { Table } from "flowbite-react";
 function Bonuses() {
   const [bonusModalOpen, setBonusModalOpen] = useState(false);
   const [deductionModalOpen, setDeductionModalOpen] = useState(false);
+  const [hourlyModalOpen, setHourlyModalOpen] = useState(false); // State for pay per hour modal
   const [employeeName, setEmployeeName] = useState('');
   const [bonusType, setBonusType] = useState('');
   const [bonusAmount, setBonusAmount] = useState(0);
   const [deductionType, setDeductionType] = useState('');
   const [deductionAmount, setDeductionAmount] = useState(0);
+  const [hourlyPay, setHourlyPay] = useState(0); // State for hourly pay
+  const [otPay, setOTPay] = useState(0); // State for OT pay
+  const [position, setPosition] = useState(''); // State for position
 
   const handleOpenBonusModal = () => {
     setBonusModalOpen(true);
@@ -18,6 +22,10 @@ function Bonuses() {
 
   const handleOpenDeductionModal = () => {
     setDeductionModalOpen(true);
+  };
+
+  const handleOpenHourlyModal = () => { // Function to open pay per hour edit modal
+    setHourlyModalOpen(true);
   };
 
   const closeBonusModal = () => {
@@ -36,6 +44,14 @@ function Bonuses() {
     setDeductionAmount(0);
   };
 
+  const closeHourlyModal = () => { // Function to close pay per hour edit modal
+    setHourlyModalOpen(false);
+    // Clear input fields
+    setHourlyPay(0);
+    setOTPay(0);
+    setPosition('');
+  };
+
   const handleAddBonus = () => {
     // Add logic to handle adding bonus
     console.log('Employee Name:', employeeName);
@@ -52,12 +68,22 @@ function Bonuses() {
     closeDeductionModal();
   };
 
+  const handleEditHourly = () => { // Function to handle editing pay per hour details
+    // Add logic to handle editing pay per hour
+    console.log('Position:', position);
+    console.log('Hourly Pay:', hourlyPay);
+    console.log('OT Pay:', otPay);
+    closeHourlyModal();
+  };
+
+
   return (
     <div className='bg-gray-200 h-screen'>
       <div className='h-20 border bg-slate-800'>
         <div className='flex flex-wrap justify-center gap-10 mt-5'>
           <Button gradientDuoTone="cyanToBlue" onClick={handleOpenBonusModal}>Add Bonus</Button>
           <Button gradientDuoTone="cyanToBlue" onClick={handleOpenDeductionModal}>Deduction</Button>
+          <Button gradientDuoTone="cyanToBlue" onClick={handleOpenHourlyModal}>Pay Per Hour</Button>
         </div>
       </div>
       <div className="flex">
@@ -105,7 +131,7 @@ function Bonuses() {
           <Table hoverable className='drop-shadow-lg'>
             <Table.Head>
               <Table.HeadCell>Employee Name</Table.HeadCell>
-              <Table.HeadCell>Deduction Type</Table.HeadCell>
+              <Table.HeadCell>Deduction Type </Table.HeadCell>
               <Table.HeadCell>Deduction (Rs.)</Table.HeadCell>
               <Table.HeadCell>Action</Table.HeadCell>
             </Table.Head>
@@ -141,7 +167,50 @@ function Bonuses() {
             </Table.Body>
           </Table>
         </div>
+
       </div>
+
+      <div className="flex-1 ml-80 mr-80 mt-8">
+          <Table hoverable className='drop-shadow-lg'>
+            <Table.Head>
+              <Table.HeadCell>Position</Table.HeadCell>
+              <Table.HeadCell>Pay Per Hour (Rs.)</Table.HeadCell>
+              <Table.HeadCell>Pay Per OT Hour (Rs.)</Table.HeadCell>
+              <Table.HeadCell>Action</Table.HeadCell>
+            </Table.Head>
+            <Table.Body className="divide-y">
+            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell>Chef</Table.Cell>
+                <Table.Cell>300</Table.Cell>
+                <Table.Cell>400</Table.Cell>
+                <Table.Cell className="flex">
+                  <FaEdit className="text-blue-500 mr-2 hover:text-blue-700 cursor-pointer text-lg" />
+                  <FaTrash className="text-red-500 hover:text-red-700 cursor-pointer text-lg" />
+                </Table.Cell>
+              </Table.Row>
+              <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell>Cashier</Table.Cell>
+                <Table.Cell>240</Table.Cell>
+                <Table.Cell>300</Table.Cell>
+                <Table.Cell className="flex">
+                  <FaEdit className="text-blue-500 mr-2 hover:text-blue-700 cursor-pointer text-lg" />
+                  <FaTrash className="text-red-500 hover:text-red-700 cursor-pointer text-lg" />
+                </Table.Cell>
+              </Table.Row>
+              <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell>Waiter</Table.Cell>
+                <Table.Cell>200</Table.Cell>
+                <Table.Cell>250</Table.Cell>
+                <Table.Cell className="flex">
+                  <FaEdit className="text-blue-500 mr-2 hover:text-blue-700 cursor-pointer text-lg" />
+                  <FaTrash className="text-red-500 hover:text-red-700 cursor-pointer text-lg" />
+                </Table.Cell>
+              </Table.Row>
+
+            </Table.Body>
+          </Table>
+        </div>
+
       {/* Add Bonus Modal */}
       <Modal show={bonusModalOpen} size="md" onClose={closeBonusModal} popup>
         <Modal.Header />
@@ -261,6 +330,67 @@ function Bonuses() {
           </div>
         </Modal.Body>
       </Modal>
+
+       {/* Edit Pay Per Hour Modal */}
+      <Modal show={hourlyModalOpen} size="md" onClose={closeHourlyModal} popup>
+        <Modal.Header />
+        <Modal.Body>
+          <div className="space-y-6">
+            <h3 className="text-xl font-medium text-gray-900 dark:text-white">Edit Pay Per Hour</h3>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="position" value="Position" />
+              </div>
+              <select
+                id="position"
+                value={position}
+                onChange={(event) => setPosition(event.target.value)}
+                className="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 dark:bg-gray-700 dark:border-gray-700 dark:focus:border-gray-500 dark:focus:ring-gray-600 dark:text-gray-300 rounded-md"
+              >
+                <option value="">Select Position</option>
+                <option value="Chef">Chef</option>
+                <option value="Cashier">Cashier</option>
+                <option value="Waiter">Waiter</option>
+              </select>
+            </div>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="hourlyPay" value="Hourly Pay (Rs.)" />
+              </div>
+              <TextInput
+                id="hourlyPay"
+                type="number"
+                placeholder="Hourly Pay"
+                min="0"
+                step="100"
+                value={hourlyPay}
+                onChange={(event) => setHourlyPay(event.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="otPay" value="OT Pay (Rs.)" />
+              </div>
+              <TextInput
+                id="otPay"
+                type="number"
+                placeholder="OT Pay"
+                min="0"
+                step="100"
+                value={otPay}
+                onChange={(event) => setOTPay(event.target.value)}
+                required
+              />
+            </div>
+            <div className="flex justify-end">
+              <Button onClick={handleEditHourly}>Save Changes</Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+        
     </div>
   );
 }

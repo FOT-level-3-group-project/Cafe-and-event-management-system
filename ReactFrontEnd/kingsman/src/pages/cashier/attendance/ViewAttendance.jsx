@@ -9,12 +9,12 @@ function ViewAttendance() {
   const [attendanceData, setAttendanceData] = useState([]);
   const [selectedAttendance, setSelectedAttendance] = useState(null);
   const [openEditModal, setOpenEditModal] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false); // State to control delete confirmation modal
-  const [openAbsentiesModal, setOpenAbsentiesModal] = useState(false); // State to control AbsentiesModal visibility
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [openAbsentiesModal, setOpenAbsentiesModal] = useState(false);
 
-  useEffect(() => {
-    fetchAttendanceData();
-  }, []);
+  const handleCloseAbsentiesModal = () => {
+    setOpenAbsentiesModal(false);
+  };
 
   const fetchAttendanceData = () => {
     axios.get('http://localhost:8080/current-date')
@@ -26,14 +26,18 @@ function ViewAttendance() {
       });
   };
 
+  useEffect(() => {
+    fetchAttendanceData();
+  }, []);
+
   const handleEditClick = (attendance) => {
     setSelectedAttendance(attendance);
     setOpenEditModal(true);
   };
 
   const handleDeleteClick = (empId, date) => {
-    setSelectedAttendance({ empId, date }); // Set selected attendance for deletion
-    setConfirmDelete(true); // Show delete confirmation modal
+    setSelectedAttendance({ empId, date });
+    setConfirmDelete(true);
   };
 
   const handleCloseEditModal = () => {
@@ -46,7 +50,7 @@ function ViewAttendance() {
       .then(response => {
         console.log('Attendance updated successfully:', response.data);
         handleCloseEditModal();
-        fetchAttendanceData();
+        fetchAttendanceData(); // Reload attendance data
       })
       .catch(error => {
         console.error('Error updating attendance:', error);
@@ -58,8 +62,8 @@ function ViewAttendance() {
     axios.delete(`http://localhost:8080/DeleteAttendance/${empId}/${date}`)
       .then(response => {
         console.log('Attendance deleted successfully:', response.data);
-        setConfirmDelete(false); // Close delete confirmation modal
-        fetchAttendanceData();
+        setConfirmDelete(false);
+        fetchAttendanceData(); // Reload attendance data
       })
       .catch(error => {
         console.error('Error deleting attendance:', error);
@@ -67,9 +71,9 @@ function ViewAttendance() {
   };
 
   return (
-    <div>
+    <div className='w-full'>
       {/* Absentees button */}
-      <div className="mt-10 text-right flex justify-end mr-10">
+      <div className="mt-10 text-right flex justify-end mr-10 ">
         <Button outline gradientDuoTone="cyanToBlue" onClick={() => setOpenAbsentiesModal(true)}>
           Absentees
         </Button>
@@ -140,10 +144,10 @@ function ViewAttendance() {
       />
 
       {/* AbsentiesModal component */}
-      <Modal show={openAbsentiesModal} size="lg" onClose={() => setOpenAbsentiesModal(false)} popup>
-        <Modal.Header>Absentees</Modal.Header>
+      <Modal show={openAbsentiesModal} size="lg" onClose={handleCloseAbsentiesModal} popup>
+        <Modal.Header>Today Absent Employees</Modal.Header>
         <Modal.Body>
-          <AbsentiesModal />
+          <AbsentiesModal onClose={handleCloseAbsentiesModal} reloadAttendance={fetchAttendanceData} />
         </Modal.Body>
       </Modal>
     </div>

@@ -7,6 +7,8 @@ import CashierProfile from './CashierProfile';
 import ManageOrder from './Order/ManageOrder';
 import { ViewOrder } from './Order/ViewOrder';
 import Bill from './Order/Bill';
+import Attendance from './attendance/Attendance';
+import ViewAttendance from './attendance/ViewAttendance';
 
 export default function Cashier() {
 
@@ -27,7 +29,9 @@ export default function Cashier() {
       </div>
 
 
-      {tab === 'attendance' && <ShowAttendance />}
+      {tab === 'addAttendance' && <Attendance/>}
+
+      {tab === 'viewAttendance' && <ViewAttendance/>}
 
       {tab === 'profile' && <CashierProfile />}
 

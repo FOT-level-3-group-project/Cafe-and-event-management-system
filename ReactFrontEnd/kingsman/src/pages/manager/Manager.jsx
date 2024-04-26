@@ -9,7 +9,9 @@ import RegisterEmployee from './manageEmployees/RegisterEmployee';
 import ViewAllEmployees from './manageEmployees/ViewAllEmployees';
 import AddEvent from './manageEvents/AddEvent';
 import ViewAllEvents from './manageEvents/ViewAllEvents';
-import UpdateEvent from './manageEvents/UpdateEvent';
+import AttendanceFrManager from './attendance/AttendanceFrManager';
+// import UpdateEvent from './manageEvents/UpdateEvent';
+import { MonthlyIncome } from './monthlyIncome/MonthlyIncome';
 
 
 export default function Manager() {
@@ -42,7 +44,14 @@ export default function Manager() {
                 {/* View All Events */}
                 {tab === 'view-all-events' && <ViewAllEvents/>}
                 {/* Update Event */}
-                {tab === 'update-event' && <UpdateEvent/>}
+                {/* {tab === 'update-event' && <UpdateEvent/>} */}
+
+                {/* Attendance */}
+                {tab === 'attendance' && <AttendanceFrManager/>}
+
+                {/* Monthly Income */}
+                {tab === 'monthly-income' && <MonthlyIncome/>}
+
 
         </div>
     )

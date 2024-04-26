@@ -26,6 +26,9 @@ public class FoodItem {
     @Column(nullable = true)
     private String foodImageURL;
 
+    @Column(nullable = false)
+    private boolean available = true;
+
     public FoodItem(Long foodItemId) {
         foodId = foodItemId;
     } // get food item id

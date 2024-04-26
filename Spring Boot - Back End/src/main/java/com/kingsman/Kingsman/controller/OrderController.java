@@ -2,6 +2,7 @@ package com.kingsman.Kingsman.controller;
 
 import com.kingsman.Kingsman.dto.OrderDTO;
 import com.kingsman.Kingsman.dto.OrderEmployeeFoodDTO;
+import com.kingsman.Kingsman.exception.ItemNotFoundExeption;
 import com.kingsman.Kingsman.model.InventoryItemUsageLog;
 import com.kingsman.Kingsman.model.Order;
 import com.kingsman.Kingsman.service.OrderService;
@@ -83,15 +84,27 @@ public class OrderController {
         return ResponseEntity.noContent().build();
     }
 
-//    @GetMapping("/created-date")
-//    public ResponseEntity<List<OrderEmployeeFoodDTO>> getOrdersByCreatedDate(
-//            @RequestParam("createdDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDate) {
-//        List<OrderEmployeeFoodDTO> orders = orderService.getOrdersByCreatedDate(createdDate);
-//        if (orders.isEmpty()) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//        return new ResponseEntity<>(orders, HttpStatus.OK);
-//    }
+    @GetMapping("/created-date") // get order details related the specific date
+    public ResponseEntity<List<OrderEmployeeFoodDTO>> getOrderEmployeeFoodByCreatedDate(
+            @RequestParam("createdDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate createdDate) {
+        List<OrderEmployeeFoodDTO> orders = orderService.getOrderEmployeeFoodByCreatedDate(createdDate);
+        if (orders.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
+
+    @PutMapping("/status-update/{orderId}/{orderStatus}") //update the order status
+    public ResponseEntity<String> updateOrderStatus(@PathVariable long orderId, @PathVariable String orderStatus){
+        boolean success = orderService.updateOrderStatus(orderId,orderStatus);
+        if (success){
+            return ResponseEntity.ok("Order Status updated successfully");
+        }else {
+            throw new ItemNotFoundExeption(orderId);
+        }
+    }
+
+
 
 }
 

@@ -18,4 +18,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     boolean existsByCusMobileAndCusIdNot(String cusMobile, Long cusId);
 
+    @Query("SELECT c.cusEmail FROM Customer c")
+    List<String> findAllEmails();
+
 }

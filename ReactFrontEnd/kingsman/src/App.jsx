@@ -12,6 +12,7 @@ import Manager from './pages/manager/Manager'
 import Waiter from './pages/waiter/Waiter'
 import OnlyManagerPrivateRoute from './components/OnlyManagerPrivateRoute'
 import ResetPassword from './pages/ResetPassword';
+import FoodMenu from './pages/chef/foodManagement/FoodMenu'
 //import { Link } from 'react-router-dom'
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
         <Route element={<PrivateRoute/>}>
           <Route path="/cashier" element={<Cashier/>}/>
           <Route path="/chef" element={<Chef/>}/>
+          <Route path="/chef/foodMenu" element={<FoodMenu/>}/>
           
           <Route path="/waiter" element={<Waiter/>}/>
           <Route path="/dashboard" element={<Dashboard/>} />
@@ -41,3 +43,4 @@ export default function App() {
   )
 }
 
+ 

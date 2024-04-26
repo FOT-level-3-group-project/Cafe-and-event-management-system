@@ -1,9 +1,6 @@
 package com.kingsman.Kingsman.controller;
 
-import com.kingsman.Kingsman.model.Attendance;
-import com.kingsman.Kingsman.model.Employee;
-import com.kingsman.Kingsman.model.InAttendance;
-import com.kingsman.Kingsman.model.OutAttendance;
+import com.kingsman.Kingsman.model.*;
 import com.kingsman.Kingsman.repository.AttendanceRepository;
 import com.kingsman.Kingsman.repository.EmployeeRepository;
 import com.kingsman.Kingsman.service.AttendanceService;
@@ -61,13 +58,18 @@ public class AttendanceController {
     @PostMapping("/attendance/in")
     public ResponseEntity<String> addInTime(@RequestBody Attendance attendance) {
         try {
-            // Set the date
-            attendance.setDate(LocalDate.now()); // You might want to adjust the date logic as per your requirement
+            // Check if an in-time record already exists for the employee ID and date
+            Attendance existingInTime = attendanceRepository.findByEmpIdAndDate(attendance.getEmpId(), LocalDate.now());
 
-            // Save the attendance record
-            attendanceRepository.save(attendance);
-
-            return ResponseEntity.ok("In time recorded successfully.");
+            if (existingInTime != null) {
+                // If an in-time record already exists for the same employee ID and date, return an error response
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An in-time record already exists for employee: " + attendance.getEmpId());
+            } else {
+                // Save the in-time record
+                attendance.setDate(LocalDate.now()); // You might want to adjust the date logic as per your requirement
+                attendanceRepository.save(attendance);
+                return ResponseEntity.ok("In time recorded successfully.");
+            }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to record in time.");
         }
@@ -76,14 +78,20 @@ public class AttendanceController {
     @PostMapping("/attendance/out")
     public ResponseEntity<String> addOutTime(@RequestBody Attendance attendance) {
         try {
-            // Fetch the attendance record by employee ID and date
-            Attendance existingAttendance = attendanceRepository.findByEmpIdAndDate(attendance.getEmpId(), LocalDate.now());
+            // Fetch the in-time record by employee ID and date
+            Attendance existingInTime = attendanceRepository.findByEmpIdAndDate(attendance.getEmpId(), LocalDate.now());
 
-            if (existingAttendance != null) {
-                // Update the existing attendance record with out time
-                existingAttendance.setOutTime(attendance.getOutTime());
-                attendanceRepository.save(existingAttendance);
-                return ResponseEntity.ok("Out time recorded successfully.");
+            if (existingInTime != null) {
+                // Check if an out-time record already exists for the same employee ID and date
+                if (existingInTime.getOutTime() != null) {
+                    // If an out-time record already exists for the same employee ID and date, return an error response
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An out-time record already exists for employee: " + attendance.getEmpId());
+                } else {
+                    // Update the existing in-time record with out time
+                    existingInTime.setOutTime(attendance.getOutTime());
+                    attendanceRepository.save(existingInTime);
+                    return ResponseEntity.ok("Out time recorded successfully.");
+                }
             } else {
                 // Handle case where no matching in-time record is found
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No matching in-time record found for employee: " + attendance.getEmpId());
@@ -92,6 +100,8 @@ public class AttendanceController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to record out time.");
         }
     }
+
+
 
     //Today attendance
 
@@ -106,6 +116,14 @@ public class AttendanceController {
     @GetMapping("/current-date")
     public List<AttendanceDTO> getAttendanceForCurrentDate() {
         return attendanceService.getAttendanceForCurrentDate();
+    }
+
+    //current Month attendance
+
+    @GetMapping("/current-month")
+    public ResponseEntity<List<Attendance>> getAttendanceForCurrentMonth() {
+        List<Attendance> attendanceList = attendanceService.getAttendanceForCurrentMonth();
+        return new ResponseEntity<>(attendanceList, HttpStatus.OK);
     }
 
 
@@ -158,32 +176,95 @@ public class AttendanceController {
 //absenties search
 
 
-    @GetMapping("/Absent-Employees")
-    public List<EmployeeDTO> compareEmployeeAttendance() {
-        // Fetch data from Employee table
+
+
+
+    @Autowired
+    public AttendanceController(EmployeeRepository employeeRepository, AttendanceRepository attendanceRepository, AttendanceService attendanceService) {
+        this.employeeRepository = employeeRepository;
+        this.attendanceRepository = attendanceRepository;
+        this.attendanceService = attendanceService;
+    }
+
+    @GetMapping("/employeeDetails")
+    public List<String[]> getEmployeeDetails() {
+        // Get all employees
         List<Employee> employees = employeeRepository.findAll();
 
-        // Fetch data from Attendance table
-        List<Attendance> attendanceList = attendanceRepository.findAll();
+        // Get attendance records for the current date
+        LocalDate currentDate = LocalDate.now();
+        List<Attendance> attendanceRecords = attendanceRepository.findByDate(currentDate);
 
-        // Get list of employee IDs present in the Attendance table
-        List<String> attendanceEmpIds = attendanceList.stream()
+        // Extract empIds from attendance records for comparison
+        List<String> attendedEmployeeIds = attendanceRecords.stream()
                 .map(Attendance::getEmpId)
                 .collect(Collectors.toList());
 
-        // Create a list to store the result
-        List<EmployeeDTO> resultList = new ArrayList<>();
+        // Filter employees who are not in the attendance records for the current date
+        List<Employee> employeesNotAttended = employees.stream()
+                .filter(employee -> !attendedEmployeeIds.contains("EMP" + String.format("%03d", employee.getId())))
+                .collect(Collectors.toList());
 
-        // Iterate over employees
-        for (Employee employee : employees) {
-            // Format data and add to result list if employee ID not present in the Attendance table
-            String empId = "EMP" + String.format("%03d", employee.getId());
-            if (!attendanceEmpIds.contains(empId)) {
-                resultList.add(EmployeeDTO.fromEmployee(employee));
-            }
-        }
+        // Map employee details to the desired format
+        List<String[]> employeeDetails = employeesNotAttended.stream()
+                .map(employee -> new String[]{
+                        "EMP" + String.format("%03d", employee.getId()), // Format ID as EMPXXX
+                        employee.getFirst_name() + " " + employee.getLast_name(), // Concatenate first and last name
+                        employee.getPosition()
+                })
+                .collect(Collectors.toList());
 
-        return resultList;
+        return employeeDetails;
     }
+
+
+    //Marking Absent Employees
+
+
+    @PostMapping("/attendances")
+    public ResponseEntity<String> saveAttendances(@RequestBody List<Attendance> attendances) {
+        try {
+            // Save all attendances
+            attendanceRepository.saveAll(attendances);
+            return ResponseEntity.ok("Attendances saved successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save attendances: " + e.getMessage());
+        }
+    }
+
+    // get attendance acording to date range
+
+    @GetMapping("/fetch-by-date-range/{startDate}/{endDate}")
+    public ResponseEntity<List<Attendance>> fetchAttendanceByDateRange(
+            @PathVariable("startDate") String startDate,
+            @PathVariable("endDate") String endDate) {
+        // Convert date strings to LocalDate objects
+        LocalDate start = LocalDate.parse(startDate);
+        LocalDate end = LocalDate.parse(endDate);
+
+        // Fetch attendance data from the repository within the specified date range
+        List<Attendance> attendanceList = attendanceRepository.findByDateBetween(start, end);
+
+        // Return the fetched attendance data with a success status code
+        return new ResponseEntity<>(attendanceList, HttpStatus.OK);
+    }
+
+
+    //Emp Ids (EMP001.EMP002)
+
+
+    @GetMapping("/employeeIds")
+    public List<String> getAllEmployeeIds() {
+        // Fetch all employees from the repository
+        List<Employee> employees = employeeRepository.findAll();
+
+        // Map the employee IDs to the "EMPXXX" format
+        List<String> formattedEmployeeIds = employees.stream()
+                .map(employee -> "EMP" + String.format("%03d", employee.getId()))
+                .collect(Collectors.toList());
+
+        return formattedEmployeeIds;
+    }
+
 
 }
