@@ -10,7 +10,7 @@ export const MonthlyIncome = () => {
   useEffect(() => {
     // Fetch income data when component mounts
     fetchIncomeData();
-  }, []); // Empty dependency array means this effect runs only once after initial render
+  }, []); 
 
   const fetchIncomeData = async () => {
     try {
@@ -33,7 +33,7 @@ export const MonthlyIncome = () => {
   };
 
   return (
-    <div className="w-1/2 ">
+    <div className="w-1/2 ml-40">
       <div className="flex justify-center p-4">
         {/* <h1 className='font-bold'>Kingsman Vila</h1> */}
         <h2 className='font-bold'>Income Statement for January 2024 </h2>
@@ -57,8 +57,8 @@ export const MonthlyIncome = () => {
             <td className=' text-right'> Rs. xxxxxx</td>
           </tr>
           <tr>
-            <td className="bg-blue-200 py-2">Total Revenues</td>
-            <td className="bg-blue-200 text-right"> Rs. xxxxxx</td>
+            <td className="bg-blue-200 py-2  dark:text-black">Total Revenues</td>
+            <td className="bg-blue-200 text-right dark:text-black "> Rs. xxxxxx</td>
           </tr>
           <tr>
             <td className="flex justify-normal bg-blue-900 text-white py-2">Expenses</td>
@@ -85,8 +85,8 @@ export const MonthlyIncome = () => {
             <td className=' text-right'> Rs. xxxxxx</td>
           </tr>
           <tr>
-            <td className="bg-blue-200 py-2">Total Expenses</td>
-            <td className="bg-blue-200 text-right"> Rs. xxxxxx</td>
+            <td className="bg-blue-200 py-2 dark:text-black">Total Expenses</td>
+            <td className="bg-blue-200 text-right dark:text-black"> Rs. xxxxxx</td>
           </tr>
           <tr>
             <td className="bg-blue-900 text-white py-2">Profit/Loss</td>
