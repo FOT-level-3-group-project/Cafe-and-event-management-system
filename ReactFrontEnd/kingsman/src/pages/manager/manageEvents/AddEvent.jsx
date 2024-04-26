@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Label, TextInput } from 'flowbite-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import GenerateTicketPriceModel from './GenerateTicketPriceModel';
 
 const AddEvent = () => {
   const [formData, setFormData] = useState({
@@ -23,29 +24,47 @@ const AddEvent = () => {
   const [budgetErrorMessage, setBudgetErrorMessage] = useState('');
   const [ticketPriceErrorMessage, setTicketPriceErrorMessage] = useState('');
   const [ticketQuantityErrorMessage, setTicketQuantityErrorMessage] = useState('');
+  const [showTicketPriceModal, setShowTicketPriceModal] = useState(false);
 
-  const handleAddEventForm = () => {
-      setFormData({
-        eventIDNumber: '',
-        eventName: '',
-        eventDate: '',
-        startTime: '',
-        duration: '',
-        budget: '',
-        ticketPrice: '',
-        ticketQuantity: '',
-        entertainer: '',
-        description: '',
-      }); 
-      setErrorMessage('');
-      setBudgetErrorMessage('');
-      setTicketPriceErrorMessage('');
-      setTicketQuantityErrorMessage('');
-      setDurationErrorMessage('');
+
+  // const handleClear = () => {
+  //     setFormData({
+  //       eventIDNumber: '',
+  //       eventName: '',
+  //       eventDate: '',
+  //       startTime: '',
+  //       duration: '',
+  //       budget: '',
+  //       ticketPrice: '',
+  //       ticketQuantity: '',
+  //       entertainer: '',
+  //       description: '',
+  //     }); 
+  //     setErrorMessage('');
+  //     setBudgetErrorMessage('');
+  //     setTicketPriceErrorMessage('');
+  //     setTicketQuantityErrorMessage('');
+  //     setDurationErrorMessage('');
+  // };
+
+  const handleShowTicketPriceModal = () => {
+  setShowTicketPriceModal(true);
+};
+
+const handleCloseTicketPriceModal = () => {
+  setShowTicketPriceModal(false);
+};
+
+const handleTicketPriceChange = (price) => {
+    setFormData({
+      ...formData,
+      ticketPrice: price,
+    });
   };
 
+
   const handleChange = (e) => {
-    console.log("handleChange called");  
+    console.log(e.target.value);  
     const { name, value } = e.target;
     let errorMessage = '';
 
@@ -88,22 +107,25 @@ const AddEvent = () => {
     // For the time selects
     if (name === 'startTime') {
       // Split the selected time into hours and minutes
-      const [selectedHour, selectedMinute] = value.split(':');
-      // Combine hours and minutes into a single string
-      const selectedTime = `${selectedHour}:${selectedMinute}`;
-    }
-
-
+      const [selectedHour, selectedMinute] = formData.startTime.split(':');
+      const selectedTime = value.replace(/^:/, '');
+      setFormData({
+        ...formData,
+        startTime: selectedTime,
+      });
+    } else{
       setFormData({
         ...formData,
         [name]: value,
       });
       setErrorMessage(errorMessage); 
     };
+  };
+
 
     const handleSubmit = async (e) => {
       e.preventDefault();
-      handleAddEventForm();
+      // handleAddEventForm();
 
       // Concatenate 'event' with the manually entered number to form the complete event ID
       const completeEventID = formData.eventID + formData.eventIDNumber.padStart(3, '0');
@@ -116,7 +138,7 @@ const AddEvent = () => {
       } catch (error) {
           if (error.response && error.response.data && error.response.data.error) {
               // Extract the error message from the response data and display it
-              setErrorMessage(error.response);
+              setErrorMessage(error.response.data.error);
           } else if (error.request) {
               // This usually indicates a network error or the server did not respond
               console.log(error.request);
@@ -139,71 +161,76 @@ const AddEvent = () => {
             <div className='flex-1 flex justify-center'>
                 <form className='flex flex-col gap-4 w-full' onSubmit={handleSubmit}>
                     <h1 className='flex justify-center text-3xl font-bold mb-4 '> Add New Event</h1> <hr></hr>
+                        
                         <div>
                           <Label value='Event ID*' />
                           <TextInput type='text' placeholder='Event ID' id='EventID' value={formData.eventID} onChange={handleChange} name="eventID" required />
                         </div>
+
                         <div>
                             <Label value='Event Name*' />
                             <TextInput type='text' placeholder='Event Name' id='EventName' value={formData.eventName} onChange={handleChange} name="eventName" required />
                         </div>
+
                         <div>
                             <Label value='Event Date*' />
                              <TextInput type='date' placeholder='Event Date' id='EventDate' value={formData.eventDate} onChange={handleChange} name="eventDate" className='text-gray-400' />
                         </div>
+
                         <div>
-                          <Label value='Starting Time' /> <br/>
+                          <Label value='Starting Time*' /> <br />
                           <select
                             className="border rounded-md dark:bg-gray-600 dark:font-white"
-                            onChange={(e) => setFormData({ ...formData, startTime:`${formData.startTime.split(':')[0]}:${e.target.value}` })}
+                            onChange={(e) => handleChange({ target: { name: 'startTime', value: e.target.value } })}
                           >
                             {Array.from({ length: 24 }, (_, i) => (
-                              <option key={i} value={i < 10 ? `0${i}` : `${i}`}>{i < 10 ? `0${i}` : `${i}`}</option>
-                            ))}
-                          </select>
-                          <span className="text-xl font-bold">:</span>
-                          <select
-                            className="border rounded-md dark:bg-gray-600 dark:font-white"
-                            onChange={(e) => setFormData({ ...formData, startTime: `${formData.startTime.split(':')[0]}:${e.target.value}` })}
-                          >
-                            {Array.from({ length: 60 }, (_, i) => (
-                              <option key={i} value={i < 10 ? `0${i}` : `${i}`}>{i < 10 ? `0${i}` : `${i}`}</option>
+                              <option key={i} value={i < 10 ? `0${i}:00` : `${i}:00`}>{i < 10 ? `0${i}:00` : `${i}:00`}</option>
                             ))}
                           </select>
                         </div>
+
                         <div>
                            <Label value='Duration (Hours)' />
                             <TextInput type='text' placeholder='Duration' id='Duration' value={formData.duration} onChange={handleChange} name="duration" />
                             {durationErrorMessage && <div className="text-red-500">{durationErrorMessage}</div>}
                         </div>
+
                         <div>
                             <Label value='Budget (Rs.)' />
                             <TextInput type='text' placeholder='Budget' id='Budget' value={formData.budget} onChange={handleChange} name="budget"  />
                             {budgetErrorMessage && <div className="text-red-500">{budgetErrorMessage}</div>}
                         </div>
-                        <div>
-                            <Label value='Ticket Price (Rs.)' />
-                            <TextInput type='text' placeholder='Ticket Price' id='TicketPrice' value={formData.ticketPrice} onChange={handleChange} name="ticketPrice" />
-                            {ticketPriceErrorMessage && <div className="text-red-500">{ticketPriceErrorMessage}</div>}
-                        </div>
+
                         <div>
                             <Label value='Ticket Quantity' />
                             <TextInput type='text' placeholder='Ticket Quantity' id='TicketQuantity' value={formData.ticketQuantity} onChange={handleChange} name="ticketQuantity" />
                             {ticketQuantityErrorMessage && <div className="text-red-500">{ticketQuantityErrorMessage}</div>}
                         </div>
+
                         <div>
                             <Label value='Entertainer' />
                             <TextInput type='text' placeholder='Entertainer' id='Entertainer' value={formData.entertainer} onChange={handleChange} name="entertainer"/>
                         </div>
+
                         <div>
                             <Label value='Description' />
                             <TextInput type='text' placeholder='Description' id='Description' value={formData.description} onChange={handleChange} name="description"/> 
                         </div>
-                    <div className="flex justify-between">
-                        <button type="reset" className="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 mr-2 rounded w-full md:w-1/2 " id="clearbtn" onClick={handleAddEventForm}> Clear </button>
-                        <button type="submit" className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 ml-2 rounded w-full md:w-1/2 "> Add Event </button>
-                    </div>
 
+                      
+                        <div>
+                            <Label value='Ticket Price (Rs.)' />
+                            <div className="flex justify-between">
+                             <TextInput type='text' placeholder='Ticket Price' value={formData.ticketPrice} onChange={handleChange} name="ticketPrice" className='mt-2 h-10 w-1/2'/>
+                           <button type="button" className="bg-green-600 hover:bg-green-700 text-white  rounded w-1/2 mt-2 h-10 " onClick={handleShowTicketPriceModal}> Calculate Ticket Price </button>
+                            <GenerateTicketPriceModel show={showTicketPriceModal} onClose={handleCloseTicketPriceModal} onTicketPriceChange={handleTicketPriceChange}/>        
+                          </div>
+                        </div>
+                        
+                    <div className="flex justify-between">
+                        {/* <button type="reset" className="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 mr-2 rounded w-full md:w-1/2 " id="clearbtn" onClick={handleClear}> Clear </button> */}
+                        <button type="submit" className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 ml-2 rounded w-full "> Add Event </button>
+                    </div>
                     {errorMessage && (
                     <Alert className='mt-5' color='failure'>
                         {errorMessage}
