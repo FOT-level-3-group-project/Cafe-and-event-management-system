@@ -1,8 +1,8 @@
 import { Avatar, Button, Dropdown, Navbar } from 'flowbite-react'
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { FaMoon ,FaSun} from 'react-icons/fa'
-import {  useSelector, useDispatch } from 'react-redux'
+import { FaMoon, FaSun } from 'react-icons/fa'
+import { useSelector, useDispatch } from 'react-redux'
 import { toggleTheme } from '../redux/theme/themeSlice'
 import { logOutSuccess } from '../redux/user/userSlice'
 
@@ -17,19 +17,25 @@ export default function Header() {
     const handleLogOut = async () => {
 
         try {
-          dispatch(logOutSuccess());
+            dispatch(logOutSuccess());
         } catch (error) {
-          console.log(error.message);
+            console.log(error.message);
         }
-      }
+    }
 
     return (
+        // Top buttons
+
         <Navbar className='border-b-2'>
+            
             <Link to='/' className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'>
-                <span className='px-2 py-1 bg-gradient-to-r from-lime-900 via-lime-600 to-lime-500 rounded-lg text-white'>Kingsman Cafe & Events</span>
+                <div className='flex items-center'>
+            <img src='../src/image/logo.png' alt='logo' className='w-12 rounded-3xl' />
+                <span className='px-2 py-1 bg-gradient-to-r from-green-800 via-green-600 to-green-400 rounded-lg text-white'>Kingsman Cafe & Events</span>
+                </div>
             </Link>
             <div className='flex gap-3 md:order-2'>
-                <Button className='w-12 h-10 hidden sm:inline' color='gray' pill onClick={()=>dispatch(toggleTheme())}>
+                <Button className='w-12 h-10 hidden sm:inline' color='gray' pill onClick={() => dispatch(toggleTheme())}>
                     {theme === 'light' ? <FaSun /> : <FaMoon />}
                 </Button>
                 {currentUser ? (
@@ -48,13 +54,13 @@ export default function Header() {
                             <span className='block text-sm'>@{currentUser.username}</span>
                             <span className='block text-sm'>{currentUser.first_name} {currentUser.last_name}</span>
                         </Dropdown.Header>
-                        <Link to={'/'+(currentUser.position)+'?tab=profile'}> 
+                        <Link to={'/' + (currentUser.position) + '?tab=profile'}>
                             <Dropdown.Item>
                                 Profile
                             </Dropdown.Item>
                         </Link>
                         <Dropdown.Divider />
-                        <Dropdown.Item onClick={handleLogOut}> 
+                        <Dropdown.Item onClick={handleLogOut}>
                             Log out
                         </Dropdown.Item>
 
@@ -86,5 +92,6 @@ export default function Header() {
             </Navbar.Collapse>
 
         </Navbar>
+
     )
 }

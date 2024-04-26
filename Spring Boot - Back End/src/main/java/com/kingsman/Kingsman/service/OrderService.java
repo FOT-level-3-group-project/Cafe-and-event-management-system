@@ -254,6 +254,11 @@ public class OrderService {
         return true;
     }
 
+    public List<OrderEmployeeFoodDTO> getOrderEmployeeFoodByOrderStatus(String orderStatus) {
+        List<OrderEmployeeFoodDTO> orderEmployeeFoodDTOs = orderRepository.getOrderEmployeeFoodByOrderStatus(orderStatus);
+        return orderEmployeeFoodDTOs;
+    }
+
 
 
 

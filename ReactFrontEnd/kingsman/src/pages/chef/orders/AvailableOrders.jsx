@@ -60,40 +60,55 @@ export default function AvailableOrders() {
         }
         fetchOrders();
     }
+
+    const updateStatusProcessing = async (orderId) => {
+        try {
+            const response = await axios.put(`http://localhost:8080/api/orders/status-update/${orderId}/Processing`);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error updating order status:', error);
+        }
+        fetchOrders();
+    }
     return (
 
         // Top buttons 
-        <div className='w-screen h-screen'>
-            <div className='flex flex-wrap gap-2 mt-6 ml-5 mb-5'>
+        <div className='w-full h-screen bg-gray-100'>
+            <div className='m-5 rounded-xl shadow-md'>
                 <Navbar fluid rounded>
                     <Navbar.Collapse>
                         <Link to="/chef?tab=allOrders" >
                             <Button color="success" className=' bg-green-500' pill outline>
-                                All : 15
+                                All : {orders.length}
                             </Button>
                         </Link>
                         <Link to="/chef?tab=availableOrders" active>
                             <Button color="warning" pill >
-                                Available Orders : 5
-
+                                Available Orders : {orders.filter(order => order.orderStatus === 'Pending').length}
+                            </Button>
+                        </Link>
+                        <Link to="/chef?tab=preparingOrders" >
+                            <Button color="purple" pill outline >
+                                Preparing Orders : {orders.filter(order => order.orderStatus === 'Processing').length}
                             </Button>
                         </Link>
                         <Link to="/chef?tab=finishedOrders">
                             <Button color="success" pill outline >
-                                Finished Orders : 5
+                                Finished Orders : {orders.filter(order => order.orderStatus === 'Ready').length}
                             </Button>
                         </Link>
                         <Link to="/chef?tab=canceledOrders">
                             <Button color="failure" pill outline>
-                                Canceled Orders : 5
+                                Canceled Orders : {orders.filter(order => order.orderStatus === 'Canceled').length}
                             </Button>
                         </Link>
                     </Navbar.Collapse>
                 </Navbar>
             </div>
 
-
-            <div className='ml-3 mr-3 w-auto'>
+            {/* Available Orders */}
+            <Label className='text-2xl font-bold m-5'>Available Orders</Label>
+            <div className='ml-5 mr-5 w-auto bg-white shadow-md rounded-2xl mt-5'>
                 <Accordion collapseAll>
                     {(orders.length  === 0)  ? (
                         <h3>No available orders</h3>
@@ -124,23 +139,27 @@ export default function AvailableOrders() {
 
                                     </Accordion.Title>
                                     <Accordion.Content>
-                                        <div className='flex justify-between'>
+                                        <div className='flex flex-row justify-between'>
+                                            <div className='basis-2/5'>
                                             <Label className="mb-4"> Customer Name : {order.cusName}   </Label>
+                                            </div>
+                                            <div className='basis-2/5'>
                                             <Label className="ml-5"> Special Note: {order.specialNote} </Label>
+                                            </div>
 
                                             {order.orderStatus === 'Canceled' ? (
                                                 <Badge size='l' color="failure">Canceled</Badge>
                                             ) : order.orderStatus === 'Finished' ? (
                                                 <Badge size='l' color="success">Finished</Badge>
                                             ) : (
-                                                <div className=''>
-                                                    <Button color="success" className='m-4' onClick={() => updateStatusFinish(order.orderId)}>
-                                                        Finish
+                                                <>
+                                                    <Button color="purple" className='m-4 bg-purple-500' onClick={() => updateStatusProcessing(order.orderId)}>
+                                                        Preparing
                                                     </Button>
-                                                    <Button color="failure" className='m-4' onClick={() => updateStatusCancel(order.orderId)}>
+                                                    <Button color="failure" className='m-4  bg-red-600' onClick={() => updateStatusCancel(order.orderId)}>
                                                         Cancel
                                                     </Button>
-                                                </div>
+                                                </>
                                             )}
 
                                         </div>

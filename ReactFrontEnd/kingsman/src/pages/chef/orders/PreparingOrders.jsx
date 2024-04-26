@@ -1,19 +1,16 @@
-import React from 'react'
-import { Button, Navbar } from "flowbite-react";
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Accordion, Label, Badge } from "flowbite-react";
+import React, { useState, useEffect } from 'react'
+import { Button, Navbar, Accordion, Label } from "flowbite-react";
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { Badge } from 'flowbite-react';
 
 
-export default function CancelOrders() {
+export default function PreparingOrders() {
     const [orders, setOrders] = useState([]);
-
 
     useEffect(() => {
         fetchOrders();
     }, []);
-
     // Get today's date
     const today = new Date();
 
@@ -24,7 +21,6 @@ export default function CancelOrders() {
 
     // Construct the date string in YYYY-MM-DD format
     const createdDate = `${year}-${month}-${day}`;
-    console.log(createdDate);
 
     const fetchOrders = async () => {
         try {
@@ -37,12 +33,22 @@ export default function CancelOrders() {
         } catch (error) {
             console.error('Error fetching orders:', error);
         }
-        fetchOrders();
     };
 
+    const updateStatusFinish = async (orderId) => {
+        try {
+            const response = await axios.put(`http://localhost:8080/api/orders/status-update/${orderId}/Ready`);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error updating order status:', error);
+        }
+        fetchOrders();
+    }
+
     return (
+
         // Top buttons 
-        < div className='w-full h-screen bg-gray-100'>
+        <div className='w-full h-screen bg-gray-100'>
             <div className='m-5 rounded-xl shadow-md'>
                 <Navbar fluid rounded>
                     <Navbar.Collapse>
@@ -52,13 +58,13 @@ export default function CancelOrders() {
                             </Button>
                         </Link>
                         <Link to="/chef?tab=availableOrders" >
-                            <Button color="warning" pill outline>
+                            <Button color="warning" pill outline >
                                 Available Orders : {orders.filter(order => order.orderStatus === 'Pending').length}
 
                             </Button>
                         </Link>
                         <Link to="/chef?tab=preparingOrders" >
-                            <Button color="purple" pill outline >
+                            <Button color="purple" pill active >
                                 Preparing Orders : {orders.filter(order => order.orderStatus === 'Processing').length}
                             </Button>
                         </Link>
@@ -68,28 +74,30 @@ export default function CancelOrders() {
                             </Button>
                         </Link>
                         <Link to="/chef?tab=canceledOrders">
-                            <Button color="failure" pill active>
+                            <Button color="failure" pill outline>
                                 Canceled Orders : {orders.filter(order => order.orderStatus === 'Canceled').length}
                             </Button>
                         </Link>
                     </Navbar.Collapse>
                 </Navbar>
             </div>
-            <Label className='text-2xl font-bold m-5'>Canceled Orders</Label>
+
+            {/* Preparing Orders */}
+            <Label className='text-2xl font-bold m-5'>Preparing Orders</Label>
             <div className='ml-5 mr-5 w-auto bg-white shadow-md rounded-2xl mt-5'>
-                
                 <Accordion collapseAll>
                     {orders
-                        .filter(order => order.orderStatus === 'Canceled')
+                        .filter(order => order.orderStatus === 'Processing')
                         .map(order => (
                             <Accordion.Panel key={order.orderId}>
                                 <Accordion.Title>
                                     <div className=" flex  justify-between ">
-                                        <div className={`mr-10 ${order.orderStatus === "Canceled" ? ('mr-8') : ('mr-10')}`}>
-                                            <Badge size='l' color={order.orderStatus === 'Canceled' ? "failure" :
+                                        <div className='mr-10'>
+                                            <Badge size='l' color={order.orderStatus === 'Processing' ? "purple" :
                                                 order.orderStatus === 'Finished' ? "success" : "warning"}>
                                                 {order.orderStatus === 'Canceled' ? "Canceled" :
-                                                    order.orderStatus === 'Finished' ? "Finished" : "Pending"}
+                                                    order.orderStatus === 'Finished' ? "Finished" :
+                                                        order.orderStatus === 'Processing' ? "Preparing" : "Pending"}
                                             </Badge>
                                         </div>
                                         <div className='space-x-16 w-full'>
@@ -109,9 +117,11 @@ export default function CancelOrders() {
                                         <Label className="mb-4"> Customer Name : {order.cusName}   </Label>
                                         <Label className="ml-5"> Special Note: {order.specialNote} </Label>
 
-                                        {order.orderStatus === 'Canceled' ? (
-                                            <Badge size='l' color="failure">Canceled</Badge>
-                                        ) : order.orderStatus === 'Finished' ? (
+                                        {order.orderStatus === 'Processing' ? (
+                                            <Button color="success" className='m-4  bg-green-500' onClick={() => updateStatusFinish(order.orderId)}>
+                                                Finish
+                                            </Button>
+                                        ) : order.orderStatus === 'Ready' ? (
                                             <Badge size='l' color="success">Finished</Badge>
                                         ) : (null)}
 
@@ -121,8 +131,8 @@ export default function CancelOrders() {
                             </Accordion.Panel>
                         ))}
                 </Accordion>
-            </div>
 
+            </div>
         </div>
     )
 }

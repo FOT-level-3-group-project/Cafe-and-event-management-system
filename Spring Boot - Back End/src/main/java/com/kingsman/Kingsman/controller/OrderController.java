@@ -104,6 +104,17 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/get-data-by-order-status/{orderStatus}") // get order details related the order Status
+    public ResponseEntity<List<OrderEmployeeFoodDTO>> getOrderEmployeeFoodByOrderStatus(
+            @PathVariable String orderStatus) {
+        List<OrderEmployeeFoodDTO> orders = orderService.getOrderEmployeeFoodByOrderStatus(orderStatus);
+        if (orders.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
+
+
 
 
 }
