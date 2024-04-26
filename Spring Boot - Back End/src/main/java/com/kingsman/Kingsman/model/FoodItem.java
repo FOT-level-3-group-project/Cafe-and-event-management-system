@@ -14,7 +14,7 @@ public class FoodItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long foodId;
 
-    @Column(nullable = false)
+    @Column(nullable = false)     // DEtails can not be empty
     private String foodName;
 
     @Column(nullable = false)
@@ -31,7 +31,7 @@ public class FoodItem {
 
     public FoodItem(Long foodItemId) {
         foodId = foodItemId;
-    }
+    } // get food item id
 
     public FoodItem() {
 

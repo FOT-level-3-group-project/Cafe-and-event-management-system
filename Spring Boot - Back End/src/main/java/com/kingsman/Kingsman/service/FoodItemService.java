@@ -21,7 +21,7 @@ public class FoodItemService {
 
     public List<String> getAllCategories() {
         return foodItemRepository.findAllCategories();
-    }
+    }   //  get data from repository
 
     public List<FoodItem> getItemsByCategory(String category) {
         return foodItemRepository.findByFoodCategory(category);

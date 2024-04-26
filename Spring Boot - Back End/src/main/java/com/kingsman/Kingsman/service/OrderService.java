@@ -185,7 +185,7 @@ public class OrderService {
         return orderItemDTOs.stream()
                 .map(itemDTO -> convertToEntity(itemDTO, order))
                 .collect(Collectors.toList());
-    }
+    }                                       // orde ewa anith paththata deno wger dto eka thiyana
 
     private OrderDTO convertToDTO(Order order) {
         OrderDTO orderDTO = new OrderDTO();
@@ -197,7 +197,7 @@ public class OrderService {
         List<OrderItemDTO> orderItemDTOs = order.getOrderItems().stream()
                 .map(this::convertOrderItemToDTO)
                 .collect(Collectors.toList());
-        orderDTO.setOrderItems(orderItemDTOs);
+        orderDTO.setOrderItems(orderItemDTOs);   // ena tika okkoma list eka map ekata dana eka
 
         // Fetch and set customer details if customerId is not null
         if (order.getCustomerId() != null) {

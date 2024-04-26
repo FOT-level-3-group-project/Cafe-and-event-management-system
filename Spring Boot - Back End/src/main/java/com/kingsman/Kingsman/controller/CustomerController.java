@@ -19,13 +19,13 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    @GetMapping
+    @GetMapping                                                                     // Handles HTTP GET requests to retrieve all customers with employee details
     public ResponseEntity<List<CustomerDTO>> getAllWithEmployeeName() {
         List<CustomerDTO> customers = customerService.findAllWithEmployeeDetails();
         return ResponseEntity.ok(customers);
     }
 
-    @GetMapping("/email/{email}")
+    @GetMapping("/email/{email}")                                                  // Handles HTTP GET requests to retrieve customers by email
     public ResponseEntity<?> getByEmail(@PathVariable String email) {
         List<CustomerDTO> customers = customerService.findByEmail(email);
         if (!customers.isEmpty()) {
@@ -35,7 +35,7 @@ public class CustomerController {
         }
     }
 
-    @GetMapping("/mobile/{mobile}")
+    @GetMapping("/mobile/{mobile}")                                                 // Handles HTTP GET requests to retrieve customers by mobile number
     public ResponseEntity<?> getByMobile(@PathVariable String mobile) {
         CustomerDTO customer = customerService.findByMobile(mobile);
         return customer != null ?
@@ -43,7 +43,7 @@ public class CustomerController {
                 ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found with the given mobile: " + mobile);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}")                                                            // Handles HTTP GET requests to retrieve a customer by ID
     public ResponseEntity<?> getById(@PathVariable Long id) {
         CustomerDTO customer = customerService.findById(id);
         return customer != null ?
@@ -51,7 +51,7 @@ public class CustomerController {
                 ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found with the given ID: " + id);
     }
 
-    @PostMapping
+    @PostMapping                                                                     // Handles HTTP POST requests to create a new customer
     public ResponseEntity<?> createCustomer(@RequestBody CustomerDTO customerDTO) {
         try {
             CustomerDTO createdCustomer = customerService.create(customerDTO);
@@ -63,7 +63,7 @@ public class CustomerController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}")                                                           // Handles HTTP PUT requests to update an existing customer
     public ResponseEntity<?> updateCustomer(@PathVariable Long id, @RequestBody CustomerDTO customerDTO) {
         try {
             CustomerDTO updatedCustomer = customerService.update(id, customerDTO);
@@ -77,7 +77,7 @@ public class CustomerController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")                                                     // Handles HTTP DELETE requests to delete a customer by ID
     public ResponseEntity<String> deleteCustomer(@PathVariable Long id) {
         try {
             customerService.delete(id);

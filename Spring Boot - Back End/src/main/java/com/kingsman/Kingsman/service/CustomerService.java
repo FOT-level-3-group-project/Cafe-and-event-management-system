@@ -85,7 +85,7 @@ public class CustomerService {
         Long customerId = customerDTO.getCusId();
 
         if (email != null && !email.isEmpty() && !isValidEmail(email)) {
-            throw new IllegalArgumentException("Invalid email format: " + email);
+            throw new IllegalArgumentException("Invalid email format: " + email);   //validation errors throw eka visit karanne
         }
 
         if (!isValidMobileNumber(mobileNumber)) {
