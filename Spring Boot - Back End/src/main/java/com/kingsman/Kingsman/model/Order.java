@@ -55,7 +55,7 @@ public class Order {
     @Column(nullable = false)
     private boolean paymentStatus;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String specialNote;
 
 
