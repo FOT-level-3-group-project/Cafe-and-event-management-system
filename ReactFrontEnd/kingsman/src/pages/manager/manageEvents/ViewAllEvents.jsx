@@ -232,9 +232,10 @@ const ViewAllEvents = () => {
         </div>
       </div>
 
+         {/* Table */}
       <div className="relative overflow-x-auto drop-shadow-lg bg-slate-50">
         {/* <Table hoverable className='bg-gray-200 dark:bg-gray-700 dark:text-white overflow-x-auto mt-1' > */}
-        <Table className='drop-shadow-lg' hoverable >
+        <Table hoverable >
           <Table.Head>
             <Table.HeadCell  className='bg-green-100'>ID</Table.HeadCell>
             <Table.HeadCell  className='bg-green-100'>Name</Table.HeadCell>
@@ -262,7 +263,7 @@ const ViewAllEvents = () => {
                 }
               })
               .map((event, index) => (
-                <Table.Row key={event.eventID} >
+                <Table.Row key={event.eventID} className={index % 2 === 0 ? "bg-gray-100 dark:bg-gray-500 dark:text-white" : "bg-gray-150 dark:bg-gray-700 dark:text-white"} >
                   <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.eventID}</Table.Cell>
                   <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.eventName}</Table.Cell>
                   <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.eventDate}</Table.Cell>
