@@ -10,6 +10,7 @@ import ViewAllEmployees from './manageEmployees/ViewAllEmployees';
 import AddEvent from './manageEvents/AddEvent';
 import ViewAllEvents from './manageEvents/ViewAllEvents';
 import UpdateEvent from './manageEvents/UpdateEvent';
+import ManageOrders from './order/ManageOrders';
 
 
 export default function Manager() {
@@ -43,6 +44,8 @@ export default function Manager() {
                 {tab === 'view-all-events' && <ViewAllEvents/>}
                 {/* Update Event */}
                 {tab === 'update-event' && <UpdateEvent/>}
+                {/* Manage Orders */}
+                {tab === 'manage-orders' && <ManageOrders/>}
 
         </div>
     )

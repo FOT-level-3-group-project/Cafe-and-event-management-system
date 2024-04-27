@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { BiCoinStack } from "react-icons/bi";
 import { Sidebar } from "flowbite-react";
 import { HiArrowSmRight, HiUser } from "react-icons/hi";
-
+import { MdRestaurantMenu } from "react-icons/md";
 import { logOutSuccess } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 
@@ -66,7 +66,11 @@ export default function ManagerSideBar() {
                            Events
                         </Sidebar.Item>
                     </Link>
-
+                    <Link to='/manager?tab=manage-orders'>
+                        <Sidebar.Item active={tab === 'manage-orders'} icon={MdRestaurantMenu} as='div'>
+                           Manage Orders
+                        </Sidebar.Item>
+                    </Link>
                     <Sidebar.Item icon={HiArrowSmRight} className='cursor-pointer' onClick={handleLogOut} >
                         Log Out
                     </Sidebar.Item>
