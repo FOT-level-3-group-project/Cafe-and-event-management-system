@@ -86,7 +86,7 @@ const ViewAllEmployees = () => {
         
         <div className="flex items-center">
           {/* Search bar */}
-          <div className='flex-grow px-4 py-2 border rounded-full dark:bg-gray-600'>
+          <div className='flex-grow px-4 border rounded-full dark:bg-gray-600'>
             <input 
               type="search" 
               placeholder="Search Employee..." 
@@ -113,25 +113,25 @@ const ViewAllEmployees = () => {
           </div>
         
           {/* Add Employee button */} 
-          <Link to="/manager?tab=new-employee" className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 ml-2 rounded px-2 w-full text-center">Add Employee</Link>
+          <Link to="/manager?tab=new-employee" className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 ml-2 rounded px-2 w-full text-center">Add Employee</Link>
         </div>
       </div>
 
       {/* Table */}
-      <div className="relative overflow-x-auto shadow-lg">
-        <Table hoverable className='bg-gray-200  dark:bg-gray-700 dark:text-white '>
+      <div className="relative overflow-x-auto drop-shadow-lg bg-slate-50">
+        <Table className='drop-shadow-lg' hoverable>
           <Table.Head>
-            <Table.HeadCell className='dark:bg-gray-800'>Username</Table.HeadCell>
-            <Table.HeadCell className='dark:bg-gray-800'>Name</Table.HeadCell>
-            <Table.HeadCell className='dark:bg-gray-800'>Job Role</Table.HeadCell>
-            <Table.HeadCell className='dark:bg-gray-800'>Contact</Table.HeadCell>
-            <Table.HeadCell className='dark:bg-gray-800'>Email</Table.HeadCell>
-            <Table.HeadCell className='dark:bg-gray-800'>Address</Table.HeadCell>
-            <Table.HeadCell className='dark:bg-gray-800'>Gender</Table.HeadCell>
-            <Table.HeadCell className='dark:bg-gray-800'>Joined Date</Table.HeadCell>
-            <Table.HeadCell className='dark:bg-gray-800'>Uniform Size</Table.HeadCell>
-            <Table.HeadCell className='dark:bg-gray-800'>Emergency Contact</Table.HeadCell>
-            <Table.HeadCell className='dark:bg-gray-800'></Table.HeadCell> {/* Empty cell for actions */}
+            <Table.HeadCell className='bg-green-100'>Username</Table.HeadCell>
+            <Table.HeadCell className='bg-green-100'>Name</Table.HeadCell>
+            <Table.HeadCell className='bg-green-100'>Job Role</Table.HeadCell>
+            <Table.HeadCell className='bg-green-100'>Contact</Table.HeadCell>
+            <Table.HeadCell className='bg-green-100'>Email</Table.HeadCell>
+            <Table.HeadCell className='bg-green-100'>Address</Table.HeadCell>
+            <Table.HeadCell className='bg-green-100'>Gender</Table.HeadCell>
+            <Table.HeadCell className='bg-green-100'>Joined Date</Table.HeadCell>
+            <Table.HeadCell className='bg-green-100'>Uniform Size</Table.HeadCell>
+            <Table.HeadCell className='bg-green-100'>Emergency Contact</Table.HeadCell>
+            <Table.HeadCell className='bg-green-100'></Table.HeadCell> {/* Empty cell for actions */}
           </Table.Head>
           <Table.Body>
             {employees
@@ -148,18 +148,18 @@ const ViewAllEmployees = () => {
               })
               .map(employee => (
                 <Table.Row key={employee.id}>
-                  <Table.Cell className='text-black dark:text-slate-200'>{employee.username}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200'>{`${employee.first_name} ${employee.last_name}`}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200'>{employee.position}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200'>{employee.contact_number}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200'>{employee.email}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200'>{employee.address}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200'>{employee.gender}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200'>{employee.joined_date}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200'>{employee.uniform_size}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200'>{employee.emergency_contact}</Table.Cell>
-                  <Table.Cell>
-                    <button onClick={() => handleDelete(employee.id, employee.username)} className="font-medium text-red-800 dark:text-red-700 hover:scale-110">Remove</button>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{employee.username}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{`${employee.first_name} ${employee.last_name}`}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{employee.position}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{employee.contact_number}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{employee.email}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{employee.address}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{employee.gender}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{employee.joined_date}</Table.Cell>
+                  <Table.Cell className='ttext-black dark:text-slate-200 dark:bg-gray-600'>{employee.uniform_size}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{employee.emergency_contact}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>
+                    <button onClick={() => handleDelete(employee.id, employee.username)} className="font-medium text-red-800 dark:text-red-400 hover:scale-110">Remove</button>
                   </Table.Cell>
                 </Table.Row>
               ))}
