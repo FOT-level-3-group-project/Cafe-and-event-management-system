@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     @Modifying
-    @Query("DELETE FROM OrderItem oi WHERE oi.orderItemId = ?1")
+    @Query("DELETE FROM OrderItem oi WHERE oi.orderItemId = ?1")   // This method is a custom query that deletes an OrderItem based on its orderItemId
     void deleteByOrderItemId(Long orderItemId);
 }

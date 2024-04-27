@@ -33,52 +33,52 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<OrderDTO> getAllOrders() {                                                       //method retrieves a list of all orders.
+    public List<OrderDTO> getAllOrders() {  //method retrieves a list of all orders.
         return orderService.getAllOrders();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderDTO> getOrderById(@PathVariable("id") Long orderId) {            // method retrieves an order based on its ID.
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable("id") Long orderId) { // method retrieves an order based on its ID.
         return ResponseEntity.ok(orderService.getOrderById(orderId));
     }
 
     @GetMapping("/customer/{customerId}")
-    public ResponseEntity<List<OrderDTO>> getOrdersByCustomerId(@PathVariable("customerId") Long customerId) {        //method retrieves orders associated with a specific customer.
+    public ResponseEntity<List<OrderDTO>> getOrdersByCustomerId(@PathVariable("customerId") Long customerId) {//method retrieves orders associated with a specific customer.
         return ResponseEntity.ok(orderService.getOrdersByCustomerId(customerId));
     }
 
     @GetMapping("/employee/{employeeId}")
-    public ResponseEntity<List<OrderDTO>> getOrdersByEmployeeId(@PathVariable("employeeId") Long employeeId) {        //method retrieves orders associated with a specific employee.
+    public ResponseEntity<List<OrderDTO>> getOrdersByEmployeeId(@PathVariable("employeeId") Long employeeId) {//method retrieves orders associated with a specific employee.
         return ResponseEntity.ok(orderService.getOrdersByEmployeeId(employeeId));
     }
 
     @GetMapping("/status/{orderStatus}")
-    public ResponseEntity<List<OrderDTO>> getOrdersByOrderStatus(@PathVariable("orderStatus") String orderStatus) {    //method retrieves orders based on a specified order status
+    public ResponseEntity<List<OrderDTO>> getOrdersByOrderStatus(@PathVariable("orderStatus") String orderStatus) {//method retrieves orders based on a specified order status
         return ResponseEntity.ok(orderService.getOrdersByOrderStatus(orderStatus));
     }
 
     @GetMapping("/payment-status/{paymentStatus}")
-    public ResponseEntity<List<OrderDTO>> getOrdersByPaymentStatus(@PathVariable("paymentStatus") boolean paymentStatus) {  //method retrieves orders based on their payment status.
+    public ResponseEntity<List<OrderDTO>> getOrdersByPaymentStatus(@PathVariable("paymentStatus") boolean paymentStatus) {//method retrieves orders based on their payment status.
         return ResponseEntity.ok(orderService.getOrdersByPaymentStatus(paymentStatus));
     }
 
     @PostMapping
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {                                           //method handles the creation of a new order.
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) { //method handles the creation of a new order.
         return new ResponseEntity<>(orderService.createOrder(orderDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OrderDTO> updateOrder(@PathVariable("id") Long orderId, @RequestBody OrderDTO orderDTO) {         //
+    public ResponseEntity<OrderDTO> updateOrder(@PathVariable("id") Long orderId, @RequestBody OrderDTO orderDTO) { //method updates an existing order
         return ResponseEntity.ok(orderService.updateOrder(orderId, orderDTO));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")//method removes an order based on its ID
     public ResponseEntity<Void> deleteOrder(@PathVariable("id") Long orderId) {
         orderService.deleteOrder(orderId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/items/{orderItemId}")
+    @DeleteMapping("/items/{orderItemId}") //method deletes an order item based on its ID.
     public ResponseEntity<Void> deleteOrderItem(@PathVariable("orderItemId") Long orderItemId) {
         orderService.deleteOrderItem(orderItemId);
         return ResponseEntity.noContent().build();

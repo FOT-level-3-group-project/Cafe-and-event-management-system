@@ -25,6 +25,6 @@ public class OrderItem {
     @Column(nullable = false)
     private int quantity;
 
-    public OrderItem() {
+    public OrderItem() {  //defined a default constructor with no arguments. This allows you to create an empty OrderItem object.
     }
 }
