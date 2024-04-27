@@ -210,13 +210,13 @@ const ViewAllEvents = () => {
     }
     
     return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 ">
       <div className="container mx-auto px-4 py-8 flex justify-between items-center">
         <h1 className="text-3xl font-bold mb-4">Manage Events</h1>
 
         <div className="flex items-center">
           {/* Search bar */}
-          <div className='flex-grow px-4 py-2 border rounded-full dark:bg-gray-600 '>
+          <div className='flex-grow px-3 border rounded-full dark:bg-gray-600 '>
             <input 
               type="search" 
               placeholder="Search Event..." 
@@ -228,24 +228,25 @@ const ViewAllEvents = () => {
           </div>
 
           {/* Add Event button */}
-          <Link to="/manager?tab=add-event" className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 ml-2 rounded px-4">Add Event</Link>
+          <Link to="/manager?tab=add-event" className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 ml-2 rounded px-4">Add Event</Link>
         </div>
       </div>
 
-      <div className="relative overflow-x-auto bg-gray-200 shadow-lg">
-        <Table hoverable className='bg-gray-200 dark:bg-gray-700 dark:text-white'>
+      <div className="relative overflow-x-auto drop-shadow-lg bg-slate-50">
+        {/* <Table hoverable className='bg-gray-200 dark:bg-gray-700 dark:text-white overflow-x-auto mt-1' > */}
+        <Table className='drop-shadow-lg' hoverable >
           <Table.Head>
-            <Table.HeadCell  className='dark:bg-gray-800'>ID</Table.HeadCell>
-            <Table.HeadCell  className='dark:bg-gray-800'>Name</Table.HeadCell>
-            <Table.HeadCell  className='dark:bg-gray-800'>Date</Table.HeadCell>
-            <Table.HeadCell  className='dark:bg-gray-800'>Starting Time</Table.HeadCell>
-            <Table.HeadCell  className='dark:bg-gray-800'>Duration (h)</Table.HeadCell>
-            <Table.HeadCell  className='dark:bg-gray-800'>Budget (Rs.)</Table.HeadCell>
-            <Table.HeadCell  className='dark:bg-gray-800'>Ticket Price (Rs.)</Table.HeadCell>
-            <Table.HeadCell  className='dark:bg-gray-800'>Quantity</Table.HeadCell>
-            <Table.HeadCell  className='dark:bg-gray-800'>Entertainer</Table.HeadCell>
-            <Table.HeadCell  className='dark:bg-gray-800'>Description</Table.HeadCell>
-            <Table.HeadCell  className='dark:bg-gray-800 text-center' colSpan={3} >Actions</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>ID</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>Name</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>Date</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>Starting Time</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>Duration (h)</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>Budget (Rs.)</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>Ticket Price (Rs.)</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>Quantity</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>Entertainer</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>Description</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100 text-center' colSpan={3} >Actions</Table.HeadCell>
           </Table.Head>
           <Table.Body>
             {events
@@ -262,24 +263,24 @@ const ViewAllEvents = () => {
               })
               .map((event, index) => (
                 <Table.Row key={event.eventID} >
-                  <Table.Cell className='text-black dark:text-slate-200'>{event.eventID}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200'>{event.eventName}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200'>{event.eventDate}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200'>{event.startTime}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200'>{event.duration}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200'>{event.budget}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200'>{event.ticketPrice}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200'>{event.ticketQuantity}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200'>{event.entertainer}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200'>{event.description}</Table.Cell>
-                  <Table.Cell>
-                    <button onClick={() => handleUpdate(event.eventID)} className="font-medium text-blue-600 dark:text-blue-500 hover:scale-110">Update</button>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.eventID}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.eventName}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.eventDate}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.startTime}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600' >{event.duration}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600' >{event.budget}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.ticketPrice}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.ticketQuantity}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.entertainer}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.description}</Table.Cell>
+                  <Table.Cell className='dark:bg-gray-600'>
+                    <button onClick={() => handleUpdate(event.eventID)} className="font-medium text-blue-600 dark:text-blue-400 hover:scale-110 "  >Update</button>
                   </Table.Cell>
-                  <Table.Cell> 
-                    <button onClick={() => handleDelete(event.eventID)} className="font-medium text-red-800 dark:text-red-500 hover:scale-110">Remove</button>
+                  <Table.Cell className='dark:bg-gray-600'> 
+                    <button onClick={() => handleDelete(event.eventID)} className="font-medium text-red-800 dark:text-red-400 hover:scale-110">Remove</button>
                   </Table.Cell>
-                  <Table.Cell> 
-                    <button onClick={() => handleShare(event.eventID)} className="font-medium text-green-800 dark:text-green-500 hover:scale-110">Share</button>
+                  <Table.Cell className='dark:bg-gray-600'> 
+                    <button onClick={() => handleShare(event.eventID)} className="font-medium text-green-800 dark:text-green-400 hover:scale-110">Share</button>
                   </Table.Cell>
                 </Table.Row>
               ))}

@@ -222,14 +222,14 @@ const handleTicketPriceChange = (price) => {
                             <Label value='Ticket Price (Rs.)' />
                             <div className="flex justify-between">
                              <TextInput type='text' placeholder='Ticket Price' value={formData.ticketPrice} onChange={handleChange} name="ticketPrice" className='mt-2 h-10 w-1/2'/>
-                           <button type="button" className="bg-green-600 hover:bg-green-700 text-white  rounded w-1/2 mt-2 h-10 " onClick={handleShowTicketPriceModal}> Calculate Ticket Price </button>
+                           <button type="button" className="bg-green-500 hover:bg-green-600 text-white font-semibold rounded w-1/2 mt-2 h-10 " onClick={handleShowTicketPriceModal}> Calculate Ticket Price </button>
                             <GenerateTicketPriceModel show={showTicketPriceModal} onClose={handleCloseTicketPriceModal} onTicketPriceChange={handleTicketPriceChange}/>        
                           </div>
                         </div>
                         
                     <div className="flex justify-between">
                         {/* <button type="reset" className="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 mr-2 rounded w-full md:w-1/2 " id="clearbtn" onClick={handleClear}> Clear </button> */}
-                        <button type="submit" className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 ml-2 rounded w-full "> Add Event </button>
+                        <button type="submit" className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 ml-2 rounded w-full "> Add Event </button>
                     </div>
                     {errorMessage && (
                     <Alert className='mt-5' color='failure'>

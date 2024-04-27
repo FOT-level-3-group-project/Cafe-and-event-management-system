@@ -52,7 +52,7 @@ const GenerateTicketPriceModal = ({ show, onClose, onTicketPriceChange }) => {
   return (
     <Modal show={show} size="md" onClose={onClose}>
       <Modal.Header>
-        <h3 className="text-xl font-medium text-gray-900 dark:text-white">Calculate Ticket Price</h3>
+        <h3 className="text-xl font-medium text-gray-900 ">Calculate Ticket Price</h3>
       </Modal.Header>
       <Modal.Body>
         <div className="space-y-6">
@@ -154,12 +154,12 @@ const GenerateTicketPriceModal = ({ show, onClose, onTicketPriceChange }) => {
               }}
             />
           </div>
-          <Button onClick={calculateTicketPrice} className='bg-green-700 hover:bg-green-900'>Calculate Ticket Price</Button>
+          <Button onClick={calculateTicketPrice} className='bg-green-500 hover:bg-green-600' >Calculate </Button>
           {ticketPrice && (
             <div className="text-lg font-bold text-green-900">
               Price Per Ticket: Rs. {ticketPrice}
               {/* Button to set ticket price in parent component */}
-            <Button onClick={handleSetTicketPrice} className='mt-4 bg-green-700'>Set Ticket Price</Button>
+            <Button onClick={handleSetTicketPrice} className='mt-4 bg-green-500 hover:bg-green-600'>Set Price </Button>
             </div>
           )}
         </div>
