@@ -2,10 +2,21 @@
 import * as React from 'react';
 import  { useState,useEffect, } from "react";
 import axios from 'axios';
+import OrderPDF from './OrderPDF';
 
 
 export const ViewOrder = () => {
+    const [orderPDFVisible, setOrderPDFVisible] = useState(false);
 
+    const handleGeneratePDF = () => {
+        setOrderPDFVisible(true);
+    };
+
+    const [showPDF, setShowPDF] = useState(false); // State to control the visibility of the PDF component
+
+    const handleTogglePDF = () => {
+        setShowPDF(!showPDF); // Toggle the visibility of the PDF component
+    };
 
         const [OrderResponse, setOrderResponse] = useState({});
 
@@ -48,6 +59,7 @@ export const ViewOrder = () => {
                     }else {
                         window.location.href = "/cashier?tab=orders&error=order-not-found";
                     }
+                    console.log(response.data);
                 })
                 .catch(error => {
                     window.location.href = "/cashier?tab=orders&error=order-not-found";
@@ -257,13 +269,26 @@ export const ViewOrder = () => {
                                     
                                 </div>
 
+                                {showPDF &&
+                                    <div className='flex items-center justify-end w-full overflow-hidden px-1 mb-2'>
+                                        <OrderPDF order={OrderResponse} />
+                                    </div>
+                                }
+
                                 <div>
                                     <div className='flex items-center justify-between w-full overflow-hidden'>
                                         <a href="/cashier?tab=orders" className="flex-grow flex items-center justify-center px-3 py-2 bg-cyan-500 text-white font-semibold rounded hover:bg-cyan-600 mx-1">
                                             <i className="ri-arrow-left-s-line"></i>
                                             <span className="ml-1">Back</span>
                                         </a>
-                                        {OrderResponse.orderStatus === "Ready" && (
+
+                                        {!showPDF &&
+                                            <button onClick={handleTogglePDF} className='flex-grow flex items-center justify-center px-3 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 mx-1'>
+                                                {showPDF ? '' : 'Generate PDF'} 
+                                            </button>
+                                        }
+                    
+                                        {OrderResponse.orderStatus === "Ready"   && (
                                             <a href={`/cashier?tab=bill&order=${OrderResponse.orderId}`} className="flex-grow flex items-center justify-center px-3 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600 mx-1">
                                                 <span className="mr-1">Process Order</span>
                                                 <i className="ri-arrow-right-s-line"></i>
