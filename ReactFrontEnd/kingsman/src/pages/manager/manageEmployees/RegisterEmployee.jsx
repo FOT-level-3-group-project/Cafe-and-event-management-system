@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Label, TextInput } from 'flowbite-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import AddPositionModal from './AddPositionModal';
 
 export default function RegisterEmployee() {
     const [formData, setFormData] = useState({
@@ -23,6 +24,13 @@ export default function RegisterEmployee() {
     const [emailErrorMessage, setEmailErrorMessage] = useState('');
     const [contactErrorMessage, setContactErrorMessage] = useState('');
     const [EmergencyContactErrorMessage, setEmergencyContactErrorMessage] = useState('');   
+    const [showAddPositionModal, setShowAddPositionModal] = useState(false);
+     const [positions, setPositions] = useState(() => {
+        // Retrieve positions from local storage or use default positions
+        const savedPositions = localStorage.getItem('positions');
+        return savedPositions ? JSON.parse(savedPositions) : ['Cashier', 'Chef', 'Waiter', 'Kitchen Helper'];
+    });
+
     const navigate = useNavigate();
 
     const generatePassword = () => {
@@ -96,6 +104,12 @@ export default function RegisterEmployee() {
             setEmailErrorMessage('');
         }
         }
+
+         if (value === 'Add New') {
+            setShowAddPositionModal(true);
+        } else {
+            setShowAddPositionModal(false);
+        }
             // For other input fields
             setFormData({
                 ...formData,
@@ -107,6 +121,12 @@ export default function RegisterEmployee() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         handleResetForm();
+
+        const handleAddPosition = (newPosition) => {
+        const updatedPositions = [...positions, newPosition];
+        setPositions(updatedPositions);
+        localStorage.setItem('positions', JSON.stringify(updatedPositions)); // Save positions to local storage
+    };
 
         try {
             const response = await axios.post('http://localhost:8080/register', formData);
@@ -136,6 +156,20 @@ export default function RegisterEmployee() {
         });
     }, []);
 
+    const handleAddPosition = (newPosition) => {
+        const updatedPositions = [...positions, newPosition];
+        setPositions(updatedPositions);
+        localStorage.setItem('positions', JSON.stringify(updatedPositions)); // Save positions to local storage
+    };
+
+    const handleShowAddPositionModal = () => {
+            setShowAddPositionModal(true);
+    };
+
+    const handleCloseAddPositionModal = () => {
+        setShowAddPositionModal(false);
+    };
+
     return (
         <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row w-full '>
             <div className='flex-1 flex justify-center'>
@@ -154,16 +188,20 @@ export default function RegisterEmployee() {
                             <Label value='Username*' />
                             <TextInput type='text' placeholder='Username' id='Username' value={formData.username} onChange={handleChange} name="username" required/>
                         </div>
+                        
                         <div>
                             <Label value='Position*' /> <br/>
-                            {/* <select id='Position' value={formData.position} onChange={handleChange} className='w-full px-3 py-2 border rounded-md bg-gray-700 text-gray-400'> */}
-                            <select id='Position' value={formData.position} onChange={handleChange} name='position' className='w-full px-3 py-2 border rounded-md dark:bg-gray-700' required>
-                                <option value=''>Select Position</option>
-                                <option value='Cashier'>Cashier</option>
-                                <option value='Chef'>Chef</option>
-                                <option value='Waiter'>Waiter</option>
+                            <select id='Position' value={formData.position} onChange={handleChange} name='position' className='w-full' required>
+                                <option value='' >Select Position</option>
+                                {positions.map((position, index) => (
+                                    <option key={index} value={position}>
+                                        {position}
+                                    </option>
+                                ))}
+                                <option value='Add New' >Add New Position</option>
                             </select>
                         </div>
+
                         <div>
                             <Label value='Email*' />
                             <TextInput type='text' placeholder='Email' id='Email' value={formData.email} onChange={handleChange} name="email"  required/>
@@ -203,12 +241,12 @@ export default function RegisterEmployee() {
                         <div>
                             <Label value='Uniform Size' /> <br/>
                             <select id='UniformSize' value={formData.uniform_size} name='uniform_size' onChange={handleChange} className='w-full px-3 py-2 border rounded-md dark:bg-gray-700' >
-                                <option value=''>Select</option>
-                                <option value='Extra Small'>Extra Small</option>
-                                <option value='Small'>Small</option>
-                                <option value='Medium'>Medium</option>
-                                <option value='Large'>Large</option>
-                                <option value='Extra Large'>Extra Large</option>
+                                <option value=''>Select Size</option>
+                                <option value='Extra Small'> XS </option>
+                                <option value='Small'> S </option>
+                                <option value='Medium'> M </option>
+                                <option value='Large'> L </option>
+                                <option value='Extra Large'> XL </option>
                             </select>
                         </div>
                         <div>
@@ -233,6 +271,16 @@ export default function RegisterEmployee() {
                         {errorMessage}
                     </Alert>
                     )}
+
+                    {/* Render AddPositionModal */}
+                    {showAddPositionModal && (
+                        <AddPositionModal
+                            isOpen={handleShowAddPositionModal}
+                            onClose={handleCloseAddPositionModal}
+                            onAddPosition={handleAddPosition}
+                        />
+                    )}
+
                 </form>
             </div>
         </div>
