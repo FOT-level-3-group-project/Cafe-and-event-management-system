@@ -25,8 +25,7 @@ export default function FoodMenu() {
             </div>
             <div className='flex-1 mt-4 ml-5'>
                 <ChefFoodNavBar/>
-                {/* all food */}
-                {tab === 'allFood' && <AllFood/>}
+                
                 {/* main dish */}
                 {tab === 'mainDish' && <MainDish/>}
                 {/* desert */}

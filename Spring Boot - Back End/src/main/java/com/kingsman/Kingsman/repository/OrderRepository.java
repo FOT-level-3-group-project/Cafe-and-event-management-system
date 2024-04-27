@@ -44,7 +44,20 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             + "    DATE(o.createdDate) = :createdDate")
     List<OrderEmployeeFoodDTO> getOrderEmployeeFoodByCreatedDate(@Param("createdDate") LocalDate createdDate);
 
-
+    @Query("SELECT new com.kingsman.Kingsman.dto.OrderEmployeeFoodDTO(o.orderId , o.tableNumber, f.foodName, e.first_name, o.orderStatus,c.cusName,o.specialNote ) " +
+            " FROM "
+            + "    Order o "
+            + "JOIN "
+            + "    OrderItem oi ON o.orderId = oi.order.orderId "
+            + "JOIN "
+            + "    FoodItem f ON oi.foodItem.foodId = f.foodId "
+            + "JOIN "
+            + "    Employee e ON o.employee.id = e.id "
+            + "LEFT JOIN "
+            + "    Customer c ON o.customerId = c.cusId "
+            + "WHERE "
+            + "    (o.orderStatus) = :orderStatus")
+    List<OrderEmployeeFoodDTO> getOrderEmployeeFoodByOrderStatus(@Param("orderStatus") String orderStatus);
 
 
 

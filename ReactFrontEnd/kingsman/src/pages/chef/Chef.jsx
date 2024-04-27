@@ -9,6 +9,8 @@ import FinishedOrders from './orders/FinishedOrders';
 import CancelOrders from './orders/CancelOrders';
 import AllOrders from './orders/AllOrders';
 import FoodMenu from './foodManagement/FoodMenu';
+import AllFood from './foodManagement/AllFood';
+import PreparingOrders from './orders/PreparingOrders';
 
 
 export default function Chef() {
@@ -43,7 +45,11 @@ export default function Chef() {
                 {/* All Orders */}
                 {tab === 'allOrders' && <AllOrders/>}
                 {/* Food Menu */}
-                {tab === 'foodMenu' && <FoodMenu/>}
+                {/* {tab === 'foodMenu' && <FoodMenu/>} */}
+                {/* all food */}
+                {tab === 'allFood' && <AllFood/>}
+                {/* preparing orders */}
+                {tab === 'preparingOrders' && <PreparingOrders/>}
 
                 
 

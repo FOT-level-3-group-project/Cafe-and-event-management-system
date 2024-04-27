@@ -2,6 +2,8 @@ import React from 'react'
 import { Button, Navbar, Accordion, Label, Badge } from "flowbite-react";
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import { or } from 'firebase/firestore';
 
 export default function AllOrders() {
     const [orders, setOrders] = useState([]);
@@ -30,14 +32,17 @@ export default function AllOrders() {
                 }
             });
             setOrders(response.data);
+            console.log(response.data);
         } catch (error) {
             console.error('Error fetching orders:', error);
         }
     };
 
-    const updateStatusFinish = async (orderId) => {
+    
+
+    const updateStatusProcessing = async (orderId) => {
         try {
-            const response = await axios.put(`http://localhost:8080/api/orders/status-update/${orderId}/Finished`);
+            const response = await axios.put(`http://localhost:8080/api/orders/status-update/${orderId}/Processing`);
             console.log(response.data);
         } catch (error) {
             console.error('Error updating order status:', error);
@@ -55,78 +60,118 @@ export default function AllOrders() {
         fetchOrders();
     }
 
+    const updateStatusReady = async (orderID) => {
+        try {
+            const response = await axios.put(`http://localhost:8080/api/orders/status-update/${orderId}/Ready`);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error updating order status:', error);
+        }
+        fetchOrders();
+
+    }
+
+
+
+
     return (
         // Top buttons 
-        <div className='w-screen h-screen'>
-            <div className='flex flex-wrap gap-2 mt-6 ml-5 mb-5'>
+        <div className='w-full h-screen bg-gray-100'>
+            <div className='m-5 rounded-xl shadow-md'>
                 <Navbar fluid rounded>
                     <Navbar.Collapse>
-                        <Navbar.Link href="/chef?tab=allOrders" active>
-                            <Button color="blue" pill >
-                                All : 15
+                        <Link to="/chef?tab=allOrders" >
+                            <Button color="success" className=' bg-green-500' pill active>
+                                All : {orders.length}
                             </Button>
-                        </Navbar.Link>
-                        <Navbar.Link href="/chef?tab=availableOrders" active>
+                        </Link>
+                        <Link to="/chef?tab=availableOrders" >
                             <Button color="warning" pill outline >
-                                Available Orders : 5
+                                Available Orders : {orders.filter(order => order.orderStatus === 'Pending').length}
 
                             </Button>
-                        </Navbar.Link>
-                        <Navbar.Link href="/chef?tab=finishedOrders">
+                        </Link>
+                        <Link to="/chef?tab=preparingOrders" >
+                            <Button color="purple" pill outline >
+                                Preparing Orders : {orders.filter(order => order.orderStatus === 'Processing').length}
+                            </Button>
+                        </Link>
+                        <Link to="/chef?tab=finishedOrders">
                             <Button color="success" pill outline >
-                                Finished Orders : 5
+                                Finished Orders : {orders.filter(order => order.orderStatus === 'Ready').length}
                             </Button>
-                        </Navbar.Link>
-                        <Navbar.Link href="/chef?tab=canceledOrders">
+                        </Link>
+                        <Link to="/chef?tab=canceledOrders">
                             <Button color="failure" pill outline>
-                                Canceled Orders : 5
+                                Canceled Orders : {orders.filter(order => order.orderStatus === 'Canceled').length}
                             </Button>
-                        </Navbar.Link>
+                        </Link>
                     </Navbar.Collapse>
                 </Navbar>
             </div>
-            <div className='ml-3 mr-3 w-auto'>
+
+            {/* All Orders */}
+            <Label className='text-2xl font-bold m-5'>All Orders</Label>
+            <div className='ml-5 mr-5 w-auto bg-white shadow-md rounded-2xl mt-5'>
                 <Accordion collapseAll>
                     {orders.map(order => (
                         <Accordion.Panel key={order.orderId}>
                             <Accordion.Title>
-                                <div className=" flex  justify-between ">
-                                    <div className='space-x-16 w-full'>
-                                        <Label > Order Id #{order.orderId}</Label>
-                                        <Label >Table Number: {order.tableNumber}</Label>
-                                        <Label >Item : {order.foodName}</Label>
-                                        <Label >Waiter: {order.firstName}</Label>
-
-                                    </div>
-                                    <div className='ml-80 '>
+                                <div className=" flex  justify-between w-full ">
+                                    <div className={`mr-10 ${order.orderStatus === "Canceled" ? ('mr-8') : order.orderStatus === "Processing" ? ('mr-8') : ('mr-10')}`} >
                                         <Badge size='l' color={order.orderStatus === 'Canceled' ? "failure" :
-                                            order.orderStatus === 'Finished' ? "success" : "warning"}>
+                                            order.orderStatus === 'Ready' ? "success" : order.orderStatus === 'Processing' ? "purple" : "warning"}>
+
                                             {order.orderStatus === 'Canceled' ? "Canceled" :
-                                                order.orderStatus === 'Finished' ? "Finished" : "Pending"}
+                                                order.orderStatus === 'Ready' ? "Finished" :
+                                                    order.orderStatus === 'Processing' ? "Preparing" : "Pending"}
                                         </Badge>
                                     </div>
+                                    <div className='space-x-16 '>
+                                        <Label >Order Id #{order.orderId}</Label>
+                                        <Label >Table Number: {order.tableNumber}</Label>
+                                        <Label >Waiter: {order.firstName}</Label>
+                                        <Label >Item Name : {order.foodName}</Label>
+
+
+                                    </div>
+
                                 </div>
 
                             </Accordion.Title>
                             <Accordion.Content>
-                                <div className='flex justify-between'>
-                                    <Label className="mb-4"> Customer Name : {order.cusName}   </Label>
-                                    <Label className="ml-5"> Special Note: {order.specialNote} </Label>
+                                <div className='flex flex-row  justify-between'>
+                                    <div className=' basis-2/5'>
+                                        <Label className="mb-4"> Customer Name : {order.cusName}   </Label>
+                                    </div>
+                                    <div className=' basis-2/5'>
+                                        <Label className="ml-5"> Special Note: {order.specialNote} </Label>
+                                    </div>
+
+
 
                                     {order.orderStatus === 'Canceled' ? (
-                                        <Badge size='l' color="failure">Canceled</Badge>
-                                    ) : order.orderStatus === 'Finished' ? (
-                                        <Badge size='l' color="success">Finished</Badge>
-                                    ) : (
-                                        <div className=''>
-                                            <Button color="success" className='m-4' onClick={() => updateStatusFinish(order.orderId)}>
-                                                Finish
-                                            </Button>
-                                            <Button color="failure" className='m-4' onClick={() => updateStatusCancel(order.orderId)}>
-                                                Cancel
-                                            </Button>
-                                        </div>
-                                    )}
+                                        <Badge size='l' color="failure" className=''>Canceled</Badge>
+                                    ) : order.orderStatus === 'Ready' ? (
+                                        <Badge size='l' color="success" className=''>Finished</Badge>
+                                    ) : order.orderStatus === 'Processing' ? (
+                                        <Button color="success" className='m-4  bg-green-500' onClick={() => updateStatusReady(order.orderId)}>
+                                            Finish
+                                        </Button>
+
+                                    ) :
+                                        (
+
+                                            <>
+                                                <Button color="purple" className='m-4 bg-purple-500' onClick={() => updateStatusProcessing(order.orderId)}>
+                                                    Preparing
+                                                </Button>
+                                                <Button color="failure" className='m-4  bg-red-600' onClick={() => updateStatusCancel(order.orderId)}>
+                                                    Cancel
+                                                </Button>
+                                            </>
+
+                                        )}
 
                                 </div>
 

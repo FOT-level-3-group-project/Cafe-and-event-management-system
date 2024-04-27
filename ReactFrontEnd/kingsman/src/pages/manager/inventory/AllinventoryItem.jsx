@@ -127,22 +127,23 @@ export default function AllinventoryItem() {
   return (
     <Fragment>
       <section>
-        <div className='h-screen w-full flex grid-rows-2 md:grid-cols-2 bg-gray-100 dark:bg-slate-600'>
+        <div className='h-screen w-full flex grid-rows-2 md:grid-cols-2 bg-gray-200 dark:bg-slate-600'>
 
           <div className='h-full w-auto md:h-screen p-4 border-r-2 border-l-2'>
-            <div className='flex justify-between border-b-2'>
+            <div className=' bg-white rounded-lg dark:bg-gray-800 shadow-md'>
+              <div className=' p-3 flex justify-between '>
               {/* Left column */}
               <h2 className="text-2xl">Available Inventory Item</h2>
 
               {/* Add inventory button */}
-              <Button color="success" className=' bg-green-500' onClick={openAddInventoryPopup}>
+              <Button color="success"  className=' bg-green-500' onClick={openAddInventoryPopup}>
                 Add New Item +
               </Button>
+              </div>
             </div>
-            <br></br>
 
             {/* Pagination */}
-            <div className="flex mt-0 justify-end">
+            <div className="flex justify-end mt-3">
               <Pagination
                 currentPage={currentPage}
                 totalPages={Math.ceil(inventoryData.length / itemsPerPage)}
@@ -155,13 +156,13 @@ export default function AllinventoryItem() {
               <Table className=''>
                 <Table.Head className=''> 
                   <Table.HeadCell className='text-center bg-green-100'>#</Table.HeadCell>
-                  <Table.HeadCell className='text-center bg-green-100'>Item ID</Table.HeadCell>
-                  <Table.HeadCell className='text-center bg-green-100'>Item name</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100'> ID</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100'>Name</Table.HeadCell>
                   <Table.HeadCell className='text-center bg-green-100'>QTY.</Table.HeadCell>
                   <Table.HeadCell className='text-center bg-green-100'>Unit</Table.HeadCell>
                   <Table.HeadCell className='text-center bg-green-100'>Vendor Name</Table.HeadCell>
-                  <Table.HeadCell className='text-center bg-green-100'>Item Added Date</Table.HeadCell>
-                  <Table.HeadCell className='text-center bg-green-100'>Item Modified Date</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100'>Added Date</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100'>Modified Date</Table.HeadCell>
                   <Table.HeadCell className='text-center bg-green-100'>Action</Table.HeadCell>
                 </Table.Head>
                 <Table.Body className="divide-y">
