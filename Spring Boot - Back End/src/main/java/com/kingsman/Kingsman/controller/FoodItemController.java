@@ -25,19 +25,19 @@ public class FoodItemController {
     @Autowired
     private FileStorageService fileStorageService;
 
-    @PostMapping("/add")                                                                           //Adding a Food Item
+    @PostMapping("/add")//Adding a Food Item
     public ResponseEntity<FoodItem> addFoodItem(@RequestBody FoodItem foodItem) {                    //FoodItem MODel created fooditem object put front end data to this object
         FoodItem savedFoodItem = foodItemService.saveFoodItem(foodItem);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedFoodItem);                        // Http response status
     }
 
-    @GetMapping("/categories")                                                                      //method retrieves a list of food categories.
+    @GetMapping("/categories") //method retrieves a list of food categories.
     public ResponseEntity<List<String>> getAllCategories() {                                          // created list
         List<String> categories = foodItemService.getAllCategories();
         return ResponseEntity.ok(categories);
     }
 
-    @GetMapping("/{category}")                                                                     //Getting Items by Category, retrieves food items based on a specified category.
+    @GetMapping("/{category}") //Getting Items by Category, retrieves food items based on a specified category.
     public ResponseEntity<List<FoodItem>> getItemsByCategory(@PathVariable String category) {        // get path example related category
         List<FoodItem> items = foodItemService.getItemsByCategory(category);
         return ResponseEntity.ok(items);
@@ -50,7 +50,7 @@ public class FoodItemController {
         return ResponseEntity.ok(items);
     }
 
-    @DeleteMapping("/{id}")                                                                       //method removes a food item based on its ID.
+    @DeleteMapping("/{id}") //method removes a food item based on its ID.
     public ResponseEntity<Void> deleteFoodItem(@PathVariable Long id) {
         foodItemService.deleteFoodItem(id);
         return ResponseEntity.noContent().build();
