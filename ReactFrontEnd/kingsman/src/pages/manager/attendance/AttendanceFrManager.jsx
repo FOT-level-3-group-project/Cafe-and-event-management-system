@@ -315,150 +315,44 @@ function AttendanceFrManager() {
               <Label htmlFor="empId" value="Employee ID" />
               <TextInput id="empId" value={editData.empId} disabled />
             </div>
-            {/* Buttons for predefined time periods */}
-            <div className="flex gap-4 mr-3">
-              <Button color='success' size='s' className="px-4 py-2 bg-green-500 hover:bg-blue-800 text-white rounded-md" onClick={handleCurrentDateClick}>Today</Button>
-              <Button color='success' size='s' className="px-4 py-2 bg-green-500 hover:bg-blue-800 text-white rounded-md" onClick={handleThisMonthClick}>This Month</Button>
-              <Button color='success' size='s' className="px-4 py-2 bg-green-500 hover:bg-blue-800 text-white rounded-md" onClick={() => setShowModal(true)}>By Date Range</Button>
+            {/* Date field (disabled) */}
+            <div>
+              <Label htmlFor="date" value="Date" />
+              <TextInput id="date" value={editData.date} disabled />
+            </div>
+            {/* In Time field */}
+            <div>
+              <Label htmlFor="inTime" value="In Time" />
+              <TextInput
+                type="time"
+                id="inTime"
+                value={editData.inTime}
+                onChange={(e) => setEditData({ ...editData, inTime: e.target.value })}
+              />
+            </div>
+            {/* Out Time field */}
+            <div>
+              <Label htmlFor="outTime" value="Out Time" />
+              <TextInput
+                type="time"
+                id="outTime"
+                value={editData.outTime}
+                onChange={(e) => setEditData({ ...editData, outTime: e.target.value })}
+              />
+            </div>
+            <div className="w-full">
+              <Button onClick={() => handleSubmitEdit(editData)}>Submit</Button>
             </div>
           </div>
+        </Modal.Body>
+      </Modal>
 
-          {/* Attendance table */}
-          <div className=" bg-white rounded-lg h-full shadow-md">
-            <Table hoverable className="my-5 ">
-              <Table.Head>
-                <Table.HeadCell>#</Table.HeadCell>
-                <Table.HeadCell>EMP ID</Table.HeadCell>
-                <Table.HeadCell>EMP Name</Table.HeadCell>
-                <Table.HeadCell>Position</Table.HeadCell>
-                <Table.HeadCell>Date</Table.HeadCell>
-                <Table.HeadCell>In Time</Table.HeadCell>
-                <Table.HeadCell>Out Time</Table.HeadCell>
-                <Table.HeadCell>Action</Table.HeadCell>
-              </Table.Head>
-              <Table.Body className="divide-y">
-                {currentItems.map((employee, index) => (
-                  <Table.Row
-                    key={index}
-                    className="bg-slate-900 hover:bg-emerald-400"
-                  >
-                    <Table.Cell className="text-white">{indexOfFirstItem + index + 1}</Table.Cell>
-                    <Table.Cell className="text-white">{employee.empId}</Table.Cell>
-                    <Table.Cell className="text-white">{employee.empName}</Table.Cell>
-                    <Table.Cell className="text-white">{employee.position}</Table.Cell>
-                    <Table.Cell className="text-white">{employee.date}</Table.Cell>
-                    <Table.Cell className="text-white">{employee.inTime}</Table.Cell>
-                    <Table.Cell className="text-white">{employee.outTime}</Table.Cell>
-                    <Table.Cell className="flex">
-                      <Button
-                        style={{ backgroundColor: "blue", color: "white", outline: "none" }}
-                        onClick={() => handleEditClick(employee)}
-                      >
-                        <FaUserEdit className="w-4 h-4" />
-                      </Button>
-                      <Button className="ml-3"
-                        style={{ backgroundColor: "red", color: "white", outline: "none" }}
-                        onClick={() => handleDeleteClick(employee)} // Pass employee data to delete function
-                      >
-                        <FaTrash className="w-3 h-4" />
-                      </Button>
-                    </Table.Cell>
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table>
-            {/* Pagination */}
-            <div className="flex justify-center">
-              <Pagination currentPage={currentPage} totalPages={Math.ceil(attendance.length / itemsPerPage)} onPageChange={onPageChange} />
-            </div>
-          </div>
-
-          {/* Date Range Modal */}
-          <Modal show={showModal} size="md" popup onClose={() => setShowModal(false)} initialFocus={emailInputRef}>
-            <Modal.Header />
-            <Modal.Body>
-              <div className="space-y-6">
-                <h3 className="text-xl font-medium text-gray-900 dark:text-white">Custom Date Range</h3>
-                <div>
-                  <div className="mb-2 block">
-                    <Label htmlFor="fromDate" value="From Date" />
-                  </div>
-                  <TextInput
-                    id="fromDate"
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <div className="mb-2 block">
-                    <Label htmlFor="toDate" value="To Date" />
-                  </div>
-                  <TextInput
-                    id="toDate"
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="w-full">
-                  <Button onClick={handleSubmitDateRange}>Submit</Button>
-                </div>
-              </div>
-            </Modal.Body>
-          </Modal>
-
-          {/* Edit modal */}
-          <Modal show={showEditModal} size="md" onClose={handleCloseEditModal} popup>
-            <Modal.Header />
-            <Modal.Body>
-              <div className="space-y-6">
-                {/* EmpId field (disabled) */}
-                <div>
-                  <Label htmlFor="empId" value="Employee ID" />
-                  <TextInput id="empId" value={editData.empId} disabled />
-                </div>
-                {/* Date field (disabled) */}
-                <div>
-                  <Label htmlFor="date" value="Date" />
-                  <TextInput id="date" value={editData.date} disabled />
-                </div>
-                {/* In Time field */}
-                <div>
-                  <Label htmlFor="inTime" value="In Time" />
-                  <TextInput
-                    type="time"
-                    id="inTime"
-                    value={editData.inTime}
-                    onChange={(e) => setEditData({ ...editData, inTime: e.target.value })}
-                  />
-                </div>
-                {/* Out Time field */}
-                <div>
-                  <Label htmlFor="outTime" value="Out Time" />
-                  <TextInput
-                    type="time"
-                    id="outTime"
-                    value={editData.outTime}
-                    onChange={(e) => setEditData({ ...editData, outTime: e.target.value })}
-                  />
-                </div>
-                <div className="w-full">
-                  <Button onClick={() => handleSubmitEdit(editData)}>Submit</Button>
-                </div>
-              </div>
-            </Modal.Body>
-          </Modal>
-
-          {/* Confirmation modal for delete */}
-          <DeleteConfirmationModal
-            show={confirmDelete}
-            onClose={() => setConfirmDelete(false)}
-            onConfirm={handleConfirmDelete}
-          />
-        </div>
+      {/* Confirmation modal for delete */}
+      <DeleteConfirmationModal
+        show={confirmDelete}
+        onClose={() => setConfirmDelete(false)}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }

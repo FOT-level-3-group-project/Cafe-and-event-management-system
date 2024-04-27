@@ -4,14 +4,13 @@ import { useEffect, useState } from 'react';
 import { BiCoinStack } from "react-icons/bi";
 import { Sidebar } from "flowbite-react";
 import { HiArrowSmRight, HiUser } from "react-icons/hi";
-
 import { BsPersonFillCheck } from "react-icons/bs";
-
 import { logOutSuccess } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 import { BsFillPeopleFill } from "react-icons/bs";
 import { MdEvent } from "react-icons/md";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
+import { MdRestaurantMenu } from "react-icons/md";
 
 
 export default function ManagerSideBar() {
