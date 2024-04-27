@@ -147,4 +147,26 @@ public class Employee {
         this.profilePicture = profilePicture;
     }
 
+
+//    public byte[] getImage() {
+//        return image;
+//    }
+//
+//    public void setImage(byte[] image) {
+//        this.image = image;
+//    }
+
+  
+  
+
+
+
+
+    //absent Employees
+    public void setEmpId(String s) {
+    }
+
+    public void setEmpName(String s) {
+    }
+
 }

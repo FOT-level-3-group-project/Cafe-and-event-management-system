@@ -25,11 +25,11 @@ export default function ManagerSideBar() {
     const handleLogOut = async () => {
 
         try {
-          dispatch(logOutSuccess());
+            dispatch(logOutSuccess());
         } catch (error) {
-          console.log(error.message);
+            console.log(error.message);
         }
-      }
+    }
 
 
     return (
@@ -41,36 +41,40 @@ export default function ManagerSideBar() {
                             Inventory
                         </Sidebar.Item>
                     </Link>
-                    <Link to='/manager?tab=profile'>
-                        <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"Manager"} labelColor='dark' as='div'>
-                            Profile
+                    <Link to='/manager?tab=attendance'>
+                        <Sidebar.Item active={tab === 'attendance'} icon={HiUser} as='div'>
+                            Attendance
                         </Sidebar.Item>
                     </Link>
-                    {/* <Link to='/manager?tab=new-employee'>
-                        <Sidebar.Item active={tab === 'new-employee'} icon={HiUser} as='div'>
-                            New Employee
-                        </Sidebar.Item>
-                    </Link> */}
                     <Link to='/manager?tab=view-all-employees'>
                         <Sidebar.Item active={tab === 'view-all-employees'} icon={HiUser} as='div'>
                             Employees
                         </Sidebar.Item>
                     </Link>
-                    {/* <Link to='/manager?tab=add-event'>
-                        <Sidebar.Item active={tab === 'add-event'} icon={HiUser} as='div'>
-                            Add Event
-                        </Sidebar.Item>
-                    </Link> */}
                     <Link to='/manager?tab=view-all-events'>
                         <Sidebar.Item active={tab === 'view-all-events'} icon={HiUser} as='div'>
-                           Events
+                            Events
                         </Sidebar.Item>
                     </Link>
+
+                    <Link to='/manager?tab=profile'>
+                        <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"Manager"} labelColor='dark' as='div'>
+                            Profile
+                        </Sidebar.Item>
+                    </Link>
+
                     <Link to='/manager?tab=manage-orders'>
                         <Sidebar.Item active={tab === 'manage-orders'} icon={MdRestaurantMenu} as='div'>
                            Manage Orders
                         </Sidebar.Item>
                     </Link>
+
+                    {/* <Link to='/manager?tab=monthly-income'>
+                        <Sidebar.Item active={tab === 'monthly-income'} icon={HiUser} as='div'>
+                            Monthly Income
+                        </Sidebar.Item>
+                    </Link> */}
+
                     <Sidebar.Item icon={HiArrowSmRight} className='cursor-pointer' onClick={handleLogOut} >
                         Log Out
                     </Sidebar.Item>

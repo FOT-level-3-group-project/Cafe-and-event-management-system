@@ -8,6 +8,7 @@ import AvailableOrders from './orders/AvailableOrders';
 import FinishedOrders from './orders/FinishedOrders';
 import CancelOrders from './orders/CancelOrders';
 import AllOrders from './orders/AllOrders';
+import FoodMenu from './foodManagement/FoodMenu';
 
 
 export default function Chef() {
@@ -18,6 +19,8 @@ export default function Chef() {
         const tabFromUrl = urlParams.get('tab');
         if (tabFromUrl) {
             setTab(tabFromUrl);
+
+            
         }
     }, [location.search]);
     return (
@@ -39,6 +42,10 @@ export default function Chef() {
                 {tab === 'canceledOrders' && <CancelOrders/>}
                 {/* All Orders */}
                 {tab === 'allOrders' && <AllOrders/>}
+                {/* Food Menu */}
+                {tab === 'foodMenu' && <FoodMenu/>}
+
+                
 
         </div>
     )

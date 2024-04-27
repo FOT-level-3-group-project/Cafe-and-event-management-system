@@ -69,7 +69,6 @@ function AddInventoryItem({ onSubmit, onCancel }) {
 
     return (
         <>
-            {/* <Button onClick={() => setOpenModal(true)}>Toggle modal</Button> */}
             <Modal show={openModal} size="md" onClose={onCancel} popup>
                 <Modal.Header />
                 <Modal.Body>

@@ -259,7 +259,7 @@ export default function TakeOrder() {
                                             </div>
                                             <input
                                                 type="search"
-                                                id="default-search"
+                                                id="default-searc"
                                                 className="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg  border border-gray-300 focus:ring-0 focus:border-gray-300 dark:bg-slate-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                                                 placeholder="Search Food Items..."
                                                 value={searchQuery}
@@ -295,7 +295,7 @@ export default function TakeOrder() {
                                         <div key={item.foodId} onClick={() => { OpenQuantityModal(); handleSelectedFoodItem(item); }} className="bg-white shadow-md rounded-lg text-gray-600 hover:bg-green-400 hover:text-white dark:bg-gray-600 dark:hover:bg-green-400 flex flex-col">
                                             <img
                                             className="rounded-t-lg w-full h-40 object-cover"
-                                            src={item.foodImageURL}
+                                            src={`http://localhost:8080/api/food/image/${item.foodImageURL}`}
                                             alt={item.foodName}
                                             />
                                             <div className="px-5 pt-2 pb-3">

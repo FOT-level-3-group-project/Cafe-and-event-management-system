@@ -8,6 +8,7 @@ import com.sun.jdi.event.StepEvent;
 import org.aspectj.apache.bcel.util.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,7 +42,7 @@ public class InventoryController {
             throw new ItemNotFoundExeption(itemId); //throw exception
         }
     }
-    @PutMapping("/edit/{itemId}")
+    @PutMapping("/edit/{itemId}")//edit item by id
     public ResponseEntity<String> editInventoryItem(@PathVariable long itemId, @RequestBody InventoryItem updateItem){
         if(inventoryService.editInventoryItem(itemId,updateItem)){
             return ResponseEntity.ok("Inventory Item Updated Successfully");
@@ -70,8 +71,12 @@ public class InventoryController {
             throw new ItemNotFoundExeption(itemId);
         }
     }
+    
     @GetMapping("/inventory-usage-log/{date}")
-    public ResponseEntity<List<InventoryItemUsageLog>> getInventoryUsageLogForDate(@PathVariable @DateTimeFormat(iso =DateTimeFormat.ISO.DATE)LocalDate date){
+    public ResponseEntity<?> getInventoryUsageLogForDate(@PathVariable @DateTimeFormat(iso =DateTimeFormat.ISO.DATE)LocalDate date){
+        if (date == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please select the date");
+        }
         List<InventoryItemUsageLog> inventoryItemUsageLogs = inventoryService.getInventoryUsageForDate(date);
         return ResponseEntity.ok(inventoryItemUsageLogs);
     }

@@ -1,5 +1,5 @@
 import React, { Fragment, useRef } from 'react'
-import { Button, Pagination, Datepicker, Dropdown, Modal} from 'flowbite-react'
+import { Button, Pagination, Datepicker, Dropdown, Modal, TextInput } from 'flowbite-react'
 import { Table } from "flowbite-react";
 import { useEffect, useState } from 'react';
 import { HiOutlineExclamationCircle } from "react-icons/hi";
@@ -7,6 +7,7 @@ import axios from 'axios';
 import EditInventoryItem from './EditInventoryItem';
 import AddInventoryItem from './AddInventoryItem';
 import DeleteInventoryItem from './DeleteInventoryItem';
+import DailyInventoryUsage from './DailyInventoryUsage';
 
 export default function AllinventoryItem() {
   const [isAddInventoryOpen, setAddInventoryOpen] = useState(false);
@@ -14,16 +15,24 @@ export default function AllinventoryItem() {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6; // Number of items to display per page
-  const [selectedDate, setSelectedDate] = useState(null);
-  // const datePickerRef = useRef(null);
   const [editItem, setEditItem] = useState(null); // State to store item being edited
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false); // State to manage visibility of edit popup
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false); // State to manage visibility of delete confirmation popup
   const [itemToDelete, setItemToDelete] = useState(null); // State to store item to delete
+  const [isOpenDailyUsageWindow, setIsOpenDailyUsageWindow] = useState(false);
+
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Add leading zero if needed
+  const day = String(currentDate.getDate()).padStart(2, '0'); // Add leading zero if needed
+  const formattedDate = `${year}-${month}-${day}`;
+  
+  const [selectedDate, setSelectedDate] = useState(formattedDate);
+
 
   useEffect(() => { fetchData(); }, []);
 
-  const openAddInventoryPopup = () => { 
+  const openAddInventoryPopup = () => {
     setAddInventoryOpen(true);
   };
 
@@ -31,22 +40,22 @@ export default function AllinventoryItem() {
     setAddInventoryOpen(false);
   };
 
-  
 
-  
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get("http://localhost:8080/api/inventory/view");
-        setInventoryData(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-  
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("http://localhost:8080/api/inventory/view");
+      setInventoryData(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
 
   // Handle edit button click
   const handleEditClick = (itemId) => {
@@ -81,12 +90,6 @@ export default function AllinventoryItem() {
   const onPageChange = (page) => {
     setCurrentPage(page);
   };
-  
-  // Function to handle the selection of the date
-  const handleDateSelect = (date) => {
-    setSelectedDate(date);
-    console.log('Selected date:', selectedDate);
-  };
 
   // Function to handle deleting an item
   const handleDeleteItem = (itemId) => {
@@ -111,20 +114,28 @@ export default function AllinventoryItem() {
     }
   };
 
+  const handleSubmitDailyUsage = () => {
+    setIsOpenDailyUsageWindow(true);
+  }
+
+  const cancelDailyUsage = () => {
+    setIsOpenDailyUsageWindow(false);
+  }
+
 
 
   return (
     <Fragment>
       <section>
-        <div className='h-screen w-full flex grid-rows-2 md:grid-cols-2 '>
+        <div className='h-screen w-full flex grid-rows-2 md:grid-cols-2 bg-gray-100 dark:bg-slate-600'>
 
           <div className='h-full w-auto md:h-screen p-4 border-r-2 border-l-2'>
             <div className='flex justify-between border-b-2'>
               {/* Left column */}
-              <h2 className="text-3xl">Available Inventory Item</h2>
+              <h2 className="text-2xl">Available Inventory Item</h2>
 
               {/* Add inventory button */}
-              <Button color="success" onClick={openAddInventoryPopup}>
+              <Button color="success" className=' bg-green-500' onClick={openAddInventoryPopup}>
                 Add New Item +
               </Button>
             </div>
@@ -140,18 +151,18 @@ export default function AllinventoryItem() {
             </div>
 
             {/* Table */}
-            <div className="overflow-x-auto">
-              <Table striped>
-                <Table.Head>
-                  <Table.HeadCell className='text-center'>#</Table.HeadCell>
-                  <Table.HeadCell className='text-center'>Item ID</Table.HeadCell>
-                  <Table.HeadCell className='text-center'>Item name</Table.HeadCell>
-                  <Table.HeadCell className='text-center'>QTY.</Table.HeadCell>
-                  <Table.HeadCell className='text-center'>Unit</Table.HeadCell>
-                  <Table.HeadCell className='text-center'>Vendor Name</Table.HeadCell>
-                  <Table.HeadCell className='text-center'>Item Added Date</Table.HeadCell>
-                  <Table.HeadCell className='text-center'>Item Modified Date</Table.HeadCell>
-                  <Table.HeadCell className='text-center'>Action</Table.HeadCell>
+            <div className="overflow-x-auto drop-shadow-lg mt-1" pill>
+              <Table className=''>
+                <Table.Head className=''> 
+                  <Table.HeadCell className='text-center bg-green-100'>#</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100'>Item ID</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100'>Item name</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100'>QTY.</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100'>Unit</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100'>Vendor Name</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100'>Item Added Date</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100'>Item Modified Date</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100'>Action</Table.HeadCell>
                 </Table.Head>
                 <Table.Body className="divide-y">
 
@@ -185,30 +196,50 @@ export default function AllinventoryItem() {
 
 
           {/* Right column */}
-          <div className=' h-full w-auto md:h-screen  p-4 flex flex-col justify-start items-center'>
+          <div className=' h-full w-auto md:h-screen  p-4 flex flex-col justify-start items-center bg-white  dark:bg-slate-800'>
             <div className=''>
-              <h2 className="text-3xl">Check Daily Usage</h2>
+              <h2 className="text-2xl">Check Daily Usage</h2>
             </div>
 
             {/* date picker */}
-            <div className='mt-1 border-t-2'>
-              <Datepicker inline onChange={(date) => handleDateSelect(date)} className='mt-7' />
+            <div className='mt-1 border-t-2 w-64'>
+              <div className='mt-20 '>
+                <TextInput
+                  id='formDate'
+                  type='date'
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                />
+                
+              </div>
             </div>
 
             <div className=''>
-              <Button color="success" className='mt-6' >Submit</Button>
+              <Button color="success" className='mt-6  bg-green-500' onClick={handleSubmitDailyUsage} >Submit</Button>
             </div>
           </div>
 
         </div>
       </section>
+      {/* daily usage popup window */}
+      {isOpenDailyUsageWindow && (
+        <DailyInventoryUsage
+          selectedDate={selectedDate}
+          onCancel={cancelDailyUsage}
+          
+        />
+
+      )}
+
+
+
       {/* Delete confirmation modal */}
       {showDeleteConfirmation && (
         <DeleteInventoryItem
-        itemName={inventoryData.find(item => item.id === itemToDelete)?.itemName}
-        onCancel={cancelDelete}
-        onConfirm={confirmDelete}
-      />
+          itemName={inventoryData.find(item => item.id === itemToDelete)?.itemName}
+          onCancel={cancelDelete}
+          onConfirm={confirmDelete}
+        />
       )}
 
       {isEditPopupOpen && (
@@ -219,12 +250,12 @@ export default function AllinventoryItem() {
         />
       )}
 
-      {isAddInventoryOpen && (  
-        <AddInventoryItem 
-        onCancel = {cancelAddInventoryPopup}
-        onSubmit={fetchData}
+      {isAddInventoryOpen && (
+        <AddInventoryItem
+          onCancel={cancelAddInventoryPopup}
+          onSubmit={fetchData}
         />
-        )}
+      )}
     </Fragment>
   )
 }

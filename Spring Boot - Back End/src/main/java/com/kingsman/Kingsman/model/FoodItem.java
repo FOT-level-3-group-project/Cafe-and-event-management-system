@@ -14,7 +14,7 @@ public class FoodItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long foodId;
 
-    @Column(nullable = false)
+    @Column(nullable = false)     // Details can not be empty
     private String foodName;
 
     @Column(nullable = false)
@@ -26,9 +26,12 @@ public class FoodItem {
     @Column(nullable = true)
     private String foodImageURL;
 
+    @Column(nullable = false)
+    private boolean available = true;
+
     public FoodItem(Long foodItemId) {
         foodId = foodItemId;
-    }
+    }// when you create an instance of FoodItem and pass a foodItemId value, it will assign that value to the foodId
 
     public FoodItem() {
 

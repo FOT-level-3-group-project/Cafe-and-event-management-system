@@ -40,12 +40,13 @@ public class OrderService {
         this.customerService = customerService;
     }
 
-    public List<OrderDTO> getAllOrders() {
+    public List<OrderDTO> getAllOrders() { //This method retrieves all orders from the repository and maps them to a list of OrderDTO objects.
         List<Order> orders = orderRepository.findAll(); // Fetch all orders
         return mapOrderListToDTOList(orders);
     }
 
-    public OrderDTO getOrderById(Long orderId) {
+    public OrderDTO getOrderById(Long orderId) {// Given an orderId, this method retrieves the corresponding order from the repository
+                                                 // (if it exists) and converts it to an OrderDTO.
         Order order = getOrderIfExists(orderId);
         return convertToDTO(order);
     }
@@ -53,7 +54,8 @@ public class OrderService {
     public List<OrderDTO> getOrdersByOrderStatus(String orderStatus) {
         List<Order> orders = orderRepository.findByOrderStatusOrderByOrderDateTimeDesc(orderStatus);
         return mapOrderListToDTOList(orders);
-    }
+    }//This method fetches orders based on their status (e.g., “pending,” “completed,” etc.).
+    // It returns a list of order data transfer objects.
 
     public List<OrderDTO> getOrdersByPaymentStatus(boolean paymentStatus) {
         List<Order> orders = orderRepository.findByPaymentStatusOrderByOrderDateTimeDesc(paymentStatus);
@@ -185,7 +187,7 @@ public class OrderService {
         return orderItemDTOs.stream()
                 .map(itemDTO -> convertToEntity(itemDTO, order))
                 .collect(Collectors.toList());
-    }
+    }                                       // orde ewa anith paththata deno wger dto eka thiyana
 
     private OrderDTO convertToDTO(Order order) {
         OrderDTO orderDTO = new OrderDTO();
@@ -197,7 +199,7 @@ public class OrderService {
         List<OrderItemDTO> orderItemDTOs = order.getOrderItems().stream()
                 .map(this::convertOrderItemToDTO)
                 .collect(Collectors.toList());
-        orderDTO.setOrderItems(orderItemDTOs);
+        orderDTO.setOrderItems(orderItemDTOs);   // ena tika okkoma list eka map ekata dana eka
 
         // Fetch and set customer details if customerId is not null
         if (order.getCustomerId() != null) {
@@ -238,31 +240,23 @@ public class OrderService {
         return orderItem;
     }
 
-//    public List<OrderEmployeeFoodDTO> getOrdersByCreatedDate(LocalDate createdDate) {
-//        List<Order> orders = orderRepository.findByCreatedDate(createdDate);
-//        return mapOrderListToDTOList(orders);
-//    }
-//
-//    private List<OrderEmployeeFoodDTO> mapOrderListToDTOList(List<Order> orders) {
-//        return orders.isEmpty() ? Collections.emptyList() :
-//                orders.stream()
-//                        .map(this::convertToDTO)
-//                        .collect(Collectors.toList());
-//    }
-//
-//    private OrderEmployeeFoodDTO convertToDTO(Order order) {
-//        OrderEmployeeFoodDTO orderDTO = new OrderEmployeeFoodDTO();
-//        // Set properties from Order
-//        orderDTO.setOrderId(order.getOrderId());
-//        orderDTO.setTableNumber(order.getTableNumber());
-//        orderDTO.setOrderStatus(order.getOrderStatus());
-//        // Set additional properties from Employee and Customer if needed
-//        // Example: orderDTO.setEmployeeName(order.getEmployee().getFirstName());
-//        // Example: orderDTO.setCustomerName(order.getCustomer().getName());
-//        // Example: orderDTO.setFoodName(order.getOrderItems().get(0).getFoodItem().getName());
-//        // Add more properties as needed
-//        return orderDTO;
-//    }
+    public List<OrderEmployeeFoodDTO> getOrderEmployeeFoodByCreatedDate(LocalDate createdDate) {
+        List<OrderEmployeeFoodDTO> orderEmployeeFoodDTOs = orderRepository.getOrderEmployeeFoodByCreatedDate(createdDate);
+        return orderEmployeeFoodDTOs;
+    }
+
+    public boolean updateOrderStatus(Long orderId, String orderStatus){
+
+        Optional<Order> existingOrderOptional = orderRepository.findById(orderId);
+        if (existingOrderOptional.isPresent()){
+            Order existingOrder = existingOrderOptional.get();
+            existingOrder.setOrderStatus(orderStatus);
+            orderRepository.save(existingOrder);
+        }
+        return true;
+    }
+
+
 
 
 
