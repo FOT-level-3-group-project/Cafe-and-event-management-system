@@ -243,8 +243,8 @@ export default function RegisterEmployee() {
                         </div>
 
                        <div>
-                            <Label value='ID Number' />
-                            <TextInput type='text' placeholder='ID Number' id='idNumber' value={formData.idNumber} onChange={handleChange} name='idNumber' />
+                            <Label value='ID Number*' />
+                            <TextInput type='text' placeholder='ID Number' id='idNumber' value={formData.idNumber} onChange={handleChange} name='idNumber' required />
                             {IDNumberError && <div className="text-red-500 text-sm">{IDNumberError}</div>}
                         </div>
                     

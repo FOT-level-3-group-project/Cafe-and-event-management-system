@@ -1,6 +1,7 @@
 package com.kingsman.Kingsman.controller;
 
 import com.kingsman.Kingsman.model.Employee;
+import com.kingsman.Kingsman.model.Event;
 import com.kingsman.Kingsman.repository.ManageEmployeeRepository;
 import com.kingsman.Kingsman.service.ManageEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,28 @@ public class ManageEmployeeController {
             return new ResponseEntity<>("Employee with ID " + id + " has been deleted", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to delete employee with ID " + id, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("getEmployee/{id}")
+    public ResponseEntity<?> getEmployeeByEmployeeId(@PathVariable Integer id) {
+        try {
+            // Delegate retrieval logic to service layer
+            Employee employee = manageEmployeeService.getEmployeeById(id);
+            return new ResponseEntity<>(employee, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Failed to retrieve employee: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/updateEmployee/{id}")
+    public ResponseEntity<?> updateEmployeeByEmployeeId(@PathVariable Integer id, @RequestBody Employee employee) {
+        try {
+            // Delegate update logic to service layer
+            String updatedEventName = manageEmployeeService.updateEmployeeById(id, employee);
+            return new ResponseEntity<>("Employee has been updated", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Failed to update employee: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

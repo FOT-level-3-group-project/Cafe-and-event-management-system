@@ -199,8 +199,8 @@ const ViewAllEvents = () => {
                         <TextInput type='text' placeholder='Description' id='Description' value={eventToUpdate.description || ''} onChange={handleChange} name="description"/> 
                     </div>
                     <div className="flex justify-between">
-                        <button type="reset" className="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 mr-2 rounded w-full md:w-1/2 " id="clearbtn" onClick={handleSubmitUpdate}> Clear </button>
-                        <button type="submit" className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 ml-2 rounded w-full md:w-1/2 "> Update Event </button>
+                        {/* <button type="reset" className="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 mr-2 rounded w-full md:w-1/2 " id="clearbtn" onClick={handleSubmitUpdate}> Clear </button> */}
+                        <button type="submit" className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 ml-2 rounded w-full "> Update Event </button>
                     </div>
                     {errorMessage && <Alert className='mt-5' color='failure'>{errorMessage}</Alert>}
                 </form>
@@ -247,7 +247,7 @@ const ViewAllEvents = () => {
             <Table.HeadCell  className='bg-green-100'>Quantity</Table.HeadCell>
             <Table.HeadCell  className='bg-green-100'>Entertainer</Table.HeadCell>
             <Table.HeadCell  className='bg-green-100'>Description</Table.HeadCell>
-            <Table.HeadCell  className='bg-green-100 text-center' colSpan={3} >Actions</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100 text-center' colSpan={3} ></Table.HeadCell>
           </Table.Head>
           <Table.Body>
             {events
