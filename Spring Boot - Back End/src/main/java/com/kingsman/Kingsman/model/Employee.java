@@ -19,7 +19,7 @@ public class Employee {
     private String position;
     private String contact_number;
     private String gender;
-    private String IDNumber;
+    private String idNumber;
     private Date joined_date;
     private String email;
     private String address;
@@ -91,12 +91,12 @@ public class Employee {
         this.gender = gender;
     }
 
-    public String getIDNumber() {
-        return IDNumber;
+    public String getIdNumber() {
+        return idNumber;
     }
 
-    public void setIDNumber(String IDNumber) {
-        this.IDNumber = IDNumber;
+    public void setIdNumber(String IDNumber) {
+        this.idNumber = IDNumber;
     }
 
     public Date getJoined_date() {
