@@ -4,7 +4,9 @@ import { useEffect, useState } from 'react';
 import { BiCoinStack } from "react-icons/bi";
 import { Sidebar } from "flowbite-react";
 import { HiArrowSmRight, HiUser } from "react-icons/hi";
+
 import { BsPersonFillCheck } from "react-icons/bs";
+
 import { logOutSuccess } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 import { BsFillPeopleFill } from "react-icons/bs";
@@ -49,21 +51,11 @@ export default function ManagerSideBar() {
                             Attendance
                         </Sidebar.Item>
                     </Link>
-                    {/* <Link to='/manager?tab=new-employee'>
-                        <Sidebar.Item active={tab === 'new-employee'} icon={HiUser} as='div'>
-                            New Employee
-                        </Sidebar.Item>
-                    </Link> */}
                     <Link to='/manager?tab=view-all-employees'>
                         <Sidebar.Item active={tab === 'view-all-employees'} icon={BsFillPeopleFill} as='div'>
                             Employees
                         </Sidebar.Item>
                     </Link>
-                    {/* <Link to='/manager?tab=add-event'>
-                        <Sidebar.Item active={tab === 'add-event'} icon={HiUser} as='div'>
-                            Add Event
-                        </Sidebar.Item>
-                    </Link> */}
                     <Link to='/manager?tab=view-all-events'>
                         <Sidebar.Item active={tab === 'view-all-events'} icon={MdEvent} as='div'>
                             Events
@@ -81,7 +73,19 @@ export default function ManagerSideBar() {
                         </Sidebar.Item>
                     </Link>
 
-                    
+
+                    <Link to='/manager?tab=manage-orders'>
+                        <Sidebar.Item active={tab === 'manage-orders'} icon={MdRestaurantMenu} as='div'>
+                           Manage Orders
+                        </Sidebar.Item>
+                    </Link>
+
+                    {/* <Link to='/manager?tab=monthly-income'>
+                        <Sidebar.Item active={tab === 'monthly-income'} icon={HiUser} as='div'>
+                            Monthly Income
+                        </Sidebar.Item>
+                    </Link> */}
+
 
                     <Sidebar.Item icon={HiArrowSmRight} className='cursor-pointer' onClick={handleLogOut} >
                         Log Out

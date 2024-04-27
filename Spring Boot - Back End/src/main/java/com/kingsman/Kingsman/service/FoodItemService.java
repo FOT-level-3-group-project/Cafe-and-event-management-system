@@ -13,27 +13,31 @@ import java.util.Optional;
 public class FoodItemService {
 
     @Autowired
-    private FoodItemRepository foodItemRepository;
+    private FoodItemRepository foodItemRepository; //  get data from repository
 
     public FoodItem saveFoodItem(FoodItem foodItem) {
         return foodItemRepository.save(foodItem);
-    }
+    }//This method saves a FoodItem object to the repository.
+    // It takes a FoodItem as an argument and returns the saved item.
 
     public List<String> getAllCategories() {
         return foodItemRepository.findAllCategories();
-    }
+    }  // This method retrieves a list of all food categories from the repository.
+    // It returns a list of strings representing the available categories
 
     public List<FoodItem> getItemsByCategory(String category) {
         return foodItemRepository.findByFoodCategory(category);
-    }
+    }//Given a specific category, this method retrieves a list of FoodItem objects associated with that category.
 
     public List<FoodItem> getAllItems() {
+
         return foodItemRepository.findAll();
-    }
+    }//This method retrieves all food items from the repository.
 
     public void deleteFoodItem(Long foodItemId) {
+
         foodItemRepository.deleteById(foodItemId);
-    }
+    }//This method deletes a FoodItem from the repository based on its unique identifier (foodItemId).
 
 
     public Optional<FoodItem> getFoodNameById(Long foodItemId) {

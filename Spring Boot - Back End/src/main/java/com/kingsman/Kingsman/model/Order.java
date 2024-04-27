@@ -67,13 +67,13 @@ public class Order {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedDate;
 
-    @PrePersist
+    @PrePersist       //  the createdDate and updatedDate attributes are set to the current timestamp when an Order object is first created
     protected void onCreate() {
         createdDate = LocalDateTime.now();
         updatedDate = LocalDateTime.now();
     }
 
-    @PreUpdate
+    @PreUpdate    //the updatedDate attribute is updated to the current timestamp whenever an existing Order object is modified
     protected void onUpdate() {
         updatedDate = LocalDateTime.now();
     }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { Table } from "flowbite-react";
 
 const ViewAllEmployees = () => {
     const [employees, setEmployees] = useState([]);
@@ -79,6 +80,7 @@ const ViewAllEmployees = () => {
     };
 
     return (
+
         <div className=" px-4 py-4 w-full bg-gray-200 dark:bg-gray-500">
             <div className='mx-auto px-3 py-2 flex justify-between items-center bg-white dark:bg-gray-700 rounded-lg shadow-md'>
                 <h1 className="text-2xl font-bold ">Manage Employees</h1>

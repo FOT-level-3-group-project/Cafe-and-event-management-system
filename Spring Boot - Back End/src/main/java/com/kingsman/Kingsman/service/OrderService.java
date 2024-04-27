@@ -40,12 +40,13 @@ public class OrderService {
         this.customerService = customerService;
     }
 
-    public List<OrderDTO> getAllOrders() {
+    public List<OrderDTO> getAllOrders() { //This method retrieves all orders from the repository and maps them to a list of OrderDTO objects.
         List<Order> orders = orderRepository.findAll(); // Fetch all orders
         return mapOrderListToDTOList(orders);
     }
 
-    public OrderDTO getOrderById(Long orderId) {
+    public OrderDTO getOrderById(Long orderId) {// Given an orderId, this method retrieves the corresponding order from the repository
+                                                 // (if it exists) and converts it to an OrderDTO.
         Order order = getOrderIfExists(orderId);
         return convertToDTO(order);
     }
@@ -53,7 +54,8 @@ public class OrderService {
     public List<OrderDTO> getOrdersByOrderStatus(String orderStatus) {
         List<Order> orders = orderRepository.findByOrderStatusOrderByOrderDateTimeDesc(orderStatus);
         return mapOrderListToDTOList(orders);
-    }
+    }//This method fetches orders based on their status (e.g., “pending,” “completed,” etc.).
+    // It returns a list of order data transfer objects.
 
     public List<OrderDTO> getOrdersByPaymentStatus(boolean paymentStatus) {
         List<Order> orders = orderRepository.findByPaymentStatusOrderByOrderDateTimeDesc(paymentStatus);
@@ -185,7 +187,7 @@ public class OrderService {
         return orderItemDTOs.stream()
                 .map(itemDTO -> convertToEntity(itemDTO, order))
                 .collect(Collectors.toList());
-    }
+    }                                       // orde ewa anith paththata deno wger dto eka thiyana
 
     private OrderDTO convertToDTO(Order order) {
         OrderDTO orderDTO = new OrderDTO();
@@ -197,7 +199,7 @@ public class OrderService {
         List<OrderItemDTO> orderItemDTOs = order.getOrderItems().stream()
                 .map(this::convertOrderItemToDTO)
                 .collect(Collectors.toList());
-        orderDTO.setOrderItems(orderItemDTOs);
+        orderDTO.setOrderItems(orderItemDTOs);   // ena tika okkoma list eka map ekata dana eka
 
         // Fetch and set customer details if customerId is not null
         if (order.getCustomerId() != null) {
