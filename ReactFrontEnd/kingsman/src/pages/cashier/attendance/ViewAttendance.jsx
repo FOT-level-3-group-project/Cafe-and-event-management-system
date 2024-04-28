@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal } from "flowbite-react";
+import { Table, Button, Modal, Alert } from "flowbite-react";
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import EditModal from './EditModal';
 import AbsentiesModal from './AbsentiesModal';
@@ -11,6 +11,7 @@ function ViewAttendance() {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [openAbsentiesModal, setOpenAbsentiesModal] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   const handleCloseAbsentiesModal = () => {
     setOpenAbsentiesModal(false);
@@ -64,6 +65,10 @@ function ViewAttendance() {
         console.log('Attendance deleted successfully:', response.data);
         setConfirmDelete(false);
         fetchAttendanceData(); // Reload attendance data
+        setShowAlert(true); // Show alert
+        setTimeout(() => {
+          setShowAlert(false); // Hide alert after 2 seconds
+        }, 1700);
       })
       .catch(error => {
         console.error('Error deleting attendance:', error);
@@ -74,7 +79,7 @@ function ViewAttendance() {
     <div className='w-full bg-gray-100' >
       {/* Absentees button */}
       <div className="mt-10 text-right flex justify-end mr-10 ">
-        <Button outline gradientDuoTone="cyanToBlue" onClick={() => setOpenAbsentiesModal(true)}>
+        <Button outline gradientDuoTone="greenToBlue" onClick={() => setOpenAbsentiesModal(true)}>
           Absentees
         </Button>
       </div>
@@ -132,6 +137,15 @@ function ViewAttendance() {
           </div>
         </Modal.Body>
       </Modal>
+
+      {/* Alert for successful deletion */}
+      {showAlert && (
+        <div className="mt-5 ml-10 mr-10">
+          <Alert color="info">
+            Attendance record deleted successfully!
+          </Alert>
+        </div>
+      )}
 
       {/* Render the EditModal component */}
       <EditModal
