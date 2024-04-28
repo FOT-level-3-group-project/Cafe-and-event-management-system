@@ -3,6 +3,8 @@ import { Modal, Label, TextInput, Button, Alert } from 'flowbite-react';
 import axios from 'axios';
 import AddPositionModal from './AddPositionModal';
 
+const allowedPositions = ['Waiter', 'Chef', 'Cashier'];
+
 const UpdateEmployeeModal = ({ employee, handleClose }) => {
     if (!employee) {
         return null; // Handle case where employee prop is not yet available
@@ -125,7 +127,7 @@ const UpdateEmployeeModal = ({ employee, handleClose }) => {
                     </div>
                     <div>
                         <Label value='Username*' />
-                        <TextInput type='text' placeholder='Username' id='Username' value={formData.username || ''} onChange={handleChange} name="username" required />
+                        <TextInput type='text' placeholder='Username' id='Username' value={formData.username || ''} onChange={handleChange} name="username" required disabled={!allowedPositions.includes(formData.position)}/>
                     </div>
             
                    <div>

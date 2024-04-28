@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AddPositionModal from './AddPositionModal';
 
+const allowedPositions = ['Waiter', 'Chef', 'Cashier'];
+
 export default function RegisterEmployee() {
     const [formData, setFormData] = useState({
             first_name: '',
@@ -29,7 +31,7 @@ export default function RegisterEmployee() {
      const [positions, setPositions] = useState(() => {
         // Retrieve positions from local storage or use default positions
         const savedPositions = localStorage.getItem('positions');
-        return savedPositions ? JSON.parse(savedPositions) : ['Cashier', 'Chef', 'Waiter', 'Kitchen Helper'];
+        return savedPositions ? JSON.parse(savedPositions) : ['Cashier', 'Chef', 'Waiter'];
     });
 
     const navigate = useNavigate();
@@ -191,10 +193,6 @@ export default function RegisterEmployee() {
                             <Label value='Last Name*' />
                             <TextInput type='text' placeholder='Last Name' id='LastName' value={formData.last_name} onChange={handleChange} name="last_name" required/>
                         </div>
-                        <div>
-                            <Label value='Username*' />
-                            <TextInput type='text' placeholder='Username' id='Username' value={formData.username} onChange={handleChange} name="username" required/>
-                        </div>
                         
                         <div>
                             <Label value='Position*' /> <br/>
@@ -207,6 +205,11 @@ export default function RegisterEmployee() {
                                 ))}
                                 <option value='Add New' >Add New Position</option>
                             </select>
+                        </div>
+
+                        <div>
+                            <Label value='Username*' />
+                            <TextInput type='text' placeholder='Username' id='Username' value={formData.username} onChange={handleChange} name="username" required disabled={!allowedPositions.includes(formData.position)}/>
                         </div>
 
                         <div>
@@ -265,7 +268,7 @@ export default function RegisterEmployee() {
                          
                         <div>
                             <Label value='Password' />
-                            <TextInput type='text' placeholder='Password' id='Password' value={formData.password} />
+                            <TextInput type='text' placeholder='Password' id='Password' value={formData.password} disabled={!allowedPositions.includes(formData.position)}/>
                         </div>
                     </div>
 
