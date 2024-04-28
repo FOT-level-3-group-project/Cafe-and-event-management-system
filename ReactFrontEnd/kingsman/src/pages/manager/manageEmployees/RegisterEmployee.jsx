@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Label, TextInput } from 'flowbite-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import AddPositionModal from './AddPositionModal';
 
 export default function RegisterEmployee() {
     const [formData, setFormData] = useState({
@@ -12,7 +13,7 @@ export default function RegisterEmployee() {
             position: '',
             contact_number: '',
             gender: '',
-            // IDNumber: '',
+            idNumber: '',
             joined_date: '',
             email: '',
             address: '',
@@ -22,7 +23,15 @@ export default function RegisterEmployee() {
     const [errorMessage, setErrorMessage] = useState('');
     const [emailErrorMessage, setEmailErrorMessage] = useState('');
     const [contactErrorMessage, setContactErrorMessage] = useState('');
-    const [EmergencyContactErrorMessage, setEmergencyContactErrorMessage] = useState('');   
+    const [EmergencyContactErrorMessage, setEmergencyContactErrorMessage] = useState(''); 
+    const [IDNumberError, setIDNumberError] = useState();
+    const [showAddPositionModal, setShowAddPositionModal] = useState(false);
+     const [positions, setPositions] = useState(() => {
+        // Retrieve positions from local storage or use default positions
+        const savedPositions = localStorage.getItem('positions');
+        return savedPositions ? JSON.parse(savedPositions) : ['Cashier', 'Chef', 'Waiter', 'Kitchen Helper'];
+    });
+
     const navigate = useNavigate();
 
     const generatePassword = () => {
@@ -36,24 +45,24 @@ export default function RegisterEmployee() {
         return newPassword;
     };
 
-    const handleResetForm = () => {
-        setFormData({
-            first_name: '',
-            last_name: '',
-            username: '',
-            password: generatePassword(),
-            position: '',
-            contact_number: '',
-            gender: '',
-            // IDNumber: '',
-            joined_date: '',
-            email: '',
-            address: '',
-            uniform_size: '',
-            emergency_contact: ''
-        }); 
-            setErrorMessage('');
-    };
+    // const handleResetForm = () => {
+    //     setFormData({
+    //         first_name: '',
+    //         last_name: '',
+    //         username: '',
+    //         password: generatePassword(),
+    //         position: '',
+    //         contact_number: '',
+    //         gender: '',
+    //         idNumber: '',
+    //         joined_date: '',
+    //         email: '',
+    //         address: '',
+    //         uniform_size: '',
+    //         emergency_contact: ''
+    //     }); 
+    //         setErrorMessage('');
+    // };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -96,6 +105,24 @@ export default function RegisterEmployee() {
             setEmailErrorMessage('');
         }
         }
+        //validate ID Number
+       if (name === 'idNumber') {
+            if (value.length === 12 && /^\d+$/.test(value)) {
+                setIDNumberError(''); // Clear ID Number error message
+            } else if (value.length === 10 && /^\d{9}[VX]$/.test(value.toUpperCase())) {
+                setIDNumberError(''); // Clear ID Number error message
+            } else {
+                setIDNumberError('Invalid ID Number format');
+            }
+        }
+
+
+
+         if (value === 'Add New') {
+            setShowAddPositionModal(true);
+        } else {
+            setShowAddPositionModal(false);
+        }
             // For other input fields
             setFormData({
                 ...formData,
@@ -106,7 +133,7 @@ export default function RegisterEmployee() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        handleResetForm();
+        // handleResetForm();
 
         try {
             const response = await axios.post('http://localhost:8080/register', formData);
@@ -136,6 +163,20 @@ export default function RegisterEmployee() {
         });
     }, []);
 
+    const handleAddPosition = (newPosition) => {
+        const updatedPositions = [...positions, newPosition];
+        setPositions(updatedPositions);
+        localStorage.setItem('positions', JSON.stringify(updatedPositions)); // Save positions to local storage
+    };
+
+    const handleShowAddPositionModal = () => {
+            setShowAddPositionModal(true);
+    };
+
+    const handleCloseAddPositionModal = () => {
+        setShowAddPositionModal(false);
+    };
+
     return (
         <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row w-full '>
             <div className='flex-1 flex justify-center'>
@@ -154,16 +195,20 @@ export default function RegisterEmployee() {
                             <Label value='Username*' />
                             <TextInput type='text' placeholder='Username' id='Username' value={formData.username} onChange={handleChange} name="username" required/>
                         </div>
+                        
                         <div>
                             <Label value='Position*' /> <br/>
-                            {/* <select id='Position' value={formData.position} onChange={handleChange} className='w-full px-3 py-2 border rounded-md bg-gray-700 text-gray-400'> */}
-                            <select id='Position' value={formData.position} onChange={handleChange} name='position' className='w-full px-3 py-2 border rounded-md dark:bg-gray-700' required>
-                                <option value=''>Select Position</option>
-                                <option value='Cashier'>Cashier</option>
-                                <option value='Chef'>Chef</option>
-                                <option value='Waiter'>Waiter</option>
+                            <select id='Position' value={formData.position} onChange={handleChange} name='position' className='w-full' required>
+                                <option value='' >Select Position</option>
+                                {positions.map((position, index) => (
+                                    <option key={index} value={position}>
+                                        {position}
+                                    </option>
+                                ))}
+                                <option value='Add New' >Add New Position</option>
                             </select>
                         </div>
+
                         <div>
                             <Label value='Email*' />
                             <TextInput type='text' placeholder='Email' id='Email' value={formData.email} onChange={handleChange} name="email"  required/>
@@ -191,10 +236,11 @@ export default function RegisterEmployee() {
                             </select>
                         </div>
 
-                       {/* <div>
-                            <Label value='ID Number' />
-                            <TextInput type ='text' placeholder='ID Number' id='IDNumber' value={formData.IDNumber} onChange={handleChange} name='IDNumber' />
-                        </div> */}
+                       <div>
+                            <Label value='ID Number*' />
+                            <TextInput type='text' placeholder='ID Number' id='idNumber' value={formData.idNumber} onChange={handleChange} name='idNumber' required />
+                            {IDNumberError && <div className="text-red-500 text-sm">{IDNumberError}</div>}
+                        </div>
                     
                         <div>
                             <Label value='Joined Date*' />
@@ -203,12 +249,12 @@ export default function RegisterEmployee() {
                         <div>
                             <Label value='Uniform Size' /> <br/>
                             <select id='UniformSize' value={formData.uniform_size} name='uniform_size' onChange={handleChange} className='w-full px-3 py-2 border rounded-md dark:bg-gray-700' >
-                                <option value=''>Select</option>
-                                <option value='Extra Small'>Extra Small</option>
-                                <option value='Small'>Small</option>
-                                <option value='Medium'>Medium</option>
-                                <option value='Large'>Large</option>
-                                <option value='Extra Large'>Extra Large</option>
+                                <option value=''>Select Size</option>
+                                <option value='Extra Small'> XS </option>
+                                <option value='Small'> S </option>
+                                <option value='Medium'> M </option>
+                                <option value='Large'> L </option>
+                                <option value='Extra Large'> XL </option>
                             </select>
                         </div>
                         <div>
@@ -233,6 +279,16 @@ export default function RegisterEmployee() {
                         {errorMessage}
                     </Alert>
                     )}
+
+                    {/* Render AddPositionModal */}
+                    {showAddPositionModal && (
+                        <AddPositionModal
+                            isOpen={handleShowAddPositionModal}
+                            onClose={handleCloseAddPositionModal}
+                            onAddPosition={handleAddPosition}
+                        />
+                    )}
+
                 </form>
             </div>
         </div>

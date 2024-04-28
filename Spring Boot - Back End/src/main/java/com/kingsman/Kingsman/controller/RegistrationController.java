@@ -27,7 +27,7 @@ public class RegistrationController {
         if (existingEmployeeEmail != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
         }
-
+        System.out.println(employee.getIdNumber());
         registrationRepository.save(employee);
 
         return ResponseEntity.ok("Employee registered successfully");

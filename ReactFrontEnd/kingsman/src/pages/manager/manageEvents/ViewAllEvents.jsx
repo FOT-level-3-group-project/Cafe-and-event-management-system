@@ -199,8 +199,8 @@ const ViewAllEvents = () => {
                         <TextInput type='text' placeholder='Description' id='Description' value={eventToUpdate.description || ''} onChange={handleChange} name="description"/> 
                     </div>
                     <div className="flex justify-between">
-                        <button type="reset" className="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 mr-2 rounded w-full md:w-1/2 " id="clearbtn" onClick={handleSubmitUpdate}> Clear </button>
-                        <button type="submit" className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 ml-2 rounded w-full md:w-1/2 "> Update Event </button>
+                        {/* <button type="reset" className="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 mr-2 rounded w-full md:w-1/2 " id="clearbtn" onClick={handleSubmitUpdate}> Clear </button> */}
+                        <button type="submit" className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 ml-2 rounded w-full "> Update Event </button>
                     </div>
                     {errorMessage && <Alert className='mt-5' color='failure'>{errorMessage}</Alert>}
                 </form>
@@ -232,9 +232,10 @@ const ViewAllEvents = () => {
         </div>
       </div>
 
+         {/* Table */}
       <div className="relative overflow-x-auto drop-shadow-lg bg-slate-50">
         {/* <Table hoverable className='bg-gray-200 dark:bg-gray-700 dark:text-white overflow-x-auto mt-1' > */}
-        <Table className='drop-shadow-lg' hoverable >
+        <Table hoverable >
           <Table.Head>
             <Table.HeadCell  className='bg-green-100'>ID</Table.HeadCell>
             <Table.HeadCell  className='bg-green-100'>Name</Table.HeadCell>
@@ -246,7 +247,7 @@ const ViewAllEvents = () => {
             <Table.HeadCell  className='bg-green-100'>Quantity</Table.HeadCell>
             <Table.HeadCell  className='bg-green-100'>Entertainer</Table.HeadCell>
             <Table.HeadCell  className='bg-green-100'>Description</Table.HeadCell>
-            <Table.HeadCell  className='bg-green-100 text-center' colSpan={3} >Actions</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100 text-center' colSpan={3} ></Table.HeadCell>
           </Table.Head>
           <Table.Body>
             {events
@@ -262,7 +263,7 @@ const ViewAllEvents = () => {
                 }
               })
               .map((event, index) => (
-                <Table.Row key={event.eventID} >
+                <Table.Row key={event.eventID} className={index % 2 === 0 ? "bg-gray-100 dark:bg-gray-500 dark:text-white" : "bg-gray-150 dark:bg-gray-700 dark:text-white"} >
                   <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.eventID}</Table.Cell>
                   <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.eventName}</Table.Cell>
                   <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.eventDate}</Table.Cell>
