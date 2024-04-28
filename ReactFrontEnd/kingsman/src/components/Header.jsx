@@ -5,6 +5,7 @@ import { FaMoon, FaSun } from 'react-icons/fa'
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleTheme } from '../redux/theme/themeSlice'
 import { logOutSuccess } from '../redux/user/userSlice'
+import { Label } from 'flowbite-react'
 
 
 export default function Header() {
@@ -27,14 +28,20 @@ export default function Header() {
         // Top buttons
 
         <Navbar className='border-b-2'>
-            
+
             <Link to='/' className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'>
                 <div className='flex items-center'>
-            <img src='../src/image/logo.png' alt='logo' className='w-12 rounded-3xl' />
-                <span className='px-2 py-1 bg-gradient-to-r from-green-800 via-green-600 to-green-400 rounded-lg text-white'>Kingsman Cafe & Events</span>
+                    <img src='../src/image/logo.png' alt='logo' className='w-12 rounded-3xl' />
+                    <span className='px-2 py-1 bg-gradient-to-r from-green-800 via-green-600 to-green-400 rounded-lg text-white'>Kingsman Cafe & Events</span>
                 </div>
             </Link>
+            
             <div className='flex gap-3 md:order-2'>
+                {currentUser && (
+                <div className='mr-5 mt-2'><Link to={'/'+(currentUser.position)+ '?tab=dashboard'}><Label>My Dashboard</Label></Link></div>
+                )}
+                
+                
                 <Button className='w-12 h-10 hidden sm:inline' color='gray' pill onClick={() => dispatch(toggleTheme())}>
                     {theme === 'light' ? <FaSun /> : <FaMoon />}
                 </Button>

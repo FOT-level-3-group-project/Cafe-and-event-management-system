@@ -13,6 +13,7 @@ import ManageOrders from './order/ManageOrders';
 import AttendanceFrManager from './attendance/AttendanceFrManager';
 // import UpdateEvent from './manageEvents/UpdateEvent';
 import { MonthlyIncome } from './monthlyIncome/MonthlyIncome';
+import ManagerDash from './ManagerDash';
 
 
 export default function Manager() {
@@ -29,32 +30,35 @@ export default function Manager() {
         <div className='min-h-screen flex flex-col md:flex-row'>
             <div className='md:w-56'>
                 {/* sidebar */}
-                <ManagerSideBar/>
+                <ManagerSideBar />
             </div>
 
-                {/* Inventory */}
-                {tab === 'inventory' && <AllinventoryItem/>}
-                {/* profile */}
-                {tab === 'profile' && <ManagerProfile/>}
-                {/* New Employee */}
-                {tab === 'new-employee' && <RegisterEmployee/>}
-                {/* View All Employees */}
-                {tab === 'view-all-employees' && <ViewAllEmployees/>}
-                {/* Add Event */}
-                {tab === 'add-event' && <AddEvent/>}
-                {/* View All Events */}
-                {tab === 'view-all-events' && <ViewAllEvents/>}
+            {/* Inventory */}
+            {tab === 'inventory' && <AllinventoryItem />}
+            {/* profile */}
+            {tab === 'profile' && <ManagerProfile />}
+            {/* New Employee */}
+            {tab === 'new-employee' && <RegisterEmployee />}
+            {/* View All Employees */}
+            {tab === 'view-all-employees' && <ViewAllEmployees />}
+            {/* Add Event */}
+            {tab === 'add-event' && <AddEvent />}
+            {/* View All Events */}
+            {tab === 'view-all-events' && <ViewAllEvents />}
 
-                 {/* Manage Orders */}
-                {tab === 'manage-orders' && <ManageOrders/>}
-                
-                {/* {tab === 'update-event' && <UpdateEvent/>} */}
+            {/* Manage Orders */}
+            {tab === 'manage-orders' && <ManageOrders />}
 
-                {/* Attendance */}
-                {tab === 'attendance' && <AttendanceFrManager/>}
+            {/* {tab === 'update-event' && <UpdateEvent/>} */}
 
-                {/* Monthly Income */}
-                {tab === 'monthly-income' && <MonthlyIncome/>}
+            {/* Attendance */}
+            {tab === 'attendance' && <AttendanceFrManager />}
+
+            {/* Monthly Income */}
+            {tab === 'monthly-income' && <MonthlyIncome />}
+
+            {/* Dashboard */}
+            {tab === 'dashboard' && <ManagerDash/>}
 
 
         </div>

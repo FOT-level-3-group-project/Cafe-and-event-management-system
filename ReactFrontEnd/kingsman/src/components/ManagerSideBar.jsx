@@ -11,6 +11,7 @@ import { BsFillPeopleFill } from "react-icons/bs";
 import { MdEvent } from "react-icons/md";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { MdRestaurantMenu } from "react-icons/md";
+import { FaChartPie } from "react-icons/fa";
 
 
 export default function ManagerSideBar() {
@@ -40,6 +41,11 @@ export default function ManagerSideBar() {
         <Sidebar className='w-full md:w-56'>
             <Sidebar.Items>
                 <Sidebar.ItemGroup>
+                <Link to='/manager?tab=dashboard'>
+                        <Sidebar.Item active={tab === 'dashboard'}icon={FaChartPie} as='div' >
+                            Dashboard
+                        </Sidebar.Item>
+                    </Link>
                     <Link to='/manager?tab=inventory'>
                         <Sidebar.Item active={tab === 'inventory'} icon={BiCoinStack} as='div' >
                             Inventory

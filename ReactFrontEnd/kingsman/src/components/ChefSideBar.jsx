@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { BiCoinStack } from "react-icons/bi";
 import { Sidebar } from "flowbite-react";
 import { HiArrowSmRight, HiUser, HiClipboardCheck } from "react-icons/hi";
-
+import { IoFastFoodOutline } from "react-icons/io5";
 import { logOutSuccess } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
@@ -65,7 +65,7 @@ export default function ChefSideBar() {
         <Sidebar className='w-full md:w-56 h-full'>
     <Sidebar.Items>
         <Sidebar.ItemGroup>
-            <div className='h-full space-y-96'>
+            <div className='h-full '>
                 <div className=''>
                     <Link to='/chef?tab=inventory'>
                         <Sidebar.Item active={tab === 'inventory'} icon={BiCoinStack} as='div' >
@@ -73,7 +73,7 @@ export default function ChefSideBar() {
                         </Sidebar.Item>
                     </Link>
                     <Link to='/chef?tab=allFood'>
-                        <Sidebar.Item active={tab === 'allFood'} icon={BiCoinStack} as='div' >
+                        <Sidebar.Item active={tab === 'allFood'} icon={IoFastFoodOutline} as='div' >
                             Food Menu
                         </Sidebar.Item>
                     </Link>
