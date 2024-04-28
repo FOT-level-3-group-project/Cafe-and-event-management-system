@@ -15,6 +15,7 @@ export default function Login() {
     const { currentUser } = useSelector((state) => state.user);
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
+    const [employee, setEmployee] = useState('');
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -39,6 +40,8 @@ export default function Login() {
             const response = await axios.post('http://localhost:8080/api/user/login', formData);
             console.log(response);
             const data = response.data;
+            setEmployee(data);
+            console.log("employee", employee);
 
             if (data.success == false) {
                 dispatch(logInFailure(data.message)); //error message
@@ -51,14 +54,14 @@ export default function Login() {
                 dispatch(logInSuccess(data));
                 console.log("data stored in redux");
                 
-                    if (currentUser && currentUser.position === 'manager') { // Check the user's position
+                    if ((employee.position) === 'manager') { // Check the user's position
                         navigate('/manager?tab=dashboard');
-                    } else if (currentUser && currentUser.position === 'cashier') {
-                        navigate('/cashier');
-                    } else if (currentUser && currentUser.position === 'chef') {
-                        navigate('/chef');
-                    } else if (currentUser && currentUser.position === 'waiter') {
-                        navigate('/waiter');
+                    } else if ((employee.position) === 'cashier') {
+                        navigate('/cashier?tab=dashboard');
+                    } else if ((employee.position) === 'chef') {
+                        navigate('/chef?tab=dashboard');
+                    } else if ((employee.position) === 'waiter') {
+                        navigate('/waiter?tab=dashboard');
                     }
             }
         } catch (error) {
@@ -72,8 +75,8 @@ export default function Login() {
     };
 
     return (
-        <div className='min-h-screen mt-20'>
-            <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center'>
+        <div className='h-screen '>
+            <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center shadow-lg bg-white mt-40 rounded-lg'>
 
                 {/* left side */}
                 <div className='flex-1'>

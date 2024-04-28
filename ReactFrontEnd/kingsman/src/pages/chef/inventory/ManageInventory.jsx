@@ -47,7 +47,7 @@ export default function ManageInventory() {
     try {
 
       const currentDate = new Date(); // Get the current date
-      currentDate.setDate(currentDate.getDate() + 1); // Increase the date by 1 day
+      currentDate.setDate(currentDate.getDate() + 0); // Increase the date by 1 day
       const increasedDate = currentDate.toISOString().split('T')[0]; // Format the increased date
       console.log(increasedDate); // Output the increased date
 
@@ -137,7 +137,7 @@ export default function ManageInventory() {
 
           {/* Right column */}
           <div className=' h-full w-2/5 md:h-screen  p-4 justify-start items-center'>
-            <div className='border-b-2 w-full bg-white p-2 rounded-md shadow-md'>
+            <div className='border-b-2 w-full bg-white p-2 rounded-md shadow-md dark:bg-gray-600'>
               <h2 className="text-2xl ">Today Item Usage</h2>
             </div>
 

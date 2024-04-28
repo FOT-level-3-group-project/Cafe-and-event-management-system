@@ -9,6 +9,7 @@ import { ViewOrder } from './Order/ViewOrder';
 import Bill from './Order/Bill';
 import Attendance from './attendance/Attendance';
 import ViewAttendance from './attendance/ViewAttendance';
+import CashierDashboard from './CashierDashboard';
 
 export default function Cashier() {
 
@@ -40,6 +41,8 @@ export default function Cashier() {
       {tab === 'orders-view' && <ViewOrder/>}
 
       {tab === 'bill' && <Bill/>}
+      
+      {tab === 'dashboard' && <CashierDashboard/>}
 
     </div >
   )

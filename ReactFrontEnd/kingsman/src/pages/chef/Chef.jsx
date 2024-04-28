@@ -11,6 +11,7 @@ import AllOrders from './orders/AllOrders';
 import FoodMenu from './foodManagement/FoodMenu';
 import AllFood from './foodManagement/AllFood';
 import PreparingOrders from './orders/PreparingOrders';
+import ChefDashboard from './ChefDashboard';
 
 
 export default function Chef() {
@@ -50,6 +51,8 @@ export default function Chef() {
                 {tab === 'allFood' && <AllFood/>}
                 {/* preparing orders */}
                 {tab === 'preparingOrders' && <PreparingOrders/>}
+                {/* dashboard */}
+                {tab === 'dashboard' && <ChefDashboard/>}
 
                 
 
