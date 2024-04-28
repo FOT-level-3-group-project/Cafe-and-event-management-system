@@ -12,7 +12,7 @@ public class Event {
     private String eventName;
     private LocalDate eventDate;
     private String startTime;
-    private float duration;
+    private String duration;
     private float budget;
     private float ticketPrice;
     private String entertainer;
@@ -51,11 +51,11 @@ public class Event {
         this.startTime = startTime;
     }
 
-    public float getDuration() {
+    public String getDuration() {
         return duration;
     }
 
-    public void setDuration(float eventDuration) {
+    public void setDuration(String eventDuration) {
         this.duration = eventDuration;
     }
 

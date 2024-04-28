@@ -185,7 +185,17 @@ const ViewAllEmployees = () => {
                                     <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{employee.uniform_size}</Table.Cell>
                                     <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{employee.emergency_contact}</Table.Cell>
                                     <Table.Cell className='dark:bg-gray-600'>
-                                        <button onClick={() => handleUpdateClick(employee)} className="font-medium text-blue-600 dark:text-blue-400 hover:scale-110">
+                                        {/* <button onClick={() => handleUpdateClick(employee)} className="font-medium text-blue-600 dark:text-blue-400 hover:scale-110">
+                                            Update
+                                        </button> */}
+
+                                         <button
+                                            onClick={() => handleUpdateClick(employee)}
+                                            className={`font-medium text-blue-600 ${
+                                                employee.position === 'manager' ? 'cursor-not-allowed text-gray-400' : 'hover:scale-110'
+                                            }`}
+                                            disabled={employee.position === 'manager'}
+                                        >
                                             Update
                                         </button>
                                     </Table.Cell>
