@@ -67,6 +67,11 @@ export default function ChefSideBar() {
         <Sidebar.ItemGroup>
             <div className='h-full '>
                 <div className=''>
+                    <Link to='/chef?tab=dashboard'>
+                        <Sidebar.Item active={tab === 'dashboard'} icon={HiArrowSmRight} as='div' >
+                            Dashboard
+                        </Sidebar.Item>
+                    </Link>
                     <Link to='/chef?tab=inventory'>
                         <Sidebar.Item active={tab === 'inventory'} icon={BiCoinStack} as='div' >
                             Inventory
