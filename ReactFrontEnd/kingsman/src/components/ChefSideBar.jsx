@@ -8,6 +8,7 @@ import { IoFastFoodOutline } from "react-icons/io5";
 import { logOutSuccess } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
+import { FaChartPie } from "react-icons/fa";
 
 
 export default function ChefSideBar() {
@@ -68,7 +69,7 @@ export default function ChefSideBar() {
             <div className='h-full '>
                 <div className=''>
                     <Link to='/chef?tab=dashboard'>
-                        <Sidebar.Item active={tab === 'dashboard'} icon={HiArrowSmRight} as='div' >
+                        <Sidebar.Item active={tab === 'dashboard'} icon={FaChartPie} as='div' >
                             Dashboard
                         </Sidebar.Item>
                     </Link>
