@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export const MonthlyIncome = () => {
+const MonthlyIncome = () => {
   // Define state variables to hold income statement data
   const [revenue, setRevenue] = useState(0);
   const [expenses, setExpenses] = useState(0);
@@ -98,4 +98,4 @@ export const MonthlyIncome = () => {
   );
 };
 
-
+export default MonthlyIncome;
