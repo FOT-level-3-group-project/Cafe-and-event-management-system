@@ -7,7 +7,7 @@ import UpdateEventModal from './UpdateEventModal';
 const ViewAllEvents = () => {
     const [events, setEvents] = useState([]);
     const [showEvetntUpdateModal, setShowEventUpdateModal] = useState(false);
-    const [eventUpdate, setEventUpdate] = useState(null);
+    const [eventToUpdate, setEventUpdate] = useState(null);
 
     //search bar
     const [searchQuery, setSearchQuery] = useState('');
