@@ -6,13 +6,13 @@ import jakarta.persistence.Id;
 
 
 @Entity
-public class HourPay {
+public class HourPayment {
     @GeneratedValue
     @Id
     private Long id;
     private String position;
     private Float payPerHour;
-    private Float payPerOtHour;
+    private Float payPerOverTimeHour;
 
     public Long getId() {
         return id;
@@ -38,11 +38,11 @@ public class HourPay {
         this.payPerHour = payPerHour;
     }
 
-    public Float getPayPerOtHour() {
-        return payPerOtHour;
+    public Float getPayPerOverTimeHour() {
+        return payPerOverTimeHour;
     }
 
-    public void setPayPerOtHour(Float payPerOtHour) {
-        this.payPerOtHour = payPerOtHour;
+    public void setPayPerOverTimeHour(Float payPerOverTimeHour) {
+        this.payPerOverTimeHour = payPerOverTimeHour;
     }
 }
