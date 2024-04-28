@@ -8,7 +8,7 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 export default function ChefDashboard() {
   const data = {
 
-    labels: ['Pizza', 'Burger', 'Pasta', 'Sandwich'],
+    labels: ['Pizza', 'Burger', 'Pasta', 'Sandwich', 'Salad'],
     datasets: [
       {
         label: 'Number of Orders',
