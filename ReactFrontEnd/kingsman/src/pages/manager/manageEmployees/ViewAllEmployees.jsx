@@ -94,9 +94,9 @@ const ViewAllEmployees = () => {
 
 
      return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="container mx-auto px-4 py-8 flex justify-between items-center">
-                <h1 className="text-3xl font-bold mb-4">Manage Employees</h1>
+        <div className="container mx-auto px-4 py-8 bg-gray-200">
+            <div className="container mx-auto px-4 py-2 flex justify-between items-center shadow-lg bg-white mb-5 rounded-lg">
+                <h1 className="text-2xl font-bold mb-3">Manage Employees</h1>
 
                 <div className="flex items-center">
                     {/* Search Bar */}
@@ -139,7 +139,7 @@ const ViewAllEmployees = () => {
                 )}      
 
             {/* Table */}
-            <div className="relative overflow-x-auto drop-shadow-lg bg-slate-50">
+            <div className="relative overflow-x-auto drop-shadow-lg bg-slate-50 rounded-lg">
                 <Table hoverable>
                     <Table.Head>
                         <Table.HeadCell className='bg-green-100'>Username</Table.HeadCell>
