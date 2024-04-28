@@ -1,7 +1,7 @@
 
 import { set } from "firebase/database";
-import { Button, Checkbox, Label, Modal, TextInput, Alert, FileInput, Dropdown } from "flowbite-react";
-import { useState } from "react";
+import { Button, Label, Modal, TextInput, Alert, FileInput, Dropdown } from "flowbite-react";
+import { useEffect, useState } from "react";
 import { HiInformationCircle } from "react-icons/hi";
 import axios from "axios";
 
@@ -13,6 +13,19 @@ export function AddFoodItem({ onClose }) {
     const [imageUrl, setImageUrl] = useState('');
     const [selectedCat, setSelectedCat] = useState('');
     const [file, setFile] = useState(null);
+    const [addFoodItemAlert, setAddFoodItemAlert] = useState(false);
+
+    useEffect(() => {
+        // Hide the alert after 2 seconds
+        const timeout = setTimeout(() => {
+            setAddFoodItemAlert(false);
+        }, 2000);
+
+        // Clear the timeout when the component unmounts
+        return () => clearTimeout(timeout);
+        }
+    , [addFoodItemAlert]);
+
 
 
     const handleImageChange = (event) => {
@@ -63,7 +76,8 @@ export function AddFoodItem({ onClose }) {
                 console.error('Error adding food:', error);
             }
         } else {
-            alert('Please fill in all fields before adding a food item.');
+            setAddFoodItemAlert(true);
+            
         }
     }
 
@@ -120,7 +134,7 @@ export function AddFoodItem({ onClose }) {
                             />
                             {showAlert && (
                                 <Alert color="failure" icon={HiInformationCircle}>
-                                    <span className="font-medium">Info alert!</span> Change a few things up and try submitting again.
+                                    <span className="font-medium">Info alert!</span> Please fill in all fields before adding a food item.'
                                 </Alert>
                             )}
                         </div>
@@ -144,6 +158,13 @@ export function AddFoodItem({ onClose }) {
                                 <Dropdown.Item onClick={() => handleCategorySelect("Dessert")}>Dessert</Dropdown.Item>
                             </Dropdown>
                         </div>
+                        {/* add food item alert */}
+                        {addFoodItemAlert && (
+                                <Alert color="failure" icon={HiInformationCircle}>
+                                    <span className="font-medium">Info alert!</span> Change a few things up and try submitting again.
+                                </Alert>
+                            )
+                        }
 
 
                         <div className="w-full">

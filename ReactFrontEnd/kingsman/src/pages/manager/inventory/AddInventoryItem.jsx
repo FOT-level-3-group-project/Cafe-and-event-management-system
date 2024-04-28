@@ -1,10 +1,9 @@
-
-
-import { Button, Checkbox, Label, Modal, TextInput, Dropdown } from "flowbite-react";
+import { Button, Checkbox, Label, Modal, TextInput, Dropdown, Alert } from "flowbite-react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { set } from "firebase/database";
 import { HiCheck } from "react-icons/hi";
+import { HiInformationCircle } from "react-icons/hi";
 
 function AddInventoryItem({ onSubmit, onCancel }) {
     const [openModal, setOpenModal] = useState(true);
@@ -13,7 +12,19 @@ function AddInventoryItem({ onSubmit, onCancel }) {
     const [selectedUnit, setSelectedUnit] = useState('');
     const [vendorId, setVendorId] = useState('');
     const [isaddSuccessModel, setAddSuccessModel] = useState(false);
-    
+    const [fillAllFieldsAlert, setFillAllFieldsAlert] = useState(false);
+
+    useEffect(() => {
+        // Hide the alert after 2 seconds
+        const timeout = setTimeout(() => {
+            setAddSuccessModel(false);
+            setFillAllFieldsAlert(false);
+        }, 2000);
+
+        // Clear the timeout when the component unmounts
+        return () => clearTimeout(timeout);
+        }
+    , [fillAllFieldsAlert, isaddSuccessModel]);
 
 
 
@@ -33,7 +44,7 @@ function AddInventoryItem({ onSubmit, onCancel }) {
                 if (response.data === 'Item added to inventory successfully') {
                     // Item added successfully
                     console.log('Item added successfully:', response.data);
-                   
+
                     onSubmit(); // Reload items after adding
                     setAddSuccessModel(true);
 
@@ -42,7 +53,7 @@ function AddInventoryItem({ onSubmit, onCancel }) {
                     setQuantity('');
                     setVendorId('');
 
-                    
+
 
                 } else {
                     console.error('Failed to add item:', response.data);
@@ -54,7 +65,7 @@ function AddInventoryItem({ onSubmit, onCancel }) {
             }
 
         } else {
-            alert('Please fill in all fields before adding an item.'); // add the popup warning
+            setFillAllFieldsAlert(true);
         }
 
 
@@ -118,12 +129,19 @@ function AddInventoryItem({ onSubmit, onCancel }) {
                                 onChange={(e) => setVendorId(e.target.value)}
                                 required />
                         </div>
+                        {/* Fill all fields alert */}
+                        {fillAllFieldsAlert && (
+                            <Alert color="failure" icon={HiInformationCircle}>
+                                <span className="font-medium">Please fill all fields!</span> 
+                            </Alert>
+                        )}
 
                         <div className="w-full">
                             <Button color="success" onClick={handleAddItem} disabled={!selectedUnit} >Add</Button>
                         </div>
 
                     </div>
+
                 </Modal.Body>
             </Modal>
             {/* inventory item added popup window */}
@@ -140,6 +158,7 @@ function AddInventoryItem({ onSubmit, onCancel }) {
                     </Modal.Body>
                 </Modal>
             )}
+
         </>
     );
 }

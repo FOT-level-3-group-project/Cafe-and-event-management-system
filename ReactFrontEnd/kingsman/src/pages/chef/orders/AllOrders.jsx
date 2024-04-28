@@ -145,7 +145,7 @@ export default function AllOrders() {
                                         <Label className="mb-4"> Customer Name : {order.cusName}   </Label>
                                     </div>
                                     <div className=' basis-2/5'>
-                                        <Label className="ml-5"> Special Note: {order.specialNote} </Label>
+                                        <Label className="ml-5"> <label className=' text-red-500'>Special Note: </label>{order.specialNote} </Label>
                                     </div>
 
 

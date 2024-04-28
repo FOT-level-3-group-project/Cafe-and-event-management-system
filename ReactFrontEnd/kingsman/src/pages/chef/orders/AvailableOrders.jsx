@@ -41,15 +41,6 @@ export default function AvailableOrders() {
         }
     };
 
-    const updateStatusFinish = async (orderId) => {
-        try {
-            const response = await axios.put(`http://localhost:8080/api/orders/status-update/${orderId}/Finished`);
-            console.log(response.data);
-        } catch (error) {
-            console.error('Error updating order status:', error);
-        }
-        fetchOrders();
-    }
 
     const updateStatusCancel = async (orderId) => {
         try {
@@ -144,7 +135,7 @@ export default function AvailableOrders() {
                                             <Label className="mb-4"> Customer Name : {order.cusName}   </Label>
                                             </div>
                                             <div className='basis-2/5'>
-                                            <Label className="ml-5"> Special Note: {order.specialNote} </Label>
+                                            <Label className="ml-5"> <label className=' text-red-500'>Special Note: </label> {order.specialNote} </Label>
                                             </div>
 
                                             {order.orderStatus === 'Canceled' ? (

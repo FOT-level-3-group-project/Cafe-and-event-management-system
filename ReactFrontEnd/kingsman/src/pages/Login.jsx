@@ -52,7 +52,7 @@ export default function Login() {
                 console.log("data stored in redux");
                 
                     if (currentUser && currentUser.position === 'manager') { // Check the user's position
-                        navigate('/manager');
+                        navigate('/manager?tab=dashboard');
                     } else if (currentUser && currentUser.position === 'cashier') {
                         navigate('/cashier');
                     } else if (currentUser && currentUser.position === 'chef') {

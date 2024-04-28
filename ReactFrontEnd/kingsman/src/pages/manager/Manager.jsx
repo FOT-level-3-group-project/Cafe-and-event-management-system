@@ -13,6 +13,7 @@ import ManageOrders from './order/ManageOrders';
 import AttendanceFrManager from './attendance/AttendanceFrManager';
 // import UpdateEvent from './manageEvents/UpdateEvent';
 import { MonthlyIncome } from './monthlyIncome/MonthlyIncome';
+import ManagerDash from './ManagerDash';
 
 
 export default function Manager() {
@@ -55,6 +56,9 @@ export default function Manager() {
 
             {/* Monthly Income */}
             {tab === 'monthly-income' && <MonthlyIncome />}
+
+            {/* Dashboard */}
+            {tab === 'dashboard' && <ManagerDash/>}
 
 
         </div>

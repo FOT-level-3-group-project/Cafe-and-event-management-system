@@ -115,7 +115,7 @@ export default function PreparingOrders() {
                                 <Accordion.Content>
                                     <div className='flex justify-between'>
                                         <Label className="mb-4"> Customer Name : {order.cusName}   </Label>
-                                        <Label className="ml-5"> Special Note: {order.specialNote} </Label>
+                                        <Label className="ml-5"> <label className=' text-red-500'>Special Note: </label>{order.specialNote} </Label>
 
                                         {order.orderStatus === 'Processing' ? (
                                             <Button color="success" className='m-4  bg-green-500' onClick={() => updateStatusFinish(order.orderId)}>

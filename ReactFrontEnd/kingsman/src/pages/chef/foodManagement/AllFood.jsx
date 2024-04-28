@@ -96,7 +96,6 @@ export default function AllFood() {
     const cancelAddFood = () => {
         fetchFoods();
         setAddFoodPopup(false);
-        navigate('/chef/foodMenu?tab=allFood')
 
     }
 
@@ -146,13 +145,13 @@ export default function AllFood() {
             <div className=" m-4 bg-white rounded-lg shadow-md">
                 <Table>
                     <Table.Head className=' w-full'>
-                        <Table.HeadCell>Food Id</Table.HeadCell>
-                        <Table.HeadCell>Name</Table.HeadCell>
-                        <Table.HeadCell>Image</Table.HeadCell>
-                        <Table.HeadCell>Category</Table.HeadCell>
-                        <Table.HeadCell>Price</Table.HeadCell>
-                        <Table.HeadCell>Availability</Table.HeadCell>
-                        <Table.HeadCell>Action</Table.HeadCell>
+                        <Table.HeadCell className=" bg-green-100 ">Food Id</Table.HeadCell>
+                        <Table.HeadCell className=" bg-green-100 ">Name</Table.HeadCell>
+                        <Table.HeadCell className=" bg-green-100 ">Image</Table.HeadCell>
+                        <Table.HeadCell className=" bg-green-100 ">Category</Table.HeadCell>
+                        <Table.HeadCell className=" bg-green-100 ">Price</Table.HeadCell>
+                        <Table.HeadCell className=" bg-green-100 ">Availability</Table.HeadCell>
+                        <Table.HeadCell className=" bg-green-100 ">Action</Table.HeadCell>
 
 
                     </Table.Head>
