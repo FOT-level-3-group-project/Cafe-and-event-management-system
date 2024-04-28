@@ -182,9 +182,9 @@ function AttendanceFrManager() {
 
   return (
 
-    <div className="flex flex-col mt-7  mr-10 w-full ml-5">
+    <div className="flex flex-col w-full bg-gray-200">
       {/* Filter controls */}
-      <div className="flex items-center justify-between border-b pb-2">
+      <div className="flex items-center m-4 justify-between border-b bg-white dark:bg-gray-500 p-3 shadow-md rounded-md">
         {/* Dropdown for Name */}
         <div className="flex gap-4">
           <div>
@@ -219,17 +219,17 @@ function AttendanceFrManager() {
       </div>
 
       {/* Attendance table */}
-      <div>
-        <Table hoverable className="my-5 ">
+      <div className="m-4 shadow-md bg-white rounded-md">
+        <Table hoverable className="mb-5 ">
           <Table.Head>
-            <Table.HeadCell>#</Table.HeadCell>
-            <Table.HeadCell>EMP ID</Table.HeadCell>
-            <Table.HeadCell>EMP Name</Table.HeadCell>
-            <Table.HeadCell>Position</Table.HeadCell>
-            <Table.HeadCell>Date</Table.HeadCell>
-            <Table.HeadCell>In Time</Table.HeadCell>
-            <Table.HeadCell>Out Time</Table.HeadCell>
-            <Table.HeadCell>Action</Table.HeadCell>
+            <Table.HeadCell className=" bg-green-100">#</Table.HeadCell>
+            <Table.HeadCell className=" bg-green-100">EMP ID</Table.HeadCell>
+            <Table.HeadCell className=" bg-green-100">EMP Name</Table.HeadCell>
+            <Table.HeadCell className=" bg-green-100">Position</Table.HeadCell>
+            <Table.HeadCell className=" bg-green-100">Date</Table.HeadCell>
+            <Table.HeadCell className=" bg-green-100">In Time</Table.HeadCell>
+            <Table.HeadCell className=" bg-green-100">Out Time</Table.HeadCell>
+            <Table.HeadCell className=" bg-green-100">Action</Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y">
             {currentItems.map((employee, index) => (
