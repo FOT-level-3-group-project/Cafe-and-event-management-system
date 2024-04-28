@@ -104,8 +104,7 @@ public class AttendanceController {
 
 
 
-    //Today attendance
-
+    // Get Current Date attendance
     private final AttendanceService attendanceService;
 
 
@@ -128,7 +127,7 @@ public class AttendanceController {
     }
 
 
-//update
+//Update Attendance Records
     @PutMapping("/update")
     public ResponseEntity<String> updateAttendance(@RequestBody AttendanceUpdateRequest request) {
         // Validate input
@@ -153,10 +152,7 @@ public class AttendanceController {
         return ResponseEntity.ok("Attendance record updated successfully.");
     }
 
-    //delete
-
-
-
+    //Delete Attendance Records
     @DeleteMapping("/DeleteAttendance/{empId}/{date}")
     public ResponseEntity<String> deleteAttendance(@PathVariable String empId, @PathVariable String date) {
         try {
@@ -174,12 +170,7 @@ public class AttendanceController {
     }
 
 
-//absenties search
-
-
-
-
-
+//Search Absent Employees
     @Autowired
     public AttendanceController(EmployeeRepository employeeRepository, AttendanceRepository attendanceRepository, AttendanceService attendanceService) {
         this.employeeRepository = employeeRepository;
@@ -220,8 +211,6 @@ public class AttendanceController {
 
 
     //Marking Absent Employees
-
-
     @PostMapping("/attendances")
     public ResponseEntity<String> saveAttendances(@RequestBody List<Attendance> attendances) {
         try {
@@ -234,7 +223,6 @@ public class AttendanceController {
     }
 
     // get attendance acording to date range
-
     @GetMapping("/fetch-by-date-range/{startDate}/{endDate}")
     public ResponseEntity<List<Attendance>> fetchAttendanceByDateRange(
             @PathVariable("startDate") String startDate,
@@ -251,9 +239,7 @@ public class AttendanceController {
     }
 
 
-    //Emp Ids (EMP001.EMP002)
-
-
+//    Emp Ids (EMP001.EMP002)
     @GetMapping("/employeeIds")
     public List<String> getAllEmployeeIds() {
         // Fetch all employees from the repository
@@ -269,9 +255,6 @@ public class AttendanceController {
 
 
     //search acording to empId an This month or Today
-
-
-
     @GetMapping("/attendance/{empId}/{dateRange}")
     public ResponseEntity<List<Attendance>> getAttendance(@PathVariable String empId, @PathVariable String dateRange) {
         LocalDate today = LocalDate.now();
