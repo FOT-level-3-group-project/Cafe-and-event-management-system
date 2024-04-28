@@ -61,6 +61,7 @@ public class ManageEmployeeController {
             String updatedEventName = manageEmployeeService.updateEmployeeById(id, employee);
             return new ResponseEntity<>("Employee has been updated", HttpStatus.OK);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return new ResponseEntity<>("Failed to update employee: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -75,9 +75,8 @@ function EditInventoryItem({ itemId, onSubmit, onCancel }) {
                         </div>
 
                         <div className="w-full">
-                            <Button onClick={handleUpdateItem}>Update</Button>
+                            <Button onClick={handleUpdateItem} color='success' className=' bg-green-500' >Update</Button>
                         </div>
-                        
                     </div>
                 </Modal.Body>
             </Modal>

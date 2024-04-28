@@ -45,24 +45,24 @@ export default function RegisterEmployee() {
         return newPassword;
     };
 
-    const handleResetForm = () => {
-        setFormData({
-            first_name: '',
-            last_name: '',
-            username: '',
-            password: generatePassword(),
-            position: '',
-            contact_number: '',
-            gender: '',
-            idNumber: '',
-            joined_date: '',
-            email: '',
-            address: '',
-            uniform_size: '',
-            emergency_contact: ''
-        }); 
-            setErrorMessage('');
-    };
+    // const handleResetForm = () => {
+    //     setFormData({
+    //         first_name: '',
+    //         last_name: '',
+    //         username: '',
+    //         password: generatePassword(),
+    //         position: '',
+    //         contact_number: '',
+    //         gender: '',
+    //         idNumber: '',
+    //         joined_date: '',
+    //         email: '',
+    //         address: '',
+    //         uniform_size: '',
+    //         emergency_contact: ''
+    //     }); 
+    //         setErrorMessage('');
+    // };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -133,13 +133,7 @@ export default function RegisterEmployee() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        handleResetForm();
-
-        const handleAddPosition = (newPosition) => {
-        const updatedPositions = [...positions, newPosition];
-        setPositions(updatedPositions);
-        localStorage.setItem('positions', JSON.stringify(updatedPositions)); // Save positions to local storage
-    };
+        // handleResetForm();
 
         try {
             const response = await axios.post('http://localhost:8080/register', formData);

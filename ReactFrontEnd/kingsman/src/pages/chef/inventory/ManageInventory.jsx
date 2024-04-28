@@ -87,14 +87,12 @@ export default function ManageInventory() {
   return (
     <Fragment>
       <section>
-        <div className='h-screen w-full flex grid-rows-2 md:grid-cols-2 bg-gray-100 dark:bg-gray-700'>
+        <div className='h-screen w-full flex grid-rows-2 md:grid-cols-2 bg-gray-200 dark:bg-gray-700'>
 
-          <div className='h-full w-2/3 md:h-screen p-4 border-r-2 border-l-2'>
-            <div className='flex justify-between border-b-2'>
+          <div className='h-full w-3/5 md:h-screen p-4 border-r-2 border-white'>
+            <div className='flex justify-between border-b-2 bg-white p-2 rounded-lg shadow-md dark:bg-gray-600'>
               {/* Left column */}
-              <h2 className="text-3xl">Available Inventory Item</h2>
-
-
+              <h2 className="text-2xl">Available Inventory Item</h2>
             </div>
             <br></br>
             {/* Pagination */}
@@ -109,29 +107,26 @@ export default function ManageInventory() {
             <div className="overflow-x-auto drop-shadow-md">
               <Table striped>
                 <Table.Head>
-                  <Table.HeadCell className='text-center'>#</Table.HeadCell>
-                  <Table.HeadCell className='text-center'>Item ID</Table.HeadCell>
-                  <Table.HeadCell className='text-center'>Item name</Table.HeadCell>
-                  <Table.HeadCell className='text-center'>QTY.</Table.HeadCell>
-                  <Table.HeadCell className='text-center'>Vendor Name</Table.HeadCell>
-                  <Table.HeadCell className='text-center'>Action</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100'>#</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100'>Item ID</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100'>Item name</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100' >QTY.</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100 '>Vendor Name</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100'>Action</Table.HeadCell>
                 </Table.Head>
                 <Table.Body className="divide-y">
 
-                  {loading ? (<Table.Row>
-                    <Table.Cell colSpan="10" className="text-center">Loading...</Table.Cell>
-                  </Table.Row>) : (
-                    currentInventoryData.map((item, index) => (
-                      <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                        <Table.Cell className='text-center'>{index + 1}</Table.Cell>
-                        <Table.Cell className='text-center'>{item.id}</Table.Cell>
-                        <Table.Cell>{item.itemName}</Table.Cell>
-                        <Table.Cell className='text-center'><span>{item.quantity} {item.unit}</span></Table.Cell>
-                        <Table.Cell className='text-center'>{item.vendorId}</Table.Cell>
-                        <Table.Cell><Button size='md' color='success' className=' bg-green-500' onClick={() => handleUseItem(item.id)}>Use</Button></Table.Cell>
-                      </Table.Row>
-                    ))
-                  )}
+                  {currentInventoryData.map((item, index) => (
+                    <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                      <Table.Cell className='text-center'>{index + 1}</Table.Cell>
+                      <Table.Cell className='text-center'>{item.id}</Table.Cell>
+                      <Table.Cell>{item.itemName}</Table.Cell>
+                      <Table.Cell className='text-center'><span>{item.quantity} {item.unit}</span></Table.Cell>
+                      <Table.Cell className='text-center'>{item.vendorId}</Table.Cell>
+                      <Table.Cell><Button size='md' color='success' className=' bg-green-500' onClick={() => handleUseItem(item.id)}>Use</Button></Table.Cell>
+                    </Table.Row>
+                  ))
+                  }
                 </Table.Body>
               </Table>
             </div>
@@ -141,60 +136,58 @@ export default function ManageInventory() {
 
 
           {/* Right column */}
-          <div className=' h-full w-auto md:h-screen  p-4 flex flex-col justify-start items-center'>
-            <div className='flex  border-b-2 w-full'>
-              <h2 className="text-3xl">Today Item Usage</h2>
-
-
+          <div className=' h-full w-2/5 md:h-screen  p-4 justify-start items-center'>
+            <div className='border-b-2 w-full bg-white p-2 rounded-md shadow-md dark:bg-gray-600'>
+              <h2 className="text-2xl ">Today Item Usage</h2>
             </div>
-
 
             {/* daily usage show table */}
             <div className="overflow-x-auto shadow-md mt-16">
+
+
               <Table striped>
                 <Table.Head>
-                  <Table.HeadCell className='text-center'>#</Table.HeadCell>
-                  <Table.HeadCell className='text-center'>Item ID</Table.HeadCell>
-                  <Table.HeadCell className='text-center'>Item name</Table.HeadCell>
-                  <Table.HeadCell className='text-center'>Quantity Used.</Table.HeadCell>
-                  <Table.HeadCell className='text-center'>Used Time</Table.HeadCell>
+                  <Table.HeadCell className='text-center  bg-green-100'>#</Table.HeadCell>
+                  <Table.HeadCell className='text-center  bg-green-100'>Item ID</Table.HeadCell>
+                  <Table.HeadCell className='text-center  bg-green-100'>Item name</Table.HeadCell>
+                  <Table.HeadCell className='text-center  bg-green-100'>Quantity Used.</Table.HeadCell>
+                  <Table.HeadCell className='text-center bg-green-100'>Used Time</Table.HeadCell>
                 </Table.Head>
                 <Table.Body className="divide-y">
 
-                  {loading ? (<Table.Row>
-                    <Table.Cell colSpan="10" className="text-center">Loading...</Table.Cell>
-                  </Table.Row>) : (
-                    todayUsage.map((usage, index) => (
-                      <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                        <Table.Cell className='text-center'>{index + 1}</Table.Cell>
-                        <Table.Cell className='text-center'>{usage.itemId}</Table.Cell>
-                        <Table.Cell className='text-center'>{usage.itemName}</Table.Cell>
-                        <Table.Cell className='text-center'>{usage.decreasedQuantity} {usage.unit}</Table.Cell>
-                        <Table.Cell className='text-center'>{new Date(usage.usageDateTime).toLocaleString()}</Table.Cell>
+                  {todayUsage.map((usage, index) => (
+                    <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                      <Table.Cell className='text-center'>{index + 1}</Table.Cell>
+                      <Table.Cell className='text-center'>{usage.itemId}</Table.Cell>
+                      <Table.Cell className='text-center'>{usage.itemName}</Table.Cell>
+                      <Table.Cell className='text-center'>{usage.decreasedQuantity} {usage.unit}</Table.Cell>
+                      <Table.Cell className='text-center'>{new Date(usage.usageDateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Table.Cell>
 
-                      </Table.Row>
-                    ))
-                  )}
+                    </Table.Row>
+                  ))}
                 </Table.Body>
               </Table>
+
+
             </div>
-            {/* Popup window */}
-            {showPopup && selectedItem && (
-              <UseItemPopup
-                item={selectedItem}
-                onConfirm={handleUseItemConfirm}
-                onCancel={handleCancelPopup}
-                onReloadItems={() => {
-                  fetchData();
-                  fetchTodayUsage();
-                }}
-              />
-            )}
+
 
 
           </div>
 
         </div>
+        {/* Popup window */}
+        {showPopup && selectedItem && (
+          <UseItemPopup
+            item={selectedItem}
+            onConfirm={handleUseItemConfirm}
+            onCancel={handleCancelPopup}
+            onReloadItems={() => {
+              fetchData();
+              fetchTodayUsage();
+            }}
+          />
+        )}
       </section>
 
     </Fragment>

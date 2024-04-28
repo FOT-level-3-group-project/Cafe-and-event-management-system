@@ -12,7 +12,6 @@ import DailyInventoryUsage from './DailyInventoryUsage';
 export default function AllinventoryItem() {
   const [isAddInventoryOpen, setAddInventoryOpen] = useState(false);
   const [inventoryData, setInventoryData] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6; // Number of items to display per page
   const [editItem, setEditItem] = useState(null); // State to store item being edited
@@ -26,11 +25,17 @@ export default function AllinventoryItem() {
   const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Add leading zero if needed
   const day = String(currentDate.getDate()).padStart(2, '0'); // Add leading zero if needed
   const formattedDate = `${year}-${month}-${day}`;
-  
+
   const [selectedDate, setSelectedDate] = useState(formattedDate);
 
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => { 
+    fetchData(); 
+
+  
+  }, []);
+
+  
 
   const openAddInventoryPopup = () => {
     setAddInventoryOpen(true);
@@ -45,13 +50,11 @@ export default function AllinventoryItem() {
 
   const fetchData = async () => {
     try {
-      setLoading(true);
       const response = await axios.get("http://localhost:8080/api/inventory/view");
       setInventoryData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
-      setLoading(false);
     }
   };
 
@@ -132,13 +135,13 @@ export default function AllinventoryItem() {
           <div className='h-full w-auto md:h-screen p-4 border-r-2 border-l-2'>
             <div className=' bg-white rounded-lg dark:bg-gray-800 shadow-md'>
               <div className=' p-3 flex justify-between '>
-              {/* Left column */}
-              <h2 className="text-2xl">Available Inventory Item</h2>
+                {/* Left column */}
+                <h2 className="text-2xl">Available Inventory Item</h2>
 
-              {/* Add inventory button */}
-              <Button color="success"  className=' bg-green-500' onClick={openAddInventoryPopup}>
-                Add New Item +
-              </Button>
+                {/* Add inventory button */}
+                <Button color="success" className=' bg-green-500' onClick={openAddInventoryPopup}>
+                  Add New Item +
+                </Button>
               </div>
             </div>
 
@@ -154,7 +157,7 @@ export default function AllinventoryItem() {
             {/* Table */}
             <div className="overflow-x-auto drop-shadow-lg mt-1" pill>
               <Table className=''>
-                <Table.Head className=''> 
+                <Table.Head className=''>
                   <Table.HeadCell className='text-center bg-green-100'>#</Table.HeadCell>
                   <Table.HeadCell className='text-center bg-green-100'> ID</Table.HeadCell>
                   <Table.HeadCell className='text-center bg-green-100'>Name</Table.HeadCell>
@@ -167,10 +170,7 @@ export default function AllinventoryItem() {
                 </Table.Head>
                 <Table.Body className="divide-y">
 
-                  {loading ? (<Table.Row>
-                    <Table.Cell colSpan="10" className="text-center">Loading...</Table.Cell>
-                  </Table.Row>) : (
-                    currentInventoryData.map((item, index) => (
+                  {currentInventoryData.map((item, index) => (
                       <Table.Row key={item.id} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                         <Table.Cell>{index + 1}</Table.Cell>
                         <Table.Cell>{item.id}</Table.Cell>
@@ -188,7 +188,7 @@ export default function AllinventoryItem() {
                         </Table.Cell>
                       </Table.Row>
                     ))
-                  )}
+                  }
                 </Table.Body>
               </Table>
             </div>
@@ -211,7 +211,7 @@ export default function AllinventoryItem() {
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
                 />
-                
+
               </div>
             </div>
 
@@ -227,12 +227,10 @@ export default function AllinventoryItem() {
         <DailyInventoryUsage
           selectedDate={selectedDate}
           onCancel={cancelDailyUsage}
-          
+
         />
 
       )}
-
-
 
       {/* Delete confirmation modal */}
       {showDeleteConfirmation && (
@@ -242,7 +240,7 @@ export default function AllinventoryItem() {
           onConfirm={confirmDelete}
         />
       )}
-
+      {/* Edit inventory item modal */}
       {isEditPopupOpen && (
         <EditInventoryItem
           itemId={editItem}
@@ -251,6 +249,7 @@ export default function AllinventoryItem() {
         />
       )}
 
+      {/* Add inventory item modal */}
       {isAddInventoryOpen && (
         <AddInventoryItem
           onCancel={cancelAddInventoryPopup}
