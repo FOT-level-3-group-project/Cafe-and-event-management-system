@@ -55,7 +55,7 @@ export default function CashierSideBar() {
                         </Sidebar.Item>
                     </Link>
                     <Link to='/cashier?tab=profile'>
-                        <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"User"} labelColor='dark' as='div'>
+                        <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"Cashier"} labelColor='dark' as='div'>
                             Profile
                         </Sidebar.Item>
                     </Link>
