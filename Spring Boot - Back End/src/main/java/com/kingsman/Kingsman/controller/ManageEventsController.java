@@ -28,8 +28,8 @@ public class ManageEventsController {
     public ResponseEntity<?> deleteEventByEventID(@PathVariable String eventID) {
         try {
             // Delegate deletion logic to service layer
-            String deletedEventName = manageEventsService.deleteEventByEventID(eventID);
-            return new ResponseEntity<>("Event with name " + deletedEventName + " has been deleted", HttpStatus.OK);
+            manageEventsService.deleteEventByEventID(eventID);
+            return new ResponseEntity<>("Event has been deleted", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to delete event: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -50,8 +50,9 @@ public class ManageEventsController {
     public ResponseEntity<?> updateEventByEventID(@PathVariable String eventID, @RequestBody Event event) {
         try {
             // Delegate update logic to service layer
-            String updatedEventName = manageEventsService.updateEventByEventID(eventID, event);
-            return new ResponseEntity<>("Event with name " + updatedEventName + " has been updated", HttpStatus.OK);
+//            String updatedEventName = manageEventsService.updateEventByEventID(eventID, event);
+            manageEventsService.updateEventByEventID(eventID, event);
+            return new ResponseEntity<>("Event has been updated", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to update event: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
