@@ -32,6 +32,7 @@ public class ManageEventsService {
             throw new IllegalArgumentException("Event with ID " + eventID + " does not exist");
         }
         existingEvent.setEventDate(event.getEventDate());
+        existingEvent.setEventName(event.getEventName());
         existingEvent.setStartTime(event.getStartTime());
         existingEvent.setDuration(event.getDuration());
         existingEvent.setBudget(event.getBudget());
@@ -40,6 +41,6 @@ public class ManageEventsService {
         existingEvent.setTicketQuantity(event.getTicketQuantity());
         existingEvent.setDescription(event.getDescription());
         viewEventsRepository.save(existingEvent);
-        return existingEvent.getEventName();
+        return eventID;
     }
 }

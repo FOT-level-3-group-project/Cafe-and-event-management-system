@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { Label, TextInput, Alert } from 'flowbite-react';
 import { Table } from "flowbite-react";
-// import UpdateEvent from './UpdateEvent';
+import UpdateEventModal from './UpdateEventModal';
 
 const ViewAllEvents = () => {
     const [events, setEvents] = useState([]);
-    const [eventToUpdate, setEventToUpdate] = useState(null); // State to hold event details for update
-
-    const [errorMessage, setErrorMessage] = useState('');
-    const [durationErrorMessage, setDurationErrorMessage] = useState('');
-    const [budgetErrorMessage, setBudgetErrorMessage] = useState('');
-    const [ticketPriceErrorMessage, setTicketPriceErrorMessage] = useState('');
-    const [ticketQuantityErrorMessage, setTicketQuantityErrorMessage] = useState('');
+    const [showEvetntUpdateModal, setShowEventUpdateModal] = useState(false);
+    const [eventUpdate, setEventUpdate] = useState(null);
 
     //search bar
     const [searchQuery, setSearchQuery] = useState('');
@@ -36,6 +30,7 @@ const ViewAllEvents = () => {
         viewEvents();
     }, [searchQuery, searchCriteria]);
 
+    //Delete employee
     const handleDelete = async (eventID) => {
         if (window.confirm(`Are you sure you want to delete the event with event ID: ${eventID}?`)) {
             try {
@@ -46,6 +41,7 @@ const ViewAllEvents = () => {
             }
         }
     }
+
 
     const handleUpdate = async (eventID) => {
         try {
@@ -71,6 +67,7 @@ const ViewAllEvents = () => {
         }
     };
 
+
     //handle search
     const handleSearch = async () => {
         try {
@@ -86,6 +83,7 @@ const ViewAllEvents = () => {
             console.log(error.message);
         }
     };
+
 
     const handleChange = (e) => {
         // Update the eventToUpdate state with the new value based on the input's name
@@ -136,7 +134,15 @@ const ViewAllEvents = () => {
         }
     };
 
-    // Render form if eventToUpdate is not null
+    const handleUpdateClick = (event) => {
+        setEventUpdate(event);  
+        setShowEventUpdateModal(true);
+    };
+
+    const handleUpdateClose = () => {
+        setShowEventUpdateModal(false);
+    };
+
     if (eventToUpdate) {
         return (
             <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row w-full '>
@@ -231,65 +237,66 @@ const ViewAllEvents = () => {
                     <Link to="/manager?tab=add-event" className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 ml-2 rounded px-4">Add Event</Link>
                 </div>
             </div>
+         {/* Table */}
+      <div className="relative overflow-x-auto drop-shadow-lg bg-slate-50">
+        {/* <Table hoverable className='bg-gray-200 dark:bg-gray-700 dark:text-white overflow-x-auto mt-1' > */}
+        <Table hoverable >
+          <Table.Head>
+            <Table.HeadCell  className='bg-green-100'>ID</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>Name</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>Date</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>Starting Time</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>Duration (h)</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>Budget (Rs.)</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>Ticket Price (Rs.)</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>Quantity</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>Entertainer</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100'>Description</Table.HeadCell>
+            <Table.HeadCell  className='bg-green-100 text-center' colSpan={3} ></Table.HeadCell>
+          </Table.Head>
+          <Table.Body>
+            {events
+              .filter(event => {
+                // Filter events based on the search query
+                if (!searchQuery) {
+                  return true; // Return all events if there's no search query
+                } else {
+                  // Check if any of the event properties contain the search query
+                  return Object.values(event).some(value =>
+                    value && value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+                  );
+                }
+              })
+              .map((event, index) => (
+                <Table.Row key={event.eventID} className={index % 2 === 0 ? "bg-gray-100 dark:bg-gray-500 dark:text-white" : "bg-gray-150 dark:bg-gray-700 dark:text-white"} >
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.eventID}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.eventName}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.eventDate}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.startTime}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600' >{event.duration}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600' >{event.budget}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.ticketPrice}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.ticketQuantity}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.entertainer}</Table.Cell>
+                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.description}</Table.Cell>
+                  <Table.Cell className='dark:bg-gray-600'>
+                    <button onClick={() => handleUpdateClick(event)} className="font-medium text-blue-600 dark:text-blue-400 hover:scale-110 "  >Update</button>
+                  </Table.Cell>
+                  <Table.Cell className='dark:bg-gray-600'> 
+                    <button onClick={() => handleDelete(event.eventID)} className="font-medium text-red-800 dark:text-red-400 hover:scale-110">Remove</button>
+                  </Table.Cell>
+                  <Table.Cell className='dark:bg-gray-600'> 
+                    <button onClick={() => handleShare(event.eventID)} className="font-medium text-green-800 dark:text-green-400 hover:scale-110">Share</button>
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+          </Table.Body>
+        </Table>
 
-            {/* Table */}
-            <div className="relative overflow-x-auto drop-shadow-lg bg-slate-50 rounded-lg ">
-                {/* <Table hoverable className='bg-gray-200 dark:bg-gray-700 dark:text-white overflow-x-auto mt-1' > */}
-                <Table hoverable >
-                    <Table.Head>
-                        <Table.HeadCell className='bg-green-100'>ID</Table.HeadCell>
-                        <Table.HeadCell className='bg-green-100'>Name</Table.HeadCell>
-                        <Table.HeadCell className='bg-green-100'>Date</Table.HeadCell>
-                        <Table.HeadCell className='bg-green-100'>Starting Time</Table.HeadCell>
-                        <Table.HeadCell className='bg-green-100'>Duration (h)</Table.HeadCell>
-                        <Table.HeadCell className='bg-green-100'>Budget (Rs.)</Table.HeadCell>
-                        <Table.HeadCell className='bg-green-100'>Ticket Price (Rs.)</Table.HeadCell>
-                        <Table.HeadCell className='bg-green-100'>Quantity</Table.HeadCell>
-                        <Table.HeadCell className='bg-green-100'>Entertainer</Table.HeadCell>
-                        <Table.HeadCell className='bg-green-100'>Description</Table.HeadCell>
-                        <Table.HeadCell className='bg-green-100 text-center' colSpan={3} ></Table.HeadCell>
-                    </Table.Head>
-                    <Table.Body>
-                        {events
-                            .filter(event => {
-                                // Filter events based on the search query
-                                if (!searchQuery) {
-                                    return true; // Return all events if there's no search query
-                                } else {
-                                    // Check if any of the event properties contain the search query
-                                    return Object.values(event).some(value =>
-                                        value && value.toString().toLowerCase().includes(searchQuery.toLowerCase())
-                                    );
-                                }
-                            })
-                            .map((event, index) => (
-                                <Table.Row key={event.eventID} className={index % 2 === 0 ? "bg-gray-100 dark:bg-gray-500 dark:text-white" : "bg-gray-150 dark:bg-gray-700 dark:text-white"} >
-                                    <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.eventID}</Table.Cell>
-                                    <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.eventName}</Table.Cell>
-                                    <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.eventDate}</Table.Cell>
-                                    <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.startTime}</Table.Cell>
-                                    <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600' >{event.duration}</Table.Cell>
-                                    <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600' >{event.budget}</Table.Cell>
-                                    <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.ticketPrice}</Table.Cell>
-                                    <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.ticketQuantity}</Table.Cell>
-                                    <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.entertainer}</Table.Cell>
-                                    <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.description}</Table.Cell>
-                                    <Table.Cell className='dark:bg-gray-600'>
-                                        <button onClick={() => handleUpdate(event.eventID)} className="font-medium text-blue-600 dark:text-blue-400 hover:scale-110 "  >Update</button>
-                                    </Table.Cell>
-                                    <Table.Cell className='dark:bg-gray-600'>
-                                        <button onClick={() => handleDelete(event.eventID)} className="font-medium text-red-800 dark:text-red-400 hover:scale-110">Remove</button>
-                                    </Table.Cell>
-                                    <Table.Cell className='dark:bg-gray-600'>
-                                        <button onClick={() => handleShare(event.eventID)} className="font-medium text-green-800 dark:text-green-400 hover:scale-110">Share</button>
-                                    </Table.Cell>
-                                </Table.Row>
-                            ))}
-                    </Table.Body>
-                </Table>
-            </div>
-        </div>
-    );
+        {showEvetntUpdateModal && <UpdateEventModal event={eventUpdate} handleClose={handleUpdateClose} />}
+      </div>
+    </div>
+  );
 
 };
 

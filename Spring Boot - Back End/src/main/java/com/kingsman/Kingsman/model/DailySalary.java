@@ -17,8 +17,8 @@ public class DailySalary {
     private Float payPerHours;
     private Float totalHourPayment;
     private Float OTHours;
-    private Float payPerOTHours;
-    private Float totalOTHourPayment;
+    private Float payPerOvertimeHour;
+    private Float totalOvertimePayment;
     private Float grossPayment;
 
     public Long getId() {
@@ -85,20 +85,20 @@ public class DailySalary {
         this.OTHours = OTHours;
     }
 
-    public Float getPayPerOTHours() {
-        return payPerOTHours;
+    public Float getPayPerOvertimeHour() {
+        return payPerOvertimeHour;
     }
 
-    public void setPayPerOTHours(Float payPerOTHours) {
-        this.payPerOTHours = payPerOTHours;
+    public void setPayPerOvertimeHour(Float payPerOvertimeHour) {
+        this.payPerOvertimeHour = payPerOvertimeHour;
     }
 
-    public Float getTotalOTHourPayment() {
-        return totalOTHourPayment;
+    public Float getTotalOvertimePayment() {
+        return totalOvertimePayment;
     }
 
-    public void setTotalOTHourPayment(Float totalOTHourPayment) {
-        this.totalOTHourPayment = totalOTHourPayment;
+    public void setTotalOvertimePayment(Float totalOvertimePayment) {
+        this.totalOvertimePayment = totalOvertimePayment;
     }
 
     public Float getGrossPayment() {

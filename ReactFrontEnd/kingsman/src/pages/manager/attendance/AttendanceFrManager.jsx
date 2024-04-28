@@ -110,6 +110,8 @@ function AttendanceFrManager() {
       });
   };
 
+  const [showAlert, setShowAlert] = useState(false);
+
   // Function to handle confirm delete
   const handleConfirmDelete = () => {
     const { empId, date } = selectedAttendance;
@@ -118,6 +120,10 @@ function AttendanceFrManager() {
         console.log('Attendance deleted successfully:', response.data);
         setConfirmDelete(false);
         fetchAttendanceData(); // Reload attendance data
+        setShowAlert(true); // Show alert
+        setTimeout(() => {
+          setShowAlert(false); // Hide alert after 2 seconds
+        }, 1700);
       })
       .catch(error => {
         console.error('Error deleting attendance:', error);
@@ -262,11 +268,22 @@ function AttendanceFrManager() {
             ))}
           </Table.Body>
         </Table>
+
+            {/* Alert for successful deletion */}
+      {showAlert && (
+        <div className="mt-5 ml-10 mr-10">
+          <Alert color="info">
+            Attendance record deleted successfully!
+          </Alert>
+        </div>
+      )}
         {/* Pagination */}
         <div className="flex justify-center">
           <Pagination currentPage={currentPage} totalPages={Math.ceil(attendance.length / itemsPerPage)} onPageChange={onPageChange} />
         </div>
       </div>
+
+  
 
       {/* Date Range Modal */}
       <Modal show={showModal} size="md" popup onClose={() => setShowModal(false)} initialFocus={emailInputRef}>

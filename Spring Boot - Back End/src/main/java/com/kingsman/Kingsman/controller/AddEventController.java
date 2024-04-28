@@ -34,7 +34,7 @@ public class AddEventController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An event already exists on the same day");
         }
 
-        System.out.println(event.getEventID());
+        System.out.println(event.getEventID() + event.getDuration());
         // Save the event if there are no conflicts
         addEventRepository.save(event);
 
