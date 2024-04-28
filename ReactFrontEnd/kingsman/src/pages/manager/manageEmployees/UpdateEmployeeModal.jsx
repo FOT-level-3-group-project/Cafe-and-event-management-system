@@ -1,6 +1,5 @@
-import React from 'react';
+import React,  { useState } from 'react';
 import { Modal, Label, TextInput, Button, Alert } from 'flowbite-react';
-import { useState } from 'react';
 import axios from 'axios';
 import AddPositionModal from './AddPositionModal';
 
