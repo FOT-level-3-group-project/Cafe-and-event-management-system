@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@TableManage(name = "inventory_usage_log")
+@Table(name = "inventory_usage_log")
 public class InventoryItemUsageLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

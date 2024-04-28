@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@TableManage(name = "orders")
+@Table(name = "orders")
 public class Order {
 
     @Id
