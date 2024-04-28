@@ -11,9 +11,10 @@ import AddEvent from './manageEvents/AddEvent';
 import ViewAllEvents from './manageEvents/ViewAllEvents';
 import ManageOrders from './order/ManageOrders';
 import AttendanceFrManager from './attendance/AttendanceFrManager';
-// import UpdateEvent from './manageEvents/UpdateEvent';
-import { MonthlyIncome } from './monthlyIncome/MonthlyIncome';
+import MonthlyIncome from './IncomeStatement/MonthlyIncome';
+import AnnualIncome from './IncomeStatement/AnnualIncome';
 import ManagerDash from './ManagerDash';
+
 
 
 export default function Manager() {
@@ -35,21 +36,24 @@ export default function Manager() {
 
             {/* Inventory */}
             {tab === 'inventory' && <AllinventoryItem />}
+
             {/* profile */}
             {tab === 'profile' && <ManagerProfile />}
+
             {/* New Employee */}
             {tab === 'new-employee' && <RegisterEmployee />}
+
             {/* View All Employees */}
             {tab === 'view-all-employees' && <ViewAllEmployees />}
+
             {/* Add Event */}
             {tab === 'add-event' && <AddEvent />}
+            
             {/* View All Events */}
             {tab === 'view-all-events' && <ViewAllEvents />}
 
             {/* Manage Orders */}
             {tab === 'manage-orders' && <ManageOrders />}
-
-            {/* {tab === 'update-event' && <UpdateEvent/>} */}
 
             {/* Attendance */}
             {tab === 'attendance' && <AttendanceFrManager />}
@@ -60,6 +64,11 @@ export default function Manager() {
             {/* Dashboard */}
             {tab === 'dashboard' && <ManagerDash/>}
 
+            {/* income statement - monthly */}
+            {tab === 'monthly-income' && <MonthlyIncome />}
+
+            {/* income statement - annual */}
+            {tab === 'annual-income' && <AnnualIncome />}
 
         </div>
     )
