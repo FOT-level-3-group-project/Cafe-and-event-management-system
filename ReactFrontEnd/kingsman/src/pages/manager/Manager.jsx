@@ -70,6 +70,9 @@ export default function Manager() {
             {/* income statement - annual */}
             {tab === 'annual-income' && <AnnualIncome />}
 
+            {/* Table Manage */}
+            {tab === 'table-manage' && <div>Table Manage</div>}
+
         </div>
     )
 }

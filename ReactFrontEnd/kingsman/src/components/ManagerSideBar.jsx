@@ -12,6 +12,8 @@ import { MdEvent } from "react-icons/md";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { MdRestaurantMenu } from "react-icons/md";
 import { FaChartPie } from "react-icons/fa";
+import { MdOutlineTableBar } from "react-icons/md";
+import { IoSettings } from "react-icons/io5";
 
 
 export default function ManagerSideBar() {
@@ -67,13 +69,6 @@ export default function ManagerSideBar() {
                         </Sidebar.Item>
                     </Link>
 
-                    <Link to='/manager?tab=profile'>
-                        <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"Manager"} labelColor='dark' as='div'>
-                            Profile
-                        </Sidebar.Item>
-                    </Link>
-
-
                     <Link to='/manager?tab=manage-orders'>
                         <Sidebar.Item active={tab === 'manage-orders'} icon={MdRestaurantMenu} as='div'>
                            Manage Orders
@@ -89,6 +84,19 @@ export default function ManagerSideBar() {
                         </Link>
 
                     </Sidebar.Collapse>
+                    <Sidebar.Collapse label='Advance Settings' icon={IoSettings}>
+                        <Link to='/manager?tab=table-manage'>
+                            <Sidebar.Item active={tab === 'table-manage'} icon={MdOutlineTableBar} as='div'> Table Management </Sidebar.Item>
+                        </Link>
+
+                    </Sidebar.Collapse>
+                    
+
+                    <Link to='/manager?tab=profile'>
+                        <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"Manager"} labelColor='dark' as='div'>
+                            Profile
+                        </Sidebar.Item>
+                    </Link>
 
                     <Sidebar.Item icon={HiArrowSmRight} className='cursor-pointer' onClick={handleLogOut} >
                         Log Out
