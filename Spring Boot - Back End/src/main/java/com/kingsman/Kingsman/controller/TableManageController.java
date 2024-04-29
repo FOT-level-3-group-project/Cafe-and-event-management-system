@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -17,6 +18,7 @@ public class TableManageController {
 
     @PostMapping("/add")//add the table data
     ResponseEntity<String> addTable(@RequestBody TableManage table){
+        table.setDate(new Date());
         tableManageService.addTable(table);
         return ResponseEntity.ok("Successfully added Table");
     }
@@ -33,7 +35,11 @@ public class TableManageController {
         return ResponseEntity.ok("Table deleted successfully");
     }
 
-    
+    @PutMapping("/{id}/availability") // update table availability by ID
+    ResponseEntity<String> updateTableAvailability(@PathVariable Long id, @RequestParam boolean availability) {
+        tableManageService.updateTableAvailability(id, availability);
+        return ResponseEntity.ok("Table availability updated successfully");
+    }
 
 
 }
