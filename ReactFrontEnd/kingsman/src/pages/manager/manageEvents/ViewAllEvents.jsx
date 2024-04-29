@@ -92,87 +92,158 @@ const ViewAllEvents = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8 bg-gray-200 ">
-            <div className="container mx-auto px-4 py-2 flex justify-between items-center bg-white mb-5 rounded-lg shadow-lg">
-                <h1 className="text-2xl font-bold mb-2">Manage Events</h1>
+      <div className="flex flex-col w-full bg-gray-200">
+        <div className="flex items-center m-4 justify-between border-b bg-white dark:bg-gray-500 p-3 shadow-md rounded-md">
+          <h1 className="text-2xl font-bold mb-2">Manage Events</h1>
 
-                <div className="flex items-center">
-                    {/* Search bar */}
-                    <div className='flex-grow px-3 border rounded-full dark:bg-gray-600 '>
-                        <input
-                            type="search"
-                            placeholder="Search Event..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            id="search"
-                            className='flex-grow px-4 py-2 border-none outline-none focus:ring-0 dark:bg-gray-600 dark:text-white'
-                        />
-                    </div>
-
-                    {/* Add Event button */}
-                    <Link to="/manager?tab=add-event" className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 ml-2 rounded px-4">Add Event</Link>
-                </div>
+          <div className="flex items-center">
+            {/* Search bar */}
+            <div className="flex-grow px-3 border rounded-full dark:bg-gray-600 ">
+              <input
+                type="search"
+                placeholder="Search Event..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                id="search"
+                className="flex-grow px-4 py-2 border-none outline-none focus:ring-0 dark:bg-gray-600 dark:text-white"
+              />
             </div>
-         {/* Table */}
-      <div className="relative overflow-x-auto drop-shadow-lg bg-slate-50">
-        {/* <Table hoverable className='bg-gray-200 dark:bg-gray-700 dark:text-white overflow-x-auto mt-1' > */}
-        <Table hoverable >
-          <Table.Head>
-            <Table.HeadCell  className='bg-green-100'>ID</Table.HeadCell>
-            <Table.HeadCell  className='bg-green-100'>Name</Table.HeadCell>
-            <Table.HeadCell  className='bg-green-100'>Date</Table.HeadCell>
-            <Table.HeadCell  className='bg-green-100'>Starting Time</Table.HeadCell>
-            <Table.HeadCell  className='bg-green-100'>Duration (h)</Table.HeadCell>
-            <Table.HeadCell  className='bg-green-100'>Budget (Rs.)</Table.HeadCell>
-            <Table.HeadCell  className='bg-green-100'>Ticket Price (Rs.)</Table.HeadCell>
-            <Table.HeadCell  className='bg-green-100'>Quantity</Table.HeadCell>
-            <Table.HeadCell  className='bg-green-100'>Entertainer</Table.HeadCell>
-            <Table.HeadCell  className='bg-green-100'>Description</Table.HeadCell>
-            <Table.HeadCell  className='bg-green-100 text-center' colSpan={3} ></Table.HeadCell>
-          </Table.Head>
-          <Table.Body>
-            {events
-              .filter(event => {
-                // Filter events based on the search query
-                if (!searchQuery) {
-                  return true; // Return all events if there's no search query
-                } else {
-                  // Check if any of the event properties contain the search query
-                  return Object.values(event).some(value =>
-                    value && value.toString().toLowerCase().includes(searchQuery.toLowerCase())
-                  );
-                }
-              })
-              .map((event, index) => (
-                <Table.Row key={event.eventID} className={index % 2 === 0 ? "bg-gray-100 dark:bg-gray-500 dark:text-white" : "bg-gray-150 dark:bg-gray-700 dark:text-white"} >
-                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.eventID}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.eventName}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.eventDate}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.startTime}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600' >{event.duration}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600' >{event.budget}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.ticketPrice}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.ticketQuantity}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.entertainer}</Table.Cell>
-                  <Table.Cell className='text-black dark:text-slate-200 dark:bg-gray-600'>{event.description}</Table.Cell>
-                  <Table.Cell className='dark:bg-gray-600'>
-                    <button onClick={() => handleUpdateClick(event)} className="font-medium text-blue-600 dark:text-blue-400 hover:scale-110 "  >Update</button>
-                  </Table.Cell>
-                  <Table.Cell className='dark:bg-gray-600'> 
-                    <button onClick={() => handleDelete(event.eventID)} className="font-medium text-red-800 dark:text-red-400 hover:scale-110">Remove</button>
-                  </Table.Cell>
-                  <Table.Cell className='dark:bg-gray-600'> 
-                    <button onClick={() => handleShare(event.eventID)} className="font-medium text-green-800 dark:text-green-400 hover:scale-110">Share</button>
-                  </Table.Cell>
-                </Table.Row>
-              ))}
-          </Table.Body>
-        </Table>
 
-        {showEvetntUpdateModal && <UpdateEventModal event={eventToUpdate} handleClose={handleUpdateClose} />}
+            {/* Add Event button */}
+            <Link
+              to="/manager?tab=add-event"
+              className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 ml-2 rounded px-4"
+            >
+              Add Event
+            </Link>
+          </div>
+        </div>
+        {/* Table */}
+        <div className="m-4 relative overflow-x-auto shadow-md bg-white rounded-md">
+          <Table hoverable>
+            <Table.Head>
+              <Table.HeadCell className="bg-green-100">ID</Table.HeadCell>
+              <Table.HeadCell className="bg-green-100">Name</Table.HeadCell>
+              <Table.HeadCell className="bg-green-100">Date</Table.HeadCell>
+              <Table.HeadCell className="bg-green-100">
+                Starting Time
+              </Table.HeadCell>
+              <Table.HeadCell className="bg-green-100">
+                Duration (h)
+              </Table.HeadCell>
+              <Table.HeadCell className="bg-green-100">
+                Budget (Rs.)
+              </Table.HeadCell>
+              <Table.HeadCell className="bg-green-100">
+                Ticket Price (Rs.)
+              </Table.HeadCell>
+              <Table.HeadCell className="bg-green-100">Quantity</Table.HeadCell>
+              <Table.HeadCell className="bg-green-100">
+                Entertainer
+              </Table.HeadCell>
+              <Table.HeadCell className="bg-green-100">
+                Description
+              </Table.HeadCell>
+              <Table.HeadCell
+                className="bg-green-100 text-center"
+                colSpan={3}
+              ></Table.HeadCell>
+            </Table.Head>
+            <Table.Body>
+              {events
+                .filter((event) => {
+                  // Filter events based on the search query
+                  if (!searchQuery) {
+                    return true; // Return all events if there's no search query
+                  } else {
+                    // Check if any of the event properties contain the search query
+                    return Object.values(event).some(
+                      (value) =>
+                        value &&
+                        value
+                          .toString()
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase())
+                    );
+                  }
+                })
+                .map((event, index) => (
+                  <Table.Row
+                    key={event.eventID}
+                    className={
+                      index % 2 === 0
+                        ? "bg-gray-100 dark:bg-gray-500 dark:text-white"
+                        : "bg-gray-150 dark:bg-gray-700 dark:text-white"
+                    }
+                  >
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
+                      {event.eventID}
+                    </Table.Cell>
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
+                      {event.eventName}
+                    </Table.Cell>
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
+                      {event.eventDate}
+                    </Table.Cell>
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
+                      {event.startTime}
+                    </Table.Cell>
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
+                      {event.duration}
+                    </Table.Cell>
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
+                      {event.budget}
+                    </Table.Cell>
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
+                      {event.ticketPrice}
+                    </Table.Cell>
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
+                      {event.ticketQuantity}
+                    </Table.Cell>
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
+                      {event.entertainer}
+                    </Table.Cell>
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
+                      {event.description}
+                    </Table.Cell>
+                    <Table.Cell className="dark:bg-gray-600">
+                      <button
+                        onClick={() => handleUpdateClick(event)}
+                        className="font-medium text-blue-600 dark:text-blue-400 hover:scale-110 "
+                      >
+                        Update
+                      </button>
+                    </Table.Cell>
+                    <Table.Cell className="dark:bg-gray-600">
+                      <button
+                        onClick={() => handleDelete(event.eventID)}
+                        className="font-medium text-red-800 dark:text-red-400 hover:scale-110"
+                      >
+                        Remove
+                      </button>
+                    </Table.Cell>
+                    <Table.Cell className="dark:bg-gray-600">
+                      <button
+                        onClick={() => handleShare(event.eventID)}
+                        className="font-medium text-green-800 dark:text-green-400 hover:scale-110"
+                      >
+                        Share
+                      </button>
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+            </Table.Body>
+          </Table>
+
+          {showEvetntUpdateModal && (
+            <UpdateEventModal
+              event={eventToUpdate}
+              handleClose={handleUpdateClose}
+            />
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
 
 };
 
