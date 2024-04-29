@@ -9,6 +9,10 @@ const ViewAllEmployees = () => {
     const [employees, setEmployees] = useState([]);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [employeeUpdate, setEmployeeUpdate] = useState(null);
+    const [imageFileURL, setImageFileURL] = useState(null);
+    const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+    const [clickedImageURL, setClickedImageURL] = useState("");
+  
  
     //search bar
     const [searchQuery, setSearchQuery] = useState('');
@@ -91,13 +95,18 @@ const ViewAllEmployees = () => {
     const handleCloseModal = () => {
         setShowUpdateModal(false);
         setEmployeeUpdate(null);
-    };
+  };
+  
+  const handleImageClick = (imageUrl) => {
+    setClickedImageURL(imageUrl);
+    setIsImageModalOpen(true);
+  };
 
 
      return (
        <div className="flex flex-col w-full bg-gray-200">
          <div className="flex items-center m-4 justify-between border-b bg-white dark:bg-gray-500 p-3 shadow-md rounded-md">
-           <h1 className="text-2xl font-bold mb-3">Manage Employees</h1>
+           <h1 className="text-2xl font-bold mb-3">Employee Details</h1>
 
            <div className="flex items-center">
              {/* Search Bar */}
@@ -135,6 +144,8 @@ const ViewAllEmployees = () => {
              </Link>
            </div>
          </div>
+
+          {/* Update Employee Modal */}
          {showUpdateModal && (
            <UpdateEmployeeModal
              employee={employeeUpdate}
@@ -142,37 +153,36 @@ const ViewAllEmployees = () => {
            />
          )}
 
+         {/* Image Modal */}
+         {isImageModalOpen && (
+           <div className="fixed top-0 left-0 z-50 max-w-lg max-h-lg bg-black bg-opacity-75 ">
+             <div className="bg-white p-4 rounded-lg">
+               <img src={clickedImageURL} alt="Profile" className="max-w-full max-h-full" />
+               <button onClick={() => setIsImageModalOpen(false)}  className="absolute top-2 right-2 text-gray-700 hover:text-red-500 focus:outline-none" >
+                  X
+               </button>
+             </div>
+           </div>
+         )}
+
+
          {/* Table */}
          <div className="m-4 relative overflow-x-auto shadow-md bg-white rounded-md">
            <Table hoverable>
              <Table.Head>
-               <Table.HeadCell className="bg-green-100">
-                 Username
-               </Table.HeadCell>
-               <Table.HeadCell className="bg-green-100">Name</Table.HeadCell>
-               <Table.HeadCell className="bg-green-100">
-                 Job Role
-               </Table.HeadCell>
-               <Table.HeadCell className="bg-green-100">Contact</Table.HeadCell>
-               <Table.HeadCell className="bg-green-100">Email</Table.HeadCell>
-               <Table.HeadCell className="bg-green-100">Address</Table.HeadCell>
-               <Table.HeadCell className="bg-green-100">Gender</Table.HeadCell>
-               <Table.HeadCell className="bg-green-100">
-                 ID Number
-               </Table.HeadCell>
-               <Table.HeadCell className="bg-green-100">
-                 Joined Date
-               </Table.HeadCell>
-               <Table.HeadCell className="bg-green-100">
-                 Uniform Size
-               </Table.HeadCell>
-               <Table.HeadCell className="bg-green-100">
-                 Emergency Contact
-               </Table.HeadCell>
-               <Table.HeadCell
-                 className="bg-green-100"
-                 colSpan={2}
-               ></Table.HeadCell>
+               <Table.HeadCell className="bg-green-100"> rofile Picture </Table.HeadCell>
+               <Table.HeadCell className="bg-green-100"> Username </Table.HeadCell>
+               <Table.HeadCell className="bg-green-100"> Name </Table.HeadCell>
+               <Table.HeadCell className="bg-green-100"> Job Role </Table.HeadCell>
+               <Table.HeadCell className="bg-green-100"> Contact</Table.HeadCell>
+               <Table.HeadCell className="bg-green-100"> Email</Table.HeadCell>
+               <Table.HeadCell className="bg-green-100"> Address</Table.HeadCell>
+               <Table.HeadCell className="bg-green-100"> Gender</Table.HeadCell>
+               <Table.HeadCell className="bg-green-100"> ID Number </Table.HeadCell>
+               <Table.HeadCell className="bg-green-100"> Joined Date </Table.HeadCell>
+               <Table.HeadCell className="bg-green-100"> Uniform Size </Table.HeadCell>
+               <Table.HeadCell className="bg-green-100"> Emergency Contact </Table.HeadCell>
+               <Table.HeadCell className="bg-green-100" colSpan={2}> </Table.HeadCell>
              </Table.Head>
              <Table.Body className="divide-y">
                {employees
@@ -201,63 +211,29 @@ const ViewAllEmployees = () => {
                          : "bg-gray-150 dark:bg-gray-700 dark:text-white"
                      }
                    >
-                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                       {employee.username}
-                     </Table.Cell>
-                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{`${employee.first_name} ${employee.last_name}`}</Table.Cell>
-                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                       {employee.position}
-                     </Table.Cell>
-                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                       {employee.contact_number}
-                     </Table.Cell>
-                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                       {employee.email}
-                     </Table.Cell>
-                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                       {employee.address}
-                     </Table.Cell>
-                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                       {employee.gender}
-                     </Table.Cell>
-                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                       {employee.idNumber}
-                     </Table.Cell>
-                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                       {employee.joined_date}
-                     </Table.Cell>
-                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                       {employee.uniform_size}
-                     </Table.Cell>
-                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                       {employee.emergency_contact}
-                     </Table.Cell>
+                     <Table.Cell onClick={() => handleImageClick(employee.profilePicture)} style={{ cursor: 'pointer' }} className="text-black dark:text-slate-200 dark:bg-gray-600 ">
+                        <img src={employee.profilePicture} alt="Profile" className="rounded-full w-full h-full object-cover" />
+                      </Table.Cell>
+                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.username} </Table.Cell>
+                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{`${employee.first_name} ${employee.last_name}`} </Table.Cell>
+                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.position}</Table.Cell>
+                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.contact_number} </Table.Cell>
+                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.email}</Table.Cell>
+                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.address}</Table.Cell>
+                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.gender}</Table.Cell>
+                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.idNumber}</Table.Cell>
+                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.joined_date} </Table.Cell>
+                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.uniform_size}</Table.Cell>
+                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.emergency_contact}</Table.Cell>
                      <Table.Cell className="dark:bg-gray-600">
-                       {/* <button onClick={() => handleUpdateClick(employee)} className="font-medium text-blue-600 dark:text-blue-400 hover:scale-110">
-                                            Update
-                                        </button> */}
-
-                       <button
-                         onClick={() => handleUpdateClick(employee)}
-                         className={`font-medium text-blue-600 ${
-                           employee.position === "manager"
-                             ? "cursor-not-allowed text-gray-400"
-                             : "hover:scale-110"
-                         }`}
-                         disabled={employee.position === "manager"}
-                       >
-                         Update
+                       <button onClick={() => handleUpdateClick(employee)}
+                         className={`font-medium text-blue-600 ${employee.position === "manager"? "cursor-not-allowed text-gray-400": "hover:scale-110"}`}
+                          disabled={employee.position === "manager"} >
+                            Update
                        </button>
                      </Table.Cell>
                      <Table.Cell className="dark:bg-gray-600">
-                       <button
-                         onClick={() =>
-                           handleDelete(employee.id, employee.username)
-                         }
-                         className="font-medium text-red-800 dark:text-red-400 hover:scale-110"
-                       >
-                         Remove
-                       </button>
+                       <button onClick={() => handleDelete(employee.id, employee.username)} className="font-medium text-red-800 dark:text-red-400 hover:scale-110"> Remove </button>
                      </Table.Cell>
                    </Table.Row>
                  ))}
