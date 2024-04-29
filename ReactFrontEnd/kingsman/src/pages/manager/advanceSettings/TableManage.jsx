@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Card, Label, Button, Modal } from 'flowbite-react'
+import { Card, Label, Button, Modal, TextInput, } from 'flowbite-react'
 import axios from 'axios'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -11,16 +11,16 @@ export default function TableManage() {
     const [tables, setTable] = useState([]);
     const [deleteTableModel, setDeleteTableModel] = useState(false);
     const [tableToDelete, setTableToDelete] = useState(null);
-    
-    useEffect(() => {
+    const [addNewTableModel, setAddNewTableModel] = useState(false);
+    const [tableNumber, setTableNumber] = useState('');
 
+    useEffect(() => {
         fetchData();
     });
 
     const fetchData = async () => {
         try {
             const response = await axios.get("http://localhost:8080/api/table/all");
-            console.log(response.data);
             setTable(response.data)
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -44,9 +44,40 @@ export default function TableManage() {
         }
     }
 
+    const handleAddTabe = () => {
+        setAddNewTableModel(true);
+    }
+
+    const handleAddTable = async () => {
+        if (tableNumber) {
+            const newTable = {
+                tableNumber,
+                tableAvailability: true,
+                date: new Date()
+            };
+
+            try {
+                await axios.post("http://localhost:8080/api/table/add", newTable);
+                fetchData();
+                setAddNewTableModel(false);
+
+            } catch (error) {
+                console.error("Error adding data:", error);
+            }
+        }
+        else {
+            console.error("Please fill all the fields")
+        }
+    }
+
+
 
     return (
         <div className='bg-gray-200 p-5 w-full'>
+            <div className='flex justify-between bg-white dark:bg-gray-600 p-3 rounded-lg shadow-md mb-2'>
+                <Label className='text-2xl font-bold'>Table Management</Label>
+                <Button color="success" className=' bg-green-500' onClick={handleAddTabe}>Add Table </Button>
+            </div>
             <div className='flex flex-wrap'>
                 {tables.map(table => (
                     <div key={table.id} className=' w-52 h-auto ml-5 my-4'>
@@ -61,8 +92,11 @@ export default function TableManage() {
                                 Table Number: {table.tableNumber}
                             </Label>
                             <Label> {table.tableAvailability ? <Label className=' text-green-500'>Available</Label> : <Label className=' text-red-500'>Customer In the Table</Label>}</Label>
-                            <Link onClick={() => handleDeleteTablePopup(table.id)}><MdDelete color='red' className='' /></Link>
-                            {/* Add more table details here as needed */}
+                            {table.tableAvailability ? (
+                                <Link onClick={() => handleDeleteTablePopup(table.id)}>
+                                    <MdDelete color='red' />
+                                </Link>
+                            ) : (<MdDelete color="#dbd5d5"/>)}
                         </Card>
                     </div>
 
@@ -71,7 +105,7 @@ export default function TableManage() {
             {/* Delete table popup  */}
             {deleteTableModel &&
                 <div>
-                    <Modal show={deleteTableModel}size="md" onClose={() => setDeleteTableModel(false)} popup>
+                    <Modal show={deleteTableModel} size="md" onClose={() => setDeleteTableModel(false)} popup>
                         <Modal.Header />
                         <Modal.Body>
                             <div className="text-center">
@@ -91,6 +125,37 @@ export default function TableManage() {
                         </Modal.Body>
                     </Modal>
                 </div>}
+
+            {/* Add new table popup */}
+            {addNewTableModel &&
+                <div>
+                    <Modal show={addNewTableModel} size="md" onClose={() => setAddNewTableModel(false)} popup>
+                        <Modal.Header />
+                        <Modal.Body>
+                            <div >
+                                <div className="text-center">
+                                    <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                                        Add New Table
+                                    </h3>
+                                </div>
+                                <div>
+                                    <Label> Table Number : </Label>
+                                    <TextInput placeholder="Table Number" onChange={(e) => setTableNumber(e.target.value)} />
+                                </div>
+                                <div className="flex justify-center gap-4 mt-3">
+                                    <Button color="success" className=' bg-green-500' onClick={handleAddTable}>
+                                        {"Add Table"}
+                                    </Button>
+                                    <Button color="gray" onClick={() => setAddNewTableModel(false)}>
+                                        Cancel
+                                    </Button>
+                                </div>
+                            </div>
+                        </Modal.Body>
+                    </Modal>
+                </div>}
+
+
         </div>
     )
 }
