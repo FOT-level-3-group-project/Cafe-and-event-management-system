@@ -128,7 +128,7 @@ const OrderPDF = ({ order }) => {
         hours = hours % 12 || 12; // Convert hours to 12-hour format
         const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes} ${amOrPm}`;
         return formattedDateTime;
-    };
+    }; 
     
 
     return (
@@ -141,9 +141,9 @@ const OrderPDF = ({ order }) => {
                             <Image src={logoImage} style={{ width: 200, height: 100 }} />
                             <View>
                                <Text style={{ fontWeight:900 }}>Kingsman Cafe & Events</Text>
-                                <Text>No 10, Church St, Galle. 80000</Text>
+                                <Text>Polwathumodara,Mirissa</Text>
                                 <Text>contact@kingsman.lk</Text>
-                                <Text>011 2 644 320, 074 230 9089</Text>
+                                <Text>+94 777998768, +94 772888452</Text>
                             </View>
                         </View>
 
