@@ -4,7 +4,9 @@ import { Table, Button, Modal, TextInput, Label, Pagination, Alert } from "flowb
 import { FaUserEdit, FaTrash } from "react-icons/fa"; // Importing user edit icon
 import { DeleteConfirmationModal } from "./DeleteConfirmationModal"; // Import the new confirmation modal component
 import { HiInformationCircle } from "react-icons/hi";
-
+import { FaDownload } from "react-icons/fa6";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 function AttendanceFrManager() {
   const [attendance, setAttendance] = useState([]); // State to hold attendance data
@@ -184,7 +186,33 @@ function AttendanceFrManager() {
 
 
 
-
+  const downloadPDF = () => {
+    // Initialize jsPDF
+    const doc = new jsPDF();
+  
+    // Set up table headers
+    const headers = [["#", "EMP ID", "EMP Name", "Position", "Date", "In Time", "Out Time"]];
+  
+    // Extract table data
+    const data = currentItems.map((employee, index) => [
+      indexOfFirstItem + index + 1,
+      employee.empId,
+      employee.empName,
+      employee.position,
+      employee.date,
+      employee.inTime,
+      employee.outTime
+    ]);
+  
+    // Add headers and data to PDF
+    doc.autoTable({
+      head: headers,
+      body: data
+    });
+  
+    // Save the PDF
+    doc.save("attendance.pdf");
+  };
 
   return (
 
@@ -228,14 +256,23 @@ function AttendanceFrManager() {
       <div className="m-4 shadow-md bg-white rounded-md">
         <Table hoverable className="mb-5 ">
           <Table.Head>
-            <Table.HeadCell className=" bg-green-100">#</Table.HeadCell>
-            <Table.HeadCell className=" bg-green-100">EMP ID</Table.HeadCell>
-            <Table.HeadCell className=" bg-green-100">EMP Name</Table.HeadCell>
-            <Table.HeadCell className=" bg-green-100">Position</Table.HeadCell>
-            <Table.HeadCell className=" bg-green-100">Date</Table.HeadCell>
-            <Table.HeadCell className=" bg-green-100">In Time</Table.HeadCell>
-            <Table.HeadCell className=" bg-green-100">Out Time</Table.HeadCell>
-            <Table.HeadCell className=" bg-green-100">Action</Table.HeadCell>
+
+            <Table.HeadCell>#</Table.HeadCell>
+            <Table.HeadCell>EMP ID</Table.HeadCell>
+            <Table.HeadCell>EMP Name</Table.HeadCell>
+            <Table.HeadCell>Position</Table.HeadCell>
+            <Table.HeadCell>Date</Table.HeadCell>
+            <Table.HeadCell>In Time</Table.HeadCell>
+            <Table.HeadCell>Out Time</Table.HeadCell>
+            <Table.HeadCell>
+              <div className="flex gap-4 justify-center">
+              <div>Action</div>
+              <div><FaDownload className="text-blue-500 mr-3 hover:text-blue-700 cursor-pointer text-lg" onClick={downloadPDF} /></div>
+
+              </div>
+              
+            </Table.HeadCell>
+
           </Table.Head>
           <Table.Body className="divide-y">
             {currentItems.map((employee, index) => (
