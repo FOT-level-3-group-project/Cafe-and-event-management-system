@@ -4,8 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AddPositionModal from './AddPositionModal';
 
-const allowedPositions = ['Waiter', 'Chef', 'Cashier'];
-
 export default function RegisterEmployee() {
     const [formData, setFormData] = useState({
             first_name: '',
@@ -209,7 +207,7 @@ export default function RegisterEmployee() {
 
                         <div>
                             <Label value='Username*' />
-                            <TextInput type='text' placeholder='Username' id='Username' value={formData.username} onChange={handleChange} name="username" required disabled={!allowedPositions.includes(formData.position)}/>
+                            <TextInput type='text' placeholder='Username' id='Username' value={formData.username} onChange={handleChange} name="username" required />
                         </div>
 
                         <div>
@@ -268,7 +266,7 @@ export default function RegisterEmployee() {
                          
                         <div>
                             <Label value='Password' />
-                            <TextInput type='text' placeholder='Password' id='Password' value={formData.password} disabled={!allowedPositions.includes(formData.position)}/>
+                            <TextInput type='text' placeholder='Password' id='Password' value={formData.password} />
                         </div>
                     </div>
 
