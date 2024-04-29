@@ -153,24 +153,30 @@ const ViewAllEmployees = () => {
            />
          )}
 
-         {/* Image Modal */}
-         {isImageModalOpen && (
-           <div className="fixed top-0 left-0 z-50 max-w-lg max-h-lg bg-black bg-opacity-75 ">
-             <div className="bg-white p-4 rounded-lg">
-               <img src={clickedImageURL} alt="Profile" className="max-w-full max-h-full" />
-               <button onClick={() => setIsImageModalOpen(false)}  className="absolute top-2 right-2 text-gray-700 hover:text-red-500 focus:outline-none" >
-                  X
-               </button>
-             </div>
-           </div>
-         )}
+         <div className='flex justify-center'>
+            {/* Image Modal */}
+            {isImageModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+                    <div className="max-w-sm max-h-lg bg-slate-100 rounded-lg relative">
+                        <img src={clickedImageURL} alt="Profile" className="max-w-full max-h-full" />
+                        <button
+                            onClick={() => setIsImageModalOpen(false)}
+                            className="absolute top-2 right-2 text-gray-700 hover:text-red-500 focus:outline-none"
+                        >
+                            X
+                        </button>
+                    </div>
+                </div>
+            )}
+        </div>
+
 
 
          {/* Table */}
          <div className="m-4 relative overflow-x-auto shadow-md bg-white rounded-md">
            <Table hoverable>
              <Table.Head>
-               <Table.HeadCell className="bg-green-100"> rofile Picture </Table.HeadCell>
+               <Table.HeadCell className="bg-green-100"> Profile Picture </Table.HeadCell>
                <Table.HeadCell className="bg-green-100"> Username </Table.HeadCell>
                <Table.HeadCell className="bg-green-100"> Name </Table.HeadCell>
                <Table.HeadCell className="bg-green-100"> Job Role </Table.HeadCell>

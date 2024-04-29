@@ -111,7 +111,8 @@ const UpdateEmployeeModal = ({ employee, handleClose }) => {
 
    
     return (
-        <Modal show={true} size="md" onClose={handleClose} popup>
+         <Modal show={true} size="md" onClose={handleClose} popup className="flex items-center justify-center">
+            {/* Modal Content */}
             <Modal.Header>
                 <h1 className="text-3xl font-bold mb-4 text-center">Update Employee</h1>
             </Modal.Header>
