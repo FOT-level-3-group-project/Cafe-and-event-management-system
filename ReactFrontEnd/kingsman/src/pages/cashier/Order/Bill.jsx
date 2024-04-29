@@ -189,7 +189,7 @@ export default function Bill() {
                     {/* Side Bar*/}
                     <div className="h-full  w-full">                            
                         <div className="flex justify-between">
-                            <div className="w-1/2 p-6 mr-1 rounded-lg border bg-white mb-3 shadow-md md:mt-0 text-sm dark:bg-gray-600 dark: border-none">
+                            <div className={`p-6 mr-1 rounded-lg border bg-white mb-3 shadow-md md:mt-0 text-sm dark:bg-gray-600  ${customerData && Object.keys(customerData).length > 0 ? 'w-1/2' : 'w-full'}`}> 
                                 <div>
                                     <h4 className="font-bold">Bill Details</h4>
                                     <hr className="my-1" />
@@ -253,11 +253,13 @@ export default function Bill() {
                                                     <td className="p-1 whitespace-nowrap">
                                                         <div className="text-left">
                                                             {tableNumber !== 0 ? (
-                                                                {tableNumber}
+                                                                // Convert tableNumber to string  before rendering
+                                                                tableNumber.toString() 
                                                             ) : (
                                                                 "No Table Assigned"
                                                             )}
-                                                            </div>
+
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -266,64 +268,65 @@ export default function Bill() {
                                 </div>
                             </div>
                             
-
-                            <div className="w-1/2 ml-1 p-6 rounded-lg border bg-white mb-3 shadow-md md:mt-0 text-sm dark:bg-gray-600 dark: border-none">
-                                <div>
-                                    <h4 className="font-bold">Customer Details</h4>
-                                    <hr className="my-2" />
-                                </div>
-                                <div className="rounded  pt-1">
-                                    <div className="w-full flex flex-col mb-2">
-                                        <div className="w-full flex justify-between">
-                                            <div className="w-1/2 mb-6 md:mb-0 mr-1">
+                            {customerData && Object.keys(customerData).length > 0  && (
+                                <div className="w-1/2 ml-1 p-6 rounded-lg border bg-white mb-3 shadow-md md:mt-0 text-sm dark:bg-gray-600 dark: border-none">
+                                    <div>
+                                        <h4 className="font-bold">Customer Details</h4>
+                                        <hr className="my-2" />
+                                    </div>
+                                    <div className="rounded  pt-1">
+                                        <div className="w-full flex flex-col mb-2">
+                                            <div className="w-full flex justify-between">
+                                                <div className="w-1/2 mb-6 md:mb-0 mr-1">
+                                                    <label
+                                                        className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
+                                                        htmlFor="grid-name"
+                                                    >
+                                                        Name
+                                                    </label>
+                                                    <input
+                                                        className="appearance-none block w-full bg-transparent text-grey-darker rounded py-2 px-4 mb-3 selection:border-none focus:outline-none  focus:border-black focus:ring-0 dark:border-grey-darker dark:focus:border-gray-500"
+                                                        id="grid-name"
+                                                        type="text"
+                                                        value={customerData.cusName}
+                                                        readOnly
+                                                    />
+                                                </div>
+                                                <div className="w-1/2 mb-6 md:mb-0 mx-auto ml-1">
+                                                    <label
+                                                        className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
+                                                        htmlFor="grid-mobile"
+                                                    >
+                                                        Mobile
+                                                    </label>
+                                                    <input
+                                                        className="appearance-none block w-full bg-transparent text-grey-darker border rounded py-2 px-4 mb-3 selection:border-none focus:outline-none  focus:border-black focus:ring-0 dark:border-grey-darker dark:focus:border-gray-500"
+                                                        id="grid-mobile"
+                                                        type="text"
+                                                        value={customerData.cusMobile}
+                                                        readOnly
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="w-full mb-6 md:mb-0">
                                                 <label
                                                     className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
-                                                    htmlFor="grid-name"
+                                                    htmlFor="grid-email"
                                                 >
-                                                    Name
+                                                    Email
                                                 </label>
                                                 <input
-                                                    className="appearance-none block w-full bg-transparent text-grey-darker rounded py-2 px-4 mb-3 selection:border-none focus:outline-none  focus:border-black focus:ring-0 dark:border-grey-darker dark:focus:border-gray-500"
-                                                    id="grid-name"
-                                                    type="text"
-                                                    value={customerData.cusName}
+                                                    className=" appearance-none block w-full bg-transparent text-grey-darker border rounded py-2 px-4 mb-3 selection:border-none focus:outline-none  focus:border-black focus:ring-0 dark:border-grey-darker dark:focus:border-gray-500"
+                                                    id="grid-email"
+                                                    type="email"
+                                                    value={customerData.cusEmail}
                                                     readOnly
                                                 />
                                             </div>
-                                            <div className="w-1/2 mb-6 md:mb-0 mx-auto ml-1">
-                                                <label
-                                                    className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
-                                                    htmlFor="grid-mobile"
-                                                >
-                                                    Mobile
-                                                </label>
-                                                <input
-                                                    className="appearance-none block w-full bg-transparent text-grey-darker border rounded py-2 px-4 mb-3 selection:border-none focus:outline-none  focus:border-black focus:ring-0 dark:border-grey-darker dark:focus:border-gray-500"
-                                                    id="grid-mobile"
-                                                    type="text"
-                                                    value={customerData.cusMobile}
-                                                    readOnly
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="w-full mb-6 md:mb-0">
-                                            <label
-                                                className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
-                                                htmlFor="grid-email"
-                                            >
-                                                Email
-                                            </label>
-                                            <input
-                                                className=" appearance-none block w-full bg-transparent text-grey-darker border rounded py-2 px-4 mb-3 selection:border-none focus:outline-none  focus:border-black focus:ring-0 dark:border-grey-darker dark:focus:border-gray-500"
-                                                id="grid-email"
-                                                type="email"
-                                                value={customerData.cusEmail}
-                                                readOnly
-                                            />
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
 
                         <div className="flex justify-between">
