@@ -5,6 +5,8 @@ import com.kingsman.Kingsman.repository.TableManageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TableManageService {
     @Autowired
@@ -12,5 +14,15 @@ public class TableManageService {
     public void addTable(TableManage table){
         tableManageRepository.save(table);
 
+    }
+
+    // Method to retrieve all tables
+    public List<TableManage> getAllTables() {
+        return tableManageRepository.findAll();
+    }
+
+    // Method to delete tables by id
+    public void deleteTableById(Long id){
+        tableManageRepository.deleteById(id);
     }
 }
