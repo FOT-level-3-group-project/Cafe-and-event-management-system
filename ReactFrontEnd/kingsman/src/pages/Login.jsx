@@ -53,6 +53,8 @@ export default function Login() {
             if (response.status === 200) {
                 dispatch(logInSuccess(data));
                 console.log("data stored in redux");
+
+                console.log("Position:", employee.position);
                 
                     if ((employee.position) === 'manager') { // Check the user's position
                         navigate('/manager?tab=dashboard');
@@ -63,6 +65,9 @@ export default function Login() {
                     } else if ((employee.position) === 'waiter') {
                         navigate('/waiter?tab=dashboard');
                     }
+                    // else {
+                    //     navigate('/updateProfile');
+                    // }
             }
         } catch (error) {
             setError("Invalid username or password");

@@ -11,6 +11,7 @@ const ViewAllEmployees = () => {
     const [employeeUpdate, setEmployeeUpdate] = useState(null);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [clickedImageURL, setClickedImageURL] = useState("");
+    const defaultPropic = 'https://upload.wikimedia.org/wikipedia/commons/6/67/User_Avatar.png';
  
     //search bar
     const [searchQuery, setSearchQuery] = useState('');
@@ -103,12 +104,14 @@ const ViewAllEmployees = () => {
     const handleCloseModal = () => {
         setShowUpdateModal(false);
         setEmployeeUpdate(null);
-  };
+    };
   
-  const handleImageClick = (imageUrl) => {
-    setClickedImageURL(imageUrl);
-    setIsImageModalOpen(true);
-  };
+    const handleImageClick = (imageUrl) => {
+      if (imageUrl && imageUrl !== defaultPropic) {
+          setClickedImageURL(imageUrl);
+          setIsImageModalOpen(true);
+      }
+    };
 
 
      return (
@@ -131,17 +134,17 @@ const ViewAllEmployees = () => {
              {/* Job Role filter */}
              <div className="ml-2">
               <select
-  value={selectedJobRole}
-  onChange={(e) => setSelectedJobRole(e.target.value)}
-  className="py-2 px-4 bg-white border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
->
-  <option value="">All Job Roles</option>
-  {jobRoles.map((role, index) => (
-    <option key={index} value={role}>
-      {role}
-    </option>
-  ))}
-</select>
+                value={selectedJobRole}
+                onChange={(e) => setSelectedJobRole(e.target.value)}
+                className="py-2 px-4 bg-white border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="">All Job Roles</option>
+                {jobRoles.map((role, index) => (
+                  <option key={index} value={role}>
+                    {role}
+                  </option>
+                ))}
+              </select>
 
             </div>
 
@@ -228,7 +231,18 @@ const ViewAllEmployees = () => {
                      }
                    >
                      <Table.Cell onClick={() => handleImageClick(employee.profilePicture)} style={{ cursor: 'pointer' }} className="text-black dark:text-slate-200 dark:bg-gray-600 ">
-                        <img src={employee.profilePicture} alt="Profile" className="rounded-full w-full h-full object-cover" />
+                         {employee.profilePicture ? (
+                          <img
+                            src={employee.profilePicture}
+                            className="rounded-full w-full h-full object-cover"
+                          />
+                        ) : (
+                          <img
+                            src={defaultPropic}
+                            className="rounded-full w-full h-full object-cover opacity-50"
+                          />
+                        )}
+
                       </Table.Cell>
                      <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.username} </Table.Cell>
                      <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{`${employee.first_name} ${employee.last_name}`} </Table.Cell>
