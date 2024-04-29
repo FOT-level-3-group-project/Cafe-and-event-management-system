@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -25,6 +26,12 @@ public class ManageEmployeeController {
     @GetMapping("manage-employees")
     public List<Employee> getAllEmployees() {
         return manageEmployeeService.getAllEmployees();
+    }
+
+    @GetMapping("job-roles")
+    public ResponseEntity<Set<String>> getAllJobPositions() {
+        Set<String> jobPositions = manageEmployeeService.getAllJobPositions();
+        return ResponseEntity.ok(jobPositions);
     }
 
     @DeleteMapping("/delete/{id}")

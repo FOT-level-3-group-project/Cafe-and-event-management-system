@@ -9,10 +9,8 @@ const ViewAllEmployees = () => {
     const [employees, setEmployees] = useState([]);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [employeeUpdate, setEmployeeUpdate] = useState(null);
-    const [imageFileURL, setImageFileURL] = useState(null);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [clickedImageURL, setClickedImageURL] = useState("");
-  
  
     //search bar
     const [searchQuery, setSearchQuery] = useState('');
@@ -21,6 +19,7 @@ const ViewAllEmployees = () => {
 
     //filter by job role
     const [selectedJobRole, setSelectedJobRole] = useState('');
+    const [jobRoles, setJobRoles] = useState([]);
 
     useEffect(() => {
         const ViewAllEmployees = async () => {
@@ -45,9 +44,18 @@ const ViewAllEmployees = () => {
             catch (error) {
                 console.log(err.message);
             }
-        }
+        };
+        const fetchJobRoles = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/user/job-roles');
+                setJobRoles(response.data); // Assuming the response is an array of job roles
+            }catch (error) {
+                console.error('Failed to fetch job roles:', error);
+            }
+         };
         ViewAllEmployees();
-    }, [searchQuery, searchCriteria, selectedJobRole]);
+        fetchJobRoles();
+    }, []);
 
     //Delete employee
     const handleDelete = async (id, username) => {
@@ -122,18 +130,20 @@ const ViewAllEmployees = () => {
 
              {/* Job Role filter */}
              <div className="ml-2">
-               <select
-                 value={selectedJobRole}
-                 onChange={(e) => setSelectedJobRole(e.target.value)}
-                 className="py-2 px-4 bg-white border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-               >
-                 <option value="">All Job Roles</option>
-                 <option value="manager">Manager</option>
-                 <option value="cashier">Cashier</option>
-                 <option value="chef">Chef</option>
-                 <option value="waiter">Waiter</option>
-               </select>
-             </div>
+              <select
+  value={selectedJobRole}
+  onChange={(e) => setSelectedJobRole(e.target.value)}
+  className="py-2 px-4 bg-white border border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+>
+  <option value="">All Job Roles</option>
+  {jobRoles.map((role, index) => (
+    <option key={index} value={role}>
+      {role}
+    </option>
+  ))}
+</select>
+
+            </div>
 
              {/* Add Employee button */}
              <Link
