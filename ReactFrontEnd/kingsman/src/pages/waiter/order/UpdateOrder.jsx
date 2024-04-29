@@ -63,7 +63,7 @@ export default function UpdateOrder() {
                         setDiscountPercentage(discountPercentage);
                         setTotalAfterDiscount(totalAfterDiscount);
                         if(customer){
-                            setCustomerData(customer);
+                            setCustomerData(customer);     //details tika set wenawa
                         }
                     }else {
                         window.location.href = "/waiter?tab=manage-orders&error=order-not-found";
@@ -386,7 +386,7 @@ export default function UpdateOrder() {
                                         <div key={item.foodId} onClick={() => { OpenQuantityModal(); handleSelectedFoodItem(item); }} className="bg-white shadow-md rounded-lg text-gray-600 hover:bg-green-400 hover:text-white dark:bg-gray-600 dark:hover:bg-green-400 flex flex-col">
                                             <img
                                             className="rounded-t-lg w-full h-40 object-cover"
-                                            src={item.foodImageURL}
+                                            src={`http://localhost:8080/api/food/image/${item.foodImageURL}`}
                                             alt={item.foodName}
                                             />
                                             <div className="px-5 pt-2 pb-3">

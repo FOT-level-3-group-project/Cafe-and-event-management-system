@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ManageEmployeeService {
@@ -36,6 +38,12 @@ public class ManageEmployeeService {
         manageEmployeeRepository.save(existingEmployee);
 
         return existingEmployee.getUsername();
+    }
+
+    public Set<String> getAllJobPositions() {
+        return manageEmployeeRepository.findAll().stream()
+                .map(Employee::getPosition)
+                .collect(Collectors.toSet());
     }
 
 }
