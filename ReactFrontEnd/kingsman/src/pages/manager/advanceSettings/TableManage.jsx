@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
-import { Card, Label, Button, Modal, TextInput, } from 'flowbite-react'
+import { Card, Label, Button, Modal, TextInput, Alert } from 'flowbite-react'
 import axios from 'axios'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MdDelete } from "react-icons/md";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { set } from 'firebase/database'
+import { HiInformationCircle } from "react-icons/hi";
 
 export default function TableManage() {
     const [tables, setTable] = useState([]);
@@ -13,20 +14,33 @@ export default function TableManage() {
     const [tableToDelete, setTableToDelete] = useState(null);
     const [addNewTableModel, setAddNewTableModel] = useState(false);
     const [tableNumber, setTableNumber] = useState('');
-
+    const [errorAddingTableAlert, setErrorAddingTableAlert] = useState(false);
+   
     useEffect(() => {
         fetchData();
-    });
+    }, []);
+    
+    useEffect(() => {
+        // Hide the alert after 2 seconds
+        const timeout = setTimeout(() => {
+            setErrorAddingTableAlert(false);
+        }, 2000);
+
+        // Clear the timeout when the component unmounts
+        return () => clearTimeout(timeout);
+    }, [errorAddingTableAlert]);
 
     const fetchData = async () => {
         try {
             const response = await axios.get("http://localhost:8080/api/table/all");
             setTable(response.data)
+            console.log(response.data)
         } catch (error) {
             console.error("Error fetching data:", error);
-        } finally {
-        }
+        } 
     }
+
+    
 
     const handleDeleteTablePopup = async (id) => {
         setDeleteTableModel(true);
@@ -57,12 +71,13 @@ export default function TableManage() {
             };
 
             try {
-                await axios.post("http://localhost:8080/api/table/add", newTable);
+                const response = await axios.post("http://localhost:8080/api/table/add", newTable);
+                console.log(response.data); // Log the response message
                 fetchData();
                 setAddNewTableModel(false);
 
             } catch (error) {
-                console.error("Error adding data:", error);
+                setErrorAddingTableAlert(true)
             }
         }
         else {
@@ -96,7 +111,7 @@ export default function TableManage() {
                                 <Link onClick={() => handleDeleteTablePopup(table.id)}>
                                     <MdDelete color='red' />
                                 </Link>
-                            ) : (<MdDelete color="#dbd5d5"/>)}
+                            ) : (<MdDelete color="#dbd5d5" />)}
                         </Card>
                     </div>
 
@@ -142,6 +157,16 @@ export default function TableManage() {
                                     <Label> Table Number : </Label>
                                     <TextInput placeholder="Table Number" onChange={(e) => setTableNumber(e.target.value)} />
                                 </div>
+                                
+                                {/* Table alredy exist alert */}
+                                {errorAddingTableAlert && (
+                                    <div>
+                                        <Alert color="failure" icon={HiInformationCircle}>
+                                            <span className="font-medium">The table {tableNumber} already Added!</span> 
+                                        </Alert>
+
+                                    </div>
+                                )}
                                 <div className="flex justify-center gap-4 mt-3">
                                     <Button color="success" className=' bg-green-500' onClick={handleAddTable}>
                                         {"Add Table"}
@@ -151,9 +176,13 @@ export default function TableManage() {
                                     </Button>
                                 </div>
                             </div>
+
+
                         </Modal.Body>
                     </Modal>
-                </div>}
+                </div>
+            }
+
 
 
         </div>

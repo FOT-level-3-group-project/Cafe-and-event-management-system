@@ -3,6 +3,8 @@ package com.kingsman.Kingsman.controller;
 import com.kingsman.Kingsman.model.TableManage;
 import com.kingsman.Kingsman.service.TableManageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +20,14 @@ public class TableManageController {
 
     @PostMapping("/add")//add the table data
     ResponseEntity<String> addTable(@RequestBody TableManage table){
-        table.setDate(new Date());
-        tableManageService.addTable(table);
-        return ResponseEntity.ok("Successfully added Table");
+        try {
+            table.setDate(new Date());
+            tableManageService.addTable(table);
+            return ResponseEntity.ok("Successfully added Table");
+        } catch (DataIntegrityViolationException e) {
+            // Handle the case where a table with the same tableNumber already exists
+            return ResponseEntity.ok("Table with the same tableNumber already exists");
+        }
     }
 
     @GetMapping("/all")//get all the table data

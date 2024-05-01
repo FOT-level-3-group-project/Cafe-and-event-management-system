@@ -14,8 +14,16 @@ public class TableManageService {
     @Autowired
     TableManageRepository tableManageRepository;
     public void addTable(TableManage table){
-        table.setDate(new Date());
-        tableManageRepository.save(table);
+        // Check if the tableNumber is already in use
+        if (tableManageRepository.existsByTableNumber(table.getTableNumber())) {
+            throw new RuntimeException("Table with the same tableNumber already exists");
+        }else {
+            // Set the current date
+            table.setDate(new Date());
+            tableManageRepository.save(table);
+        }
+
+
 
     }
 
