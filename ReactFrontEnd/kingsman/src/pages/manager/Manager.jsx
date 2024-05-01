@@ -14,6 +14,7 @@ import AttendanceFrManager from './attendance/AttendanceFrManager';
 import MonthlyIncome from './IncomeStatement/MonthlyIncome';
 import AnnualIncome from './IncomeStatement/AnnualIncome';
 import ManagerDash from './ManagerDash';
+import TableManage from './advanceSettings/TableManage';
 
 
 
@@ -71,7 +72,7 @@ export default function Manager() {
             {tab === 'annual-income' && <AnnualIncome />}
 
             {/* Table Manage */}
-            {tab === 'table-manage' && <div>Table Manage</div>}
+            {tab === 'table-manage' && <TableManage/>}
 
         </div>
     )

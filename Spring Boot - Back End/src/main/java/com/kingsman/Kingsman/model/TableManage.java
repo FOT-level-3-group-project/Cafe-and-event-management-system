@@ -13,7 +13,9 @@ public class TableManage {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
+
     int tableNumber;
+
     boolean tableAvailability;
     Date date;
 }
