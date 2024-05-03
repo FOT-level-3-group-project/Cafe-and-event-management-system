@@ -8,6 +8,8 @@ export default function ManageOrder() {
     const [searchCriteria, setSearchCriteria] = useState('name');
     const [selectedOrder, setSelectedOrder] = useState(null); 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(14);
 
     useEffect(() => {
         fetchOrders();
@@ -32,25 +34,14 @@ export default function ManageOrder() {
                 toast('Order Deleted Successfully!', {
                     icon: <i className="ri-delete-bin-6-fill"></i>,
                 });
-                //remove the deleted order from the state
                 setOrders(orders.filter(order => order.orderId !== orderId));
                 setIsDeleteModalOpen(false);
             } else {
-                toast.error(
-                    "Something has error. \n Please Contact System Support.",
-                    {
-                      duration: 6000,
-                    }
-                  )
+                toast.error("Something has error. \n Please Contact System Support.", { duration: 6000 });
                 console.error('Failed to delete order:', response);
             }
         } catch (error) {
-            toast.error(
-                "Something has error. \n Please Contact System Support.",
-                {
-                  duration: 6000,
-                }
-              )
+            toast.error("Something has error. \n Please Contact System Support.", { duration: 6000 });
             console.error('Error deleting order:', error);
         }
     };
@@ -68,7 +59,11 @@ export default function ManageOrder() {
             return true;
         }
     });
-    
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -85,7 +80,18 @@ export default function ManageOrder() {
         setSelectedOrder(order);
         setIsDeleteModalOpen(prevState => !prevState);
     };
-    
+
+    const handleNextPage = () => {
+        setCurrentPage(prevPage => prevPage + 1);
+    };
+
+    const handlePrevPage = () => {
+        setCurrentPage(prevPage => prevPage - 1);
+    };
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
     return (
         <div className="w-full bg-slate-200 dark:bg-slate-500 py-5">
@@ -169,7 +175,7 @@ export default function ManageOrder() {
                                         <td colSpan="9" className="px-6 py-4 text-center">No records to show</td>
                                     </tr>
                                 ) : (
-                                    filteredOrders.map(order => (
+                                    currentItems.map(order => (
                                         <tr key={order.orderId} className="hover:bg-gray-50 dark:hover:bg-gray-500 ">
                                             <td className="px-6 py-2 text-center"><a className=' hover:text-green-500' href={`/waiter?tab=order-view&order=${order.orderId}`}>{order.orderId}</a></td>
                                             <td className="px-6 py-2 text-center">
@@ -210,6 +216,35 @@ export default function ManageOrder() {
                                 )}
                             </tbody>
                         </table>
+                    </div>
+                     
+                    {/* Pagination */}
+                    <div className="flex justify-center mt-4">
+                        <button
+                            onClick={handlePrevPage}
+                            disabled={currentPage === 1}
+                            className="mx-1 px-4 py-2 text-sm font-medium text-gray-700 bg-green-200 rounded-md hover:bg-green-300 focus:outline-none"
+                        >
+                            <i className="ri-arrow-left-s-line"></i> Previous 
+                        </button>
+                        {Array.from({ length: totalPages }, (_, index) => (
+                            <button
+                                key={index}
+                                onClick={() => handlePageChange(index + 1)}
+                                className={`mx-1 px-4 py-2 text-sm font-medium rounded-md focus:outline-none ${
+                                    currentPage === index + 1 ? 'text-white bg-green-500' : 'text-gray-700 bg-green-200 hover:bg-green-300'
+                                }`}
+                            >
+                                {index + 1}
+                            </button>
+                        ))}
+                        <button
+                            onClick={handleNextPage}
+                            disabled={currentPage === totalPages}
+                            className="mx-1 px-4 py-2 text-sm font-medium text-gray-700 bg-green-200 rounded-md hover:bg-green-300 focus:outline-none"
+                        >
+                            Next <i className="ri-arrow-right-s-line"></i>
+                        </button>
                     </div>
                 </div>
             </div>

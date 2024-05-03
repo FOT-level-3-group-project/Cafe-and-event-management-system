@@ -28,6 +28,7 @@ export default function TakeOrder() {
         const [orderItems, setOrderItems] = useState([]);
         const [billItemData, setBillItemData] = useState({});
         const [tableNumber, setTableNumber] = useState(0);
+        const [note, setNote] = useState('');
 
 
         const [subtotal, setSubtotal] = useState(0);
@@ -97,6 +98,10 @@ export default function TakeOrder() {
 
         const handleTableNumberChange = (e) => {
             setTableNumber(parseInt(e.target.value));
+        };
+
+        const handleNoteChange = (event) => {
+            setNote(event.target.value);
         };
 
 
@@ -186,7 +191,8 @@ export default function TakeOrder() {
                 paymentMethod: "",
                 paymentStatus: false,
                 employeeId: currentUser.id,
-                orderItems: convertedOrderItems
+                orderItems: convertedOrderItems,
+                specialNote:note
             };
         
             axios.post("http://localhost:8080/api/orders", orderJSON, {
@@ -202,6 +208,7 @@ export default function TakeOrder() {
                     setOrderItems([]);
                     setResponseErrors("");
                     setTableNumber(0);
+                    setNote("");
                     toast.success('Order Placed.');
                 } else {
                     // Unexpected response
@@ -398,9 +405,9 @@ export default function TakeOrder() {
                         </div>
 
 
-                        <div className=" py-2 flex flex-col justify-between rounded-lg border bg-white mb-6 shadow-md md:mt-0 dark:bg-gray-600 dark:border-none min-h-[calc(100vh-24rem)] h-auto">
+                        <div className=" py-2 flex flex-col justify-between rounded-lg border bg-white mb-6 shadow-md md:mt-0 dark:bg-gray-600 dark:border-none min-h-[calc(100vh-22rem)] h-auto">
 
-                            <div className="overflow-x-auto overflow-scroll max-h-[calc(100vh-34rem)] h-auto px-2 py-2">
+                            <div className="overflow-x-auto overflow-scroll max-h-[calc(100vh-40rem)] h-auto px-2 py-2">
                                 <table className="w-full table-auto">
                                     <thead className="bg-gray-50 text-xs font-semibold uppercase text-gray-400 dark:bg-gray-700">
                                         <tr>
@@ -466,21 +473,39 @@ export default function TakeOrder() {
                                         <p className="mb-1 text-lg font-bold">LKR {totalAfterDiscount.toFixed(2)}</p>
                                     </div>
                                 </div>
-                                <div>
-                                    <label htmlFor="table" className=" text-sm">Select Table:</label>
-                                    <select
-                                        id="table"
-                                        value={tableNumber}
-                                        onChange={handleTableNumberChange}
-                                        className="block p-1 mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-0 focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                    >
-                                        <option value={0}>No Table Assigned</option>
-                                        {[...Array(10).keys()].map((num) => (
-                                            <option key={num + 1} value={num + 1}>
-                                                Table {num + 1}
-                                            </option>
-                                        ))}
-                                    </select>
+                                <div className=" w-full justify-evenly">
+                                    <div className="w-full mb-2">
+                                        <label htmlFor="table"  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Table :</label>
+                                        <select
+                                            id="table"
+                                            value={tableNumber}
+                                            onChange={handleTableNumberChange}
+                                            className="block p-1 mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-0 focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                        >
+                                            <option value={0}>No Table Assigned</option>
+                                            {[...Array(10).keys()].map((num) => (
+                                                <option key={num + 1} value={num + 1}>
+                                                    Table {num + 1}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="w-full">
+                                          <label
+                                                htmlFor="note"
+                                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                            >
+                                                Note :
+                                            </label>
+                                            <textarea
+                                                id="note"
+                                                rows={2}
+                                                className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                placeholder="Write a Note here..."
+                                                value={note}
+                                                onChange={handleNoteChange}
+                                            />
+                                    </div>
                                 </div>
                                 <button onClick={() => generateOrder()} className="mt-6 w-full rounded-md bg-green-500 py-1.5 font-medium text-white hover:bg-green-600">
                                     <i className="ri-restaurant-2-fill"></i> Place Order
