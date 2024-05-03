@@ -18,6 +18,9 @@ export default function Waiter() {
       if (tabFromUrl) {
           setTab(tabFromUrl);
       }
+      else {
+        window.location.href = '/waiter?tab=take-order';
+    }
   }, [location.search]);
 
   return (
@@ -29,7 +32,6 @@ export default function Waiter() {
                 {/* sidebar */}
                 <WaiterSideBar/>
             </div>
-
                 {/* Orders */}
                 {tab === 'take-order' && <TakeOrder/>}
                 {/* Manage Orders */}

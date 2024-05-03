@@ -33,7 +33,7 @@ export default function UpdateOrder() {
         const [orderItemsConvertedResponse, setOrderItemsConvertedResponse] = useState([]);
         const [billItemData, setBillItemData] = useState({});
         const [tableNumber, setTableNumber] = useState(0);
-
+        const [note, setNote] = useState('');
 
         const [subtotal, setSubtotal] = useState(0);
         const [totalAfterDiscount, setTotalAfterDiscount] = useState(0);
@@ -47,7 +47,7 @@ export default function UpdateOrder() {
                 .then(response => {
                     if (response.status === 200){
                         setOrderResponse(response.data);
-                        const { orderItems, tableNumber, subTotal, discountPercentage, totalAfterDiscount, customer } = response.data;
+                        const { orderItems, tableNumber, specialNote, subTotal, discountPercentage, totalAfterDiscount, customer } = response.data;
                         const convertedOrderItems = orderItems.map(item => ({
                             orderItemId: item.orderItemId,
                             foodId: item.foodItemId,
@@ -59,6 +59,7 @@ export default function UpdateOrder() {
                         setOrderItems(convertedOrderItems);
                         setOrderItemsConvertedResponse(convertedOrderItems);
                         setTableNumber(tableNumber);
+                        setNote(specialNote);
                         setSubtotal(subTotal);
                         setDiscountPercentage(discountPercentage);
                         setTotalAfterDiscount(totalAfterDiscount);
@@ -137,6 +138,9 @@ export default function UpdateOrder() {
             setTableNumber(parseInt(e.target.value));
         };
 
+        const handleNoteChange = (event) => {
+            setNote(event.target.value);
+        };
 
         // Filter food items based on  category and search query
         const filteredFoodItems = foodItems.filter(item =>
@@ -489,9 +493,9 @@ export default function UpdateOrder() {
                         </div>
 
 
-                        <div className=" py-2 flex flex-col justify-between rounded-lg border bg-white mb-6 shadow-md md:mt-0 dark:bg-gray-600 dark:border-none min-h-[calc(100vh-24rem)] h-auto">
+                        <div className=" py-2 flex flex-col justify-between rounded-lg border bg-white mb-6 shadow-md md:mt-0 dark:bg-gray-600 dark:border-none min-h-[calc(100vh-22rem)] h-auto">
 
-                            <div className="overflow-x-auto overflow-scroll max-h-[calc(100vh-34rem)] h-auto px-2 py-2">
+                            <div className="overflow-x-auto overflow-scroll max-h-[calc(100vh-40rem)] h-auto px-2 py-2">
                                 <table className="w-full table-auto">
                                     <thead className="bg-gray-50 text-xs font-semibold uppercase text-gray-400 dark:bg-gray-700">
                                         <tr>
@@ -558,7 +562,7 @@ export default function UpdateOrder() {
                                     </div>
                                 </div>
                                 <div>
-                                    <label htmlFor="table" className=" text-sm">Select Table:</label>
+                                    <label htmlFor="table"  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Table :</label>
                                     <select
                                         id="table"
                                         value={tableNumber}
@@ -572,6 +576,21 @@ export default function UpdateOrder() {
                                             </option>
                                         ))}
                                     </select>
+                                </div>
+                                <div className="w-full mt-1">
+                                        <label
+                                            htmlFor="note"
+                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                        >
+                                            Note :
+                                        </label>
+                                        <textarea
+                                            id="note"
+                                            rows={1}
+                                            className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            value={note}
+                                            onChange={handleNoteChange}
+                                        />
                                 </div>
                                 <button onClick={() => updateOrder()} className="mt-6 w-full rounded-md bg-amber-500  py-1.5 font-medium text-white hover:bg-amber-600">
                                     <i className="ri-restaurant-2-fill"></i> Update Order
