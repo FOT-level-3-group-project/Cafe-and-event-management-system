@@ -184,8 +184,16 @@ const handleTicketPriceChange = (price) => {
                     <div>
                         <Label value='Ticket Price (Rs.)' />
                         <div className="flex justify-between">
-                            <TextInput type='text' value={formData.ticketPrice} onChange={handleChange} name="ticketPrice" className='mt-2 h-10 w-1/2'/>
-                            <button type="button" className="bg-green-500 hover:bg-green-600 text-white font-semibold rounded w-1/2 mt-2 h-10 " onClick={handleShowTicketPriceModal}> Calculate </button>
+                            <TextInput
+                              type='text'
+                              value={formData.ticketPrice}
+                              onChange={handleChange}
+                              name="ticketPrice" 
+                              className='mt-2 h-10 w-1/2'
+                            />
+                            <button className="bg-green-500 hover:bg-green-600 text-white font-semibold rounded w-1/2 mt-2 h-10 "
+                              type="button"
+                              onClick={handleShowTicketPriceModal}> Calculate </button>
                                 <GenerateTicketPriceModel show={showTicketPriceModal} onClose={handleCloseTicketPriceModal} onTicketPriceChange={handleTicketPriceChange}/>        
                         </div>
                     </div>

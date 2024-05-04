@@ -76,8 +76,8 @@ export default function ManagerSideBar() {
                     </Link>
 
                     <Sidebar.Collapse label='Income Statement' icon={FaMoneyBillTrendUp}>
-                        <Link to='/manager?tab=monthly-income'>
-                            <Sidebar.Item active={tab === 'monthly-income'} icon={FaMoneyBillTrendUp} as='div'> Monthly Report </Sidebar.Item>
+                        <Link to='/manager?tab=monthly-profit'>
+                            <Sidebar.Item active={tab === 'monthly-profit'} icon={FaMoneyBillTrendUp} as='div'> Monthly Report </Sidebar.Item>
                         </Link>
                         <Link to='/manager?tab=annual-income'>
                             <Sidebar.Item active={tab === 'annual-income'} icon={FaMoneyBillTrendUp} as='div'>  Annual Report </Sidebar.Item>
