@@ -11,7 +11,7 @@ import AddEvent from './manageEvents/AddEvent';
 import ViewAllEvents from './manageEvents/ViewAllEvents';
 import ManageOrders from './order/ManageOrders';
 import AttendanceFrManager from './attendance/AttendanceFrManager';
-import MonthlyIncome from './IncomeStatement/MonthlyIncome';
+import MonthlyProfit from './IncomeStatement/MonthlyProfit';
 import AnnualIncome from './IncomeStatement/AnnualIncome';
 import ManagerDash from './ManagerDash';
 
@@ -58,14 +58,11 @@ export default function Manager() {
             {/* Attendance */}
             {tab === 'attendance' && <AttendanceFrManager />}
 
-            {/* Monthly Income */}
-            {tab === 'monthly-income' && <MonthlyIncome />}
-
             {/* Dashboard */}
             {tab === 'dashboard' && <ManagerDash/>}
 
             {/* income statement - monthly */}
-            {tab === 'monthly-income' && <MonthlyIncome />}
+            {tab === 'monthly-profit' && <MonthlyProfit />}
 
             {/* income statement - annual */}
             {tab === 'annual-income' && <AnnualIncome />}
