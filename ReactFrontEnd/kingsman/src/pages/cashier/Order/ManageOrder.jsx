@@ -94,31 +94,31 @@ export default function ManageOrder() {
                         <div className=" inline-flex overflow-hidden bg-white border divide-x rounded-lg dark:bg-gray-900 rtl:flex-row-reverse dark:border-gray-700 dark:divide-gray-700">
                             <button  onClick={() => setSelectedStatus('All')}
                                 className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:bg-gray-800 dark:text-gray-300 ${
-                                selectedStatus === 'All' && 'bg-green-100'}`}
+                                selectedStatus === 'All' && 'bg-gray-100'}`}
                             >                            
                                 View all
                             </button>
                             <button onClick={() => setSelectedStatus('Pending')}
                                 className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:bg-gray-800 dark:text-gray-300 ${
-                                selectedStatus === 'Pending' && 'bg-green-100'}`}
+                                selectedStatus === 'Pending' && 'bg-gray-100'}`}
                             >                                
                                 Pending
                             </button>
                             <button  onClick={() => setSelectedStatus('Processing')}
                                 className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:bg-gray-800 dark:text-gray-300 ${
-                                selectedStatus === 'Processing' && 'bg-green-100'}`}
+                                selectedStatus === 'Processing' && 'bg-gray-100'}`}
                             >
                                 Processing
                             </button>
                             <button  onClick={() => setSelectedStatus('Ready')}
                                 className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:bg-gray-800 dark:text-gray-300 ${
-                                selectedStatus === 'Ready' && 'bg-green-100'}`}
+                                selectedStatus === 'Ready' && 'bg-gray-100'}`}
                             >                                
                                 Ready
                             </button>
                             <button onClick={() => setSelectedStatus('Completed')} 
                                 className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:bg-gray-800 dark:text-gray-300 ${
-                                selectedStatus === 'Completed' && 'bg-green-100'}`}
+                                selectedStatus === 'Completed' && 'bg-gray-100'}`}
                             >                                
                                 Completed
                             </button>
@@ -162,7 +162,7 @@ export default function ManageOrder() {
 
                     <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md my-5">
                         <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-                            <thead className="bg-green-100 text-gray-900  dark:bg-green-700 dark:text-gray-50">
+                            <thead className="bg-gray-100 text-gray-900  dark:bg-gray-700 dark:text-gray-50">
                                 <tr>
                                     <th scope="col" className="px-6 py-4 font-medium text-center">
                                         Order No
@@ -197,7 +197,7 @@ export default function ManageOrder() {
                                     </tr>
                                 ) : (
                                     currentItems.map(order => (
-                                        <tr onClick={() => redirectToOrderView(order.orderId)} key={order.orderId} className="hover:bg-green-100 dark:hover:bg-green-400 cursor-pointer ">
+                                        <tr onClick={() => redirectToOrderView(order.orderId)} key={order.orderId} className="hover:bg-gray-100 dark:hover:bg-gray-400 cursor-pointer ">
                                             <td className="px-6 py-2 text-center"><a className=' hover:text-green-500' href={`cashier?tab=orders-view&order=${order.orderId}`}>{order.orderId}</a></td>
                                             <td className="px-6 py-2 text-center">
                                                     <span className={`inline-flex px-2 py-1 items-center text-white rounded-lg text-xs ${
