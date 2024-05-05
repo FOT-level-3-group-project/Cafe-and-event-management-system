@@ -154,7 +154,7 @@ export function AddFoodItem({ onClose }) {
                             <Dropdown color='success' outline dismissOnClick={true} label={selectedCat || "Select Category"}>
                                 <Dropdown.Item onClick={() => handleCategorySelect("Main Dish")}>Main Dish</Dropdown.Item>
                                 <Dropdown.Item onClick={() => handleCategorySelect("Side Dish")}>Side Dish</Dropdown.Item>
-                                <Dropdown.Item onClick={() => handleCategorySelect("Beverage")}>Beverage</Dropdown.Item>
+                                <Dropdown.Item onClick={() => handleCategorySelect("Beverages")}>Beverages</Dropdown.Item>
                                 <Dropdown.Item onClick={() => handleCategorySelect("Dessert")}>Dessert</Dropdown.Item>
                             </Dropdown>
                         </div>
