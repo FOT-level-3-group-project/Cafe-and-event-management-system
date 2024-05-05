@@ -114,6 +114,8 @@ export const ViewOrder = () => {
                                 </span>
                                 &nbsp;
                                 |  &nbsp; {convertDate(OrderResponse.orderDateTime)}
+                                &nbsp; |  &nbsp; 
+                                By {OrderResponse.employeeFirstName} {OrderResponse.employeeLastName}
                         </h1>
 
                         <div className="p-6 rounded-lg border bg-white mb-3 shadow-md md:mt-0 text-sm dark:bg-gray-600 dark: border-none">

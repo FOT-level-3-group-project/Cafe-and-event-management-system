@@ -10,6 +10,7 @@ import ViewAllEmployees from './manageEmployees/ViewAllEmployees';
 import AddEvent from './manageEvents/AddEvent';
 import ViewAllEvents from './manageEvents/ViewAllEvents';
 import ManageOrders from './order/ManageOrders';
+import OrderView from './order/orderView';
 import AttendanceFrManager from './attendance/AttendanceFrManager';
 import MonthlyIncome from './IncomeStatement/MonthlyIncome';
 import AnnualIncome from './IncomeStatement/AnnualIncome';
@@ -55,6 +56,9 @@ export default function Manager() {
 
             {/* Manage Orders */}
             {tab === 'manage-orders' && <ManageOrders />}
+
+            {/* View Order */}
+            {tab === 'view-order' && <OrderView/>}
 
             {/* Attendance */}
             {tab === 'attendance' && <AttendanceFrManager />}

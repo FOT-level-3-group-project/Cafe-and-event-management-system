@@ -6,7 +6,7 @@ export default function ManageOrder() {
     const [searchCriteria, setSearchCriteria] = useState('name');
     const [selectedStatus, setSelectedStatus] = useState('All');
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(14);
+    const [itemsPerPage] = useState(15);
 
     useEffect(() => {
         fetchOrders();
@@ -17,6 +17,7 @@ export default function ManageOrder() {
             const response = await fetch('http://localhost:8080/api/orders');
             const data = await response.json();
             setOrders(data);
+            console.log(data)
         } catch (error) {
             console.error('Error fetching orders:', error);
         }
@@ -77,7 +78,7 @@ export default function ManageOrder() {
     
     // Function redirect to order view page
     const redirectToOrderView = (orderId) => {
-        window.location.href = `/cashier?tab=orders-view&order=${orderId}`;
+        window.location.href = `/manager?tab=view-order&order=${orderId}`;
     };
 
     return (
@@ -116,6 +117,12 @@ export default function ManageOrder() {
                                 selectedStatus === 'Completed' && 'bg-gray-100'}`}
                             >                                
                                 Completed
+                            </button>
+                            <button onClick={() => setSelectedStatus('Canceled')} 
+                                className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:bg-gray-800 dark:text-gray-300 ${
+                                selectedStatus === 'Canceled' && 'bg-gray-100'}`}
+                            >                                
+                                Canceled
                             </button>
                         </div>
                         <div className=" w-1/2 relative flex items-center mt-4 md:mt-0">
@@ -179,7 +186,10 @@ export default function ManageOrder() {
                                         Customer Mobile
                                     </th>
                                     <th scope="col" className="px-6 py-4 font-medium text-center">
-                                        Date
+                                        By
+                                    </th>
+                                    <th scope="col" className="px-6 py-4 font-medium text-center">
+                                        Date & Time
                                     </th>
                                     <th scope="col" className="px-6 py-4 font-medium text-center">
                                         Action
@@ -201,6 +211,7 @@ export default function ManageOrder() {
                                                                         order.orderStatus === "Processing" ? "bg-blue-300" :
                                                                         order.orderStatus === "Ready" ? "bg-green-300" :
                                                                         order.orderStatus === "Completed" ? "bg-green-500" :
+                                                                        order.orderStatus === "Canceled" ? "bg-red-500" :
                                                                         ""
                                                                     }`}
                                                     >{order.orderStatus}</span>
@@ -209,16 +220,17 @@ export default function ManageOrder() {
                                             <td className="px-6 py-2 text-center">{order.totalAfterDiscount.toFixed(2)}</td>
                                             <td className="px-6 py-2 text-center">{order.customer ? order.customer.cusName : '-'}</td>
                                             <td className="px-6 py-2 text-center">{order.customer ? order.customer.cusMobile : '-'}</td>
+                                            <td className="px-6 py-2 text-center">{order.employeeFirstName} {order.employeeLastName}</td>
                                             <td className="px-6 py-2 text-center text-xs">{formatDate(order.orderDateTime)}</td>
                                             <td className="px-6 py-2">
                                                 <div className=" flex items-center justify-center w-full">
-                                                    <a href={`/cashier?tab=orders-view&order=${order.orderId}`}  className=" px-2 py-1 text-sm text-white text-center bg-blue-500 rounded-md hover:bg-blue-700">
+                                                    {/* <a href={`/manager?tab=view-order&order=${order.orderId}`}  className=" px-2 py-1 text-sm text-white text-center bg-blue-500 rounded-md hover:bg-blue-700">
                                                         <i className="ri-eye-fill"></i> View
                                                     </a>
                                                     &nbsp;
                                                     <a href={`/cashier?tab=bill&order=${order.orderId}`} className=" px-2 py-1 text-sm text-white text-center bg-green-500 rounded-md hover:bg-green-700">
                                                         <i className="ri-arrow-right-s-fill"></i> Process
-                                                    </a>
+                                                    </a> */}
                                                 </div>
                                                 
                                             </td>

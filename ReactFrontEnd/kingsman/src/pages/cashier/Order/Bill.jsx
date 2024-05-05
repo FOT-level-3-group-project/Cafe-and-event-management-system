@@ -213,6 +213,17 @@ export default function Bill() {
                                                 <tr>
                                                     <td className="p-1 whitespace-nowrap">
                                                         <div className="flex items-center font-bold text-gray-800 dark:text-gray-50">
+                                                            <span><i className="ri-account-pin-circle-fill"></i></span> &nbsp;
+                                                            <div className="text-right">By :</div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="p-1 whitespace-nowrap">
+                                                        <div className="text-left">{OrderResponse.employeeFirstName} {OrderResponse.employeeLastName}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="p-1 whitespace-nowrap">
+                                                        <div className="flex items-center font-bold text-gray-800 dark:text-gray-50">
                                                             <span><i className="ri-calendar-schedule-line "></i></span> &nbsp;
                                                             <div className="text-right">Date and Time :</div>
                                                         </div>

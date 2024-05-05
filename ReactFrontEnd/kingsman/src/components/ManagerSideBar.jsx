@@ -74,7 +74,6 @@ export default function ManagerSideBar() {
                            Manage Orders
                         </Sidebar.Item>
                     </Link>
-
                     <Sidebar.Collapse label='Income Statement' icon={FaMoneyBillTrendUp}>
                         <Link to='/manager?tab=monthly-income'>
                             <Sidebar.Item active={tab === 'monthly-income'} icon={FaMoneyBillTrendUp} as='div'> Monthly Report </Sidebar.Item>
