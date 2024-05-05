@@ -1,11 +1,12 @@
-
 import React, { useState, useEffect } from 'react';
 
-export default function ManageOrders() {
+export default function ManageOrder() {
     const [orders, setOrders] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchCriteria, setSearchCriteria] = useState('name');
     const [selectedStatus, setSelectedStatus] = useState('All');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(14);
 
     useEffect(() => {
         fetchOrders();
@@ -15,7 +16,6 @@ export default function ManageOrders() {
         try {
             const response = await fetch('http://localhost:8080/api/orders');
             const data = await response.json();
-            // Set Orders
             setOrders(data);
         } catch (error) {
             console.error('Error fetching orders:', error);
@@ -37,14 +37,16 @@ export default function ManageOrders() {
                 return order.customer && order.customer.cusName.toLowerCase().includes(searchQuery.toLowerCase());
             } else if (searchCriteria === 'mobile') {
                 return order.customer && order.customer.cusMobile && order.customer.cusMobile.includes(searchQuery);
+            }else if (searchCriteria === 'date') {
+                const orderDate = new Date(order.orderDateTime);
+                const searchDate = new Date(searchQuery);
+                return orderDate.toDateString() === searchDate.toDateString();
             }
         } else {
             return true; // If no search query provided, include all orders
         }
     });
-    
 
-    
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         const year = date.getFullYear();
@@ -56,8 +58,27 @@ export default function ManageOrders() {
         return `${year}-${month}-${day} ${hours}.${minutes} ${period}`;
     };
 
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
+    const handleNextPage = () => {
+        setCurrentPage(prevPage => prevPage + 1);
+    };
+
+    const handlePrevPage = () => {
+        setCurrentPage(prevPage => prevPage - 1);
+    };
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
     
+    // Function redirect to order view page
+    const redirectToOrderView = (orderId) => {
+        window.location.href = `/cashier?tab=orders-view&order=${orderId}`;
+    };
 
     return (
         <div className="w-full bg-slate-200 dark:bg-slate-500 py-5">
@@ -103,7 +124,7 @@ export default function ManageOrders() {
                                         <i className="ri-search-line"></i>
                                     </div>
                                     <input
-                                        type="search"
+                                        type={searchCriteria == "date" ? "date" : "search"}
                                         id="default-search"
                                         className="block p-2 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-0 focus:border-gray-300 dark:bg-slate-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                                         placeholder="Search Order ID, Customer..."
@@ -128,6 +149,7 @@ export default function ManageOrders() {
                                         <option value="name">By Name</option>
                                         <option value="mobile">By Mobile</option>
                                         <option value="id">By Order ID</option>
+                                        <option value="date">By Order Date</option>
                                     </select>
                                 </div>
                         </div>
@@ -136,7 +158,7 @@ export default function ManageOrders() {
 
                     <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md my-5">
                         <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-                            <thead className="bg-gray-50 text-gray-900  dark:bg-gray-700 dark:text-gray-50">
+                            <thead className="bg-gray-100 text-gray-900  dark:bg-gray-700 dark:text-gray-50">
                                 <tr>
                                     <th scope="col" className="px-6 py-4 font-medium text-center">
                                         Order No
@@ -170,8 +192,8 @@ export default function ManageOrders() {
                                         <td colSpan="9" className="px-6 py-4 text-center">There are No Reports for Today to Show. Please Create an Order.</td>
                                     </tr>
                                 ) : (
-                                    filteredOrders.map(order => (
-                                        <tr key={order.orderId} className="hover:bg-gray-50 dark:hover:bg-gray-500 ">
+                                    currentItems.map(order => (
+                                        <tr onClick={() => redirectToOrderView(order.orderId)} key={order.orderId} className="hover:bg-gray-100 dark:hover:bg-gray-400 cursor-pointer ">
                                             <td className="px-6 py-2 text-center"><a className=' hover:text-green-500' href={`cashier?tab=orders-view&order=${order.orderId}`}>{order.orderId}</a></td>
                                             <td className="px-6 py-2 text-center">
                                                     <span className={`inline-flex px-2 py-1 items-center text-white rounded-lg text-xs ${
@@ -189,14 +211,16 @@ export default function ManageOrders() {
                                             <td className="px-6 py-2 text-center">{order.customer ? order.customer.cusMobile : '-'}</td>
                                             <td className="px-6 py-2 text-center text-xs">{formatDate(order.orderDateTime)}</td>
                                             <td className="px-6 py-2">
-                                                <div className="flex flex-col items-center justify-center">
-                                                    <a href={`/cashier?tab=orders-view&order=${order.orderId}`} className="w-full text-white p-1 text-xl text-center bg-blue-500 rounded-md hover:bg-blue-700">
+                                                <div className=" flex items-center justify-center w-full">
+                                                    <a href={`/cashier?tab=orders-view&order=${order.orderId}`}  className=" px-2 py-1 text-sm text-white text-center bg-blue-500 rounded-md hover:bg-blue-700">
                                                         <i className="ri-eye-fill"></i> View
                                                     </a>
-                                                    <a href={`/cashier?tab=bill&order=${order.orderId}`} className="w-full p-2 text-xl text-white text-center bg-yellow-400 rounded-md hover:bg-yellow-500 mt-2">
-                                                        <i className="ri-edit-fill"></i> Update
+                                                    &nbsp;
+                                                    <a href={`/cashier?tab=bill&order=${order.orderId}`} className=" px-2 py-1 text-sm text-white text-center bg-green-500 rounded-md hover:bg-green-700">
+                                                        <i className="ri-arrow-right-s-fill"></i> Process
                                                     </a>
                                                 </div>
+                                                
                                             </td>
                                         </tr>
                                     ))
@@ -204,10 +228,56 @@ export default function ManageOrders() {
                             </tbody>
                         </table>
                     </div>
+                    {/* Pagination */}
+                    <div className="flex justify-center mt-4">
+                        <button
+                            onClick={handlePrevPage}
+                            disabled={currentPage === 1}
+                            className="mx-1 px-4 py-2 text-sm font-medium text-gray-700 bg-green-200 rounded-md hover:bg-green-300 focus:outline-none"
+                        >
+                            <i className="ri-arrow-left-s-line"></i> Previous
+                        </button>
+                        {Array.from({ length: totalPages }, (_, index) => {
+                            // Display numbers if currentPage is more than 3 pages from the first or last page
+                            if (
+                                index === 1 && currentPage > 3 ||
+                                index === totalPages - 2 && currentPage < totalPages - 2
+                            ) {
+                                return <span key={index}>...</span>;
+                            }
+
+                            // Display page numbers
+                            if (
+                                index === 0 || 
+                                index === totalPages - 1 || 
+                                (index >= currentPage - 2 && index <= currentPage + 2)
+                            ) {
+                                return (
+                                    <button
+                                        key={index}
+                                        onClick={() => handlePageChange(index + 1)}
+                                        className={`mx-1 px-4 py-2 text-sm font-medium rounded-md focus:outline-none ${
+                                            currentPage === index + 1 ? 'text-white bg-green-500' : 'text-gray-700 bg-green-200 hover:bg-green-300'
+                                        }`}
+                                    >
+                                        {index + 1}
+                                    </button>
+                                );
+                            }
+
+                            return null;
+                        })}
+                        <button
+                            onClick={handleNextPage}
+                            disabled={currentPage === totalPages}
+                            className="mx-1 px-4 py-2 text-sm font-medium text-gray-700 bg-green-200 rounded-md hover:bg-green-300 focus:outline-none"
+                        >
+                            Next <i className="ri-arrow-right-s-line"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     );
 }
-
 

@@ -14,7 +14,7 @@ export default function ManageOrder() {
 
     const fetchOrders = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/orders');
+            const response = await fetch('http://localhost:8080/api/orders/all-orders-general');
             const data = await response.json();
             const today = new Date().toISOString().split('T')[0]; 
             
@@ -234,34 +234,36 @@ export default function ManageOrder() {
                             </tbody>
                         </table>
                     </div>
-                                        {/* Pagination */}
-                                        <div className="flex justify-center mt-4">
-                    <button
-                        onClick={handlePrevPage}
-                        disabled={currentPage === 1}
-                        className="mx-1 px-4 py-2 text-sm font-medium text-gray-700 bg-green-200 rounded-md hover:bg-green-300 focus:outline-none"
-                    >
-                        <i className="ri-arrow-left-s-line"></i> Previous
-                    </button>
-                    {Array.from({ length: totalPages }, (_, index) => (
-                        <button
-                            key={index}
-                            onClick={() => handlePageChange(index + 1)}
-                            className={`mx-1 px-4 py-2 text-sm font-medium rounded-md focus:outline-none ${
-                                currentPage === index + 1 ? 'text-white bg-green-500' : 'text-gray-700 bg-green-200 hover:bg-green-300'
-                            }`}
-                        >
-                            {index + 1}
-                        </button>
-                    ))}
-                    <button
-                        onClick={handleNextPage}
-                        disabled={currentPage === totalPages}
-                        className="mx-1 px-4 py-2 text-sm font-medium text-gray-700 bg-green-200 rounded-md hover:bg-green-300 focus:outline-none"
-                    >
-                        Next <i className="ri-arrow-right-s-line"></i>
-                    </button>
-                </div>
+                    {/* Pagination */}
+                    {   filteredOrders.length != 0 &&  
+                        <div className="flex justify-center mt-4">
+                            <button
+                                onClick={handlePrevPage}
+                                disabled={currentPage === 1}
+                                className="mx-1 px-4 py-2 text-sm font-medium text-gray-700 bg-green-200 rounded-md hover:bg-green-300 focus:outline-none"
+                            >
+                                <i className="ri-arrow-left-s-line"></i> Previous
+                            </button>
+                            {Array.from({ length: totalPages }, (_, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => handlePageChange(index + 1)}
+                                    className={`mx-1 px-4 py-2 text-sm font-medium rounded-md focus:outline-none ${
+                                        currentPage === index + 1 ? 'text-white bg-green-500' : 'text-gray-700 bg-green-200 hover:bg-green-300'
+                                    }`}
+                                >
+                                    {index + 1}
+                                </button>
+                            ))}
+                            <button
+                                onClick={handleNextPage}
+                                disabled={currentPage === totalPages}
+                                className="mx-1 px-4 py-2 text-sm font-medium text-gray-700 bg-green-200 rounded-md hover:bg-green-300 focus:outline-none"
+                            >
+                                Next <i className="ri-arrow-right-s-line"></i>
+                            </button>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

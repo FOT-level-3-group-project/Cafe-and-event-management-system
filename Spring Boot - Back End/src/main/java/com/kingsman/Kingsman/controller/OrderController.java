@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -36,6 +37,17 @@ public class OrderController {
     public List<OrderDTO> getAllOrders() {  //method retrieves a list of all orders.
         return orderService.getAllOrders();
     }
+
+    @GetMapping("/all-orders-general")
+    public ResponseEntity<List<OrderDTO>> getOrdersWithoutCanceledStatus() {
+        String canceledStatus = "Canceled";
+        List<OrderDTO> orders = orderService.getAllOrders().stream()
+                .filter(order -> !order.getOrderStatus().equalsIgnoreCase(canceledStatus))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(orders);
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<OrderDTO> getOrderById(@PathVariable("id") Long orderId) { // method retrieves an order based on its ID.
