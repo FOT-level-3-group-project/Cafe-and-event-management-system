@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FoodItemService {
@@ -33,6 +34,14 @@ public class FoodItemService {
 
         return foodItemRepository.findAll();
     }//This method retrieves all food items from the repository.
+
+    public List<FoodItem> getAllAvailableItems() {
+        List<FoodItem> allItems = foodItemRepository.findAll();
+        return allItems.stream()
+                .filter(FoodItem::isAvailable) // Filter out items where availability is false
+                .collect(Collectors.toList());
+    }
+
 
     public void deleteFoodItem(Long foodItemId) {
 

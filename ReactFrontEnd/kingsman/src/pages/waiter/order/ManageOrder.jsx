@@ -19,7 +19,15 @@ export default function ManageOrder() {
         try {
             const response = await fetch('http://localhost:8080/api/orders');
             const data = await response.json();
-            setOrders(data);
+            
+            const today = new Date().toISOString().split('T')[0]; 
+            const todayOrders = data.filter(order => {
+                const orderDate = new Date(order.orderDateTime).toISOString().split('T')[0];
+                return orderDate === today;
+            });
+
+            // Set the filtered orders
+            setOrders(todayOrders);
         } catch (error) {
             console.error('Error fetching orders:', error);
         }
@@ -93,6 +101,11 @@ export default function ManageOrder() {
         setCurrentPage(page);
     };
 
+    // Function redirect to order view page
+    const redirectToOrderView = (orderId) => {
+        window.location.href = `/waiter?tab=order-view&order=${orderId}`;
+    };
+
     return (
         <div className="w-full bg-slate-200 dark:bg-slate-500 py-5">
             <div className="w-full">
@@ -138,7 +151,7 @@ export default function ManageOrder() {
 
                     <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md my-5">
                         <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-                            <thead className="bg-gray-50 text-gray-900  dark:bg-gray-700 dark:text-gray-50">
+                            <thead className="bg-green-100 text-gray-900  dark:bg-green-700 dark:text-gray-50">
                                 <tr>
                                     <th scope="col" className="px-6 py-4 font-medium text-center">
                                         Order No
@@ -176,7 +189,7 @@ export default function ManageOrder() {
                                     </tr>
                                 ) : (
                                     currentItems.map(order => (
-                                        <tr key={order.orderId} className="hover:bg-gray-50 dark:hover:bg-gray-500 ">
+                                        <tr onClick={() => redirectToOrderView(order.orderId)} key={order.orderId} className="hover:bg-green-100 dark:hover:bg-green-400 cursor-pointer">
                                             <td className="px-6 py-2 text-center"><a className=' hover:text-green-500' href={`/waiter?tab=order-view&order=${order.orderId}`}>{order.orderId}</a></td>
                                             <td className="px-6 py-2 text-center">
                                                     <span className={`inline-flex px-2 py-1 items-center text-white rounded-lg text-xs ${

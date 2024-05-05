@@ -5,6 +5,8 @@ export default function ManageOrder() {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchCriteria, setSearchCriteria] = useState('name');
     const [selectedStatus, setSelectedStatus] = useState('Ready');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(14);
 
     useEffect(() => {
         fetchOrders();
@@ -49,10 +51,6 @@ export default function ManageOrder() {
             return true; // If no search query provided, include all orders
         }
     });
-    
-
-    
-    
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -65,8 +63,27 @@ export default function ManageOrder() {
         return `${year}-${month}-${day} ${hours}.${minutes} ${period}`;
     };
 
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
+    const handleNextPage = () => {
+        setCurrentPage(prevPage => prevPage + 1);
+    };
+
+    const handlePrevPage = () => {
+        setCurrentPage(prevPage => prevPage - 1);
+    };
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
     
+    // Function redirect to order view page
+    const redirectToOrderView = (orderId) => {
+        window.location.href = `/cashier?tab=orders-view&order=${orderId}`;
+    };
 
     return (
         <div className="w-full bg-slate-200 dark:bg-slate-500 py-5">
@@ -77,31 +94,31 @@ export default function ManageOrder() {
                         <div className=" inline-flex overflow-hidden bg-white border divide-x rounded-lg dark:bg-gray-900 rtl:flex-row-reverse dark:border-gray-700 dark:divide-gray-700">
                             <button  onClick={() => setSelectedStatus('All')}
                                 className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:bg-gray-800 dark:text-gray-300 ${
-                                selectedStatus === 'All' && 'bg-gray-100'}`}
+                                selectedStatus === 'All' && 'bg-green-100'}`}
                             >                            
                                 View all
                             </button>
                             <button onClick={() => setSelectedStatus('Pending')}
                                 className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:bg-gray-800 dark:text-gray-300 ${
-                                selectedStatus === 'Pending' && 'bg-gray-100'}`}
+                                selectedStatus === 'Pending' && 'bg-green-100'}`}
                             >                                
                                 Pending
                             </button>
                             <button  onClick={() => setSelectedStatus('Processing')}
                                 className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:bg-gray-800 dark:text-gray-300 ${
-                                selectedStatus === 'Processing' && 'bg-gray-100'}`}
+                                selectedStatus === 'Processing' && 'bg-green-100'}`}
                             >
                                 Processing
                             </button>
                             <button  onClick={() => setSelectedStatus('Ready')}
                                 className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:bg-gray-800 dark:text-gray-300 ${
-                                selectedStatus === 'Ready' && 'bg-gray-100'}`}
+                                selectedStatus === 'Ready' && 'bg-green-100'}`}
                             >                                
                                 Ready
                             </button>
                             <button onClick={() => setSelectedStatus('Completed')} 
                                 className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:bg-gray-800 dark:text-gray-300 ${
-                                selectedStatus === 'Completed' && 'bg-gray-100'}`}
+                                selectedStatus === 'Completed' && 'bg-green-100'}`}
                             >                                
                                 Completed
                             </button>
@@ -145,7 +162,7 @@ export default function ManageOrder() {
 
                     <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md my-5">
                         <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-                            <thead className="bg-gray-50 text-gray-900  dark:bg-gray-700 dark:text-gray-50">
+                            <thead className="bg-green-100 text-gray-900  dark:bg-green-700 dark:text-gray-50">
                                 <tr>
                                     <th scope="col" className="px-6 py-4 font-medium text-center">
                                         Order No
@@ -179,8 +196,8 @@ export default function ManageOrder() {
                                         <td colSpan="9" className="px-6 py-4 text-center">There are No Reports for Today to Show. Please Create an Order.</td>
                                     </tr>
                                 ) : (
-                                    filteredOrders.map(order => (
-                                        <tr key={order.orderId} className="hover:bg-gray-50 dark:hover:bg-gray-500 ">
+                                    currentItems.map(order => (
+                                        <tr onClick={() => redirectToOrderView(order.orderId)} key={order.orderId} className="hover:bg-green-100 dark:hover:bg-green-400 cursor-pointer ">
                                             <td className="px-6 py-2 text-center"><a className=' hover:text-green-500' href={`cashier?tab=orders-view&order=${order.orderId}`}>{order.orderId}</a></td>
                                             <td className="px-6 py-2 text-center">
                                                     <span className={`inline-flex px-2 py-1 items-center text-white rounded-lg text-xs ${
@@ -198,13 +215,13 @@ export default function ManageOrder() {
                                             <td className="px-6 py-2 text-center">{order.customer ? order.customer.cusMobile : '-'}</td>
                                             <td className="px-6 py-2 text-center text-xs">{formatDate(order.orderDateTime)}</td>
                                             <td className="px-6 py-2">
-                                                <div className="flex items-center justify-evenly w-full">
-                                                    <a href={`/cashier?tab=orders-view&order=${order.orderId}`} className="text-2xl text-blue-500 text-center hover:text-blue-700">
-                                                        <i className="ri-eye-fill"></i>
+                                                <div className=" flex items-center justify-center w-full">
+                                                    <a href={`/cashier?tab=orders-view&order=${order.orderId}`}  className=" px-2 py-1 text-sm text-white text-center bg-blue-500 rounded-md hover:bg-blue-700">
+                                                        <i className="ri-eye-fill"></i> View
                                                     </a>&nbsp;
                                                     { order.orderStatus == "Ready" && (
-                                                         <a href={`/cashier?tab=bill&order=${order.orderId}`} className=" px-2 text-xl text-white text-center bg-green-500 rounded-md hover:bg-green-700">
-                                                            <i className="ri-arrow-right-s-fill"></i>
+                                                         <a href={`/cashier?tab=bill&order=${order.orderId}`} className=" px-2 py-1 text-sm text-white text-center bg-green-500 rounded-md hover:bg-green-700">
+                                                            <i className="ri-arrow-right-s-fill"></i> Process
                                                         </a>
                                                         
                                                     )}
@@ -217,6 +234,34 @@ export default function ManageOrder() {
                             </tbody>
                         </table>
                     </div>
+                                        {/* Pagination */}
+                                        <div className="flex justify-center mt-4">
+                    <button
+                        onClick={handlePrevPage}
+                        disabled={currentPage === 1}
+                        className="mx-1 px-4 py-2 text-sm font-medium text-gray-700 bg-green-200 rounded-md hover:bg-green-300 focus:outline-none"
+                    >
+                        <i className="ri-arrow-left-s-line"></i> Previous
+                    </button>
+                    {Array.from({ length: totalPages }, (_, index) => (
+                        <button
+                            key={index}
+                            onClick={() => handlePageChange(index + 1)}
+                            className={`mx-1 px-4 py-2 text-sm font-medium rounded-md focus:outline-none ${
+                                currentPage === index + 1 ? 'text-white bg-green-500' : 'text-gray-700 bg-green-200 hover:bg-green-300'
+                            }`}
+                        >
+                            {index + 1}
+                        </button>
+                    ))}
+                    <button
+                        onClick={handleNextPage}
+                        disabled={currentPage === totalPages}
+                        className="mx-1 px-4 py-2 text-sm font-medium text-gray-700 bg-green-200 rounded-md hover:bg-green-300 focus:outline-none"
+                    >
+                        Next <i className="ri-arrow-right-s-line"></i>
+                    </button>
+                </div>
                 </div>
             </div>
         </div>

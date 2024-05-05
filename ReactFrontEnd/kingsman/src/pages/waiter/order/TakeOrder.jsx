@@ -37,7 +37,7 @@ export default function TakeOrder() {
 
         useEffect(() => {
             setResponseErrors("")
-            axios.get("http://localhost:8080/api/food/all")
+            axios.get("http://localhost:8080/api/food/available")
                 .then(response => {
                     setFoodItems(response.data);
                 })

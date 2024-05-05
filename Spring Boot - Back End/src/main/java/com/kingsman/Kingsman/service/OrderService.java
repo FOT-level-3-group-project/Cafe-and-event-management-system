@@ -42,6 +42,7 @@ public class OrderService {
 
     public List<OrderDTO> getAllOrders() { //This method retrieves all orders from the repository and maps them to a list of OrderDTO objects.
         List<Order> orders = orderRepository.findAll(); // Fetch all orders
+        orders.sort(Comparator.comparing(Order::getOrderDateTime).reversed()); // Sort orders by orderDateTime in descending order
         return mapOrderListToDTOList(orders);
     }
 
