@@ -92,7 +92,7 @@ const ViewAllEvents = () => {
     };
 
     return (
-      <div className="flex flex-col w-full bg-gray-200">
+      <div className="flex flex-col w-full bg-green-50">
         <div className="flex items-center m-4 justify-between border-b bg-white dark:bg-gray-500 p-3 shadow-md rounded-md">
           <h1 className="text-2xl font-bold mb-2">Manage Events</h1>
 
@@ -144,6 +144,9 @@ const ViewAllEvents = () => {
               <Table.HeadCell className="bg-green-100">
                 Description
               </Table.HeadCell>
+              {/* <Table.HeadCell className="bg-green-100">
+                Status
+              </Table.HeadCell> */}
               <Table.HeadCell
                 className="bg-green-100 text-center"
                 colSpan={3}
@@ -172,7 +175,7 @@ const ViewAllEvents = () => {
                     key={event.eventID}
                     className={
                       index % 2 === 0
-                        ? "bg-gray-100 dark:bg-gray-500 dark:text-white"
+                        ? "bg-green-50 dark:bg-gray-500 dark:text-white"
                         : "bg-gray-150 dark:bg-gray-700 dark:text-white"
                     }
                   >
@@ -206,6 +209,8 @@ const ViewAllEvents = () => {
                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
                       {event.description}
                     </Table.Cell>
+                    {/* <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">                      
+                    </Table.Cell> */}
                     <Table.Cell className="dark:bg-gray-600">
                       <button
                         onClick={() => handleUpdateClick(event)}
