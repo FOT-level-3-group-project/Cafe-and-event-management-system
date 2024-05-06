@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Label, TextInput } from 'flowbite-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import GenerateTicketPriceModel from './GenerateTicketPriceModel';
+import { IoChevronBackCircleSharp } from "react-icons/io5";
 
 const AddEvent = () => {
   const [formData, setFormData] = useState({
@@ -158,6 +159,9 @@ const handleTicketPriceChange = (price) => {
 
     return (
         <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row w-full '>
+             <Link to="/manager?tab=view-all-events">
+                <IoChevronBackCircleSharp size={32} className='flex justify-start' />
+            </Link>
             <div className='flex-1 flex justify-center'>
                 <form className='flex flex-col gap-4 w-full' onSubmit={handleSubmit}>
                     <h1 className='flex justify-center text-3xl font-bold mb-4 '> Add New Event</h1> <hr></hr>

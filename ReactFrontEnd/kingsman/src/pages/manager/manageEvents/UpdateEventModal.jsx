@@ -20,26 +20,26 @@ const UpdateEventModal = ({ event, handleClose}) => {
     });
 
     const [errorMessage, setErrorMessage] = useState('');
-     const [durationErrorMessage, setDurationErrorMessage] = useState('');
-  const [budgetErrorMessage, setBudgetErrorMessage] = useState('');
-  const [ticketPriceErrorMessage, setTicketPriceErrorMessage] = useState('');
-  const [ticketQuantityErrorMessage, setTicketQuantityErrorMessage] = useState('');
-  const [showTicketPriceModal, setShowTicketPriceModal] = useState(false);
+    const [durationErrorMessage, setDurationErrorMessage] = useState('');
+    const [budgetErrorMessage, setBudgetErrorMessage] = useState('');
+    const [ticketPriceErrorMessage, setTicketPriceErrorMessage] = useState('');
+    const [ticketQuantityErrorMessage, setTicketQuantityErrorMessage] = useState('');
+    const [showTicketPriceModal, setShowTicketPriceModal] = useState(false);
 
- const handleShowTicketPriceModal = () => {
-  setShowTicketPriceModal(true);
-};
-
-const handleCloseTicketPriceModal = () => {
-  setShowTicketPriceModal(false);
-};
-
-const handleTicketPriceChange = (price) => {
-    setFormData({
-      ...formData,
-      ticketPrice: price,
-    });
+  const handleShowTicketPriceModal = () => {
+    setShowTicketPriceModal(true);
   };
+
+  const handleCloseTicketPriceModal = () => {
+    setShowTicketPriceModal(false);
+  };
+
+  const handleTicketPriceChange = (price) => {
+      setFormData({
+        ...formData,
+        ticketPrice: price,
+      });
+    };
 
 
     const handleChange = (e) => {

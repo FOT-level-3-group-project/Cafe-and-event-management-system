@@ -21,15 +21,15 @@ const MonthlyProfit = () => {
   };
 
   return (
-    <div className="w-full pt-10"> 
+    <div className="w-full pt-10 "> 
       <div className='flex'>
       <div className=" w-1/2 pl-5">
       <h1 className=" text-3xl font-bold text-gray-900 dark:text-white">Monthly Profit and Loss Statement</h1> <br/>
       </div>
       <div className=" w-1/2 flex justify-end pr-5">
-      <Button  onClick={handleDownloadPDF} className=" hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Download PDF</Button>
-      </div>
-      </div>
+      <Button onClick={handleDownloadPDF} className=" hover:bg-green-700 text-white font-bold mb-5 rounded">Export</Button>
+        </div>
+      </div> <hr></hr> <br/>
       {/*   Container for cards arranged horizontally */}
         <div className="flex space-x-4 mb-4 justify-center">
           <Card className="max-w-xs flex-1 text-blue-500">
