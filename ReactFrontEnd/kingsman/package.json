@@ -18,7 +18,7 @@
     "@reduxjs/toolkit": "^2.2.2",
     "axios": "^1.6.8",
     "chart.js": "^4.4.2",
-    "firebase": "^10.10.0",
+    "firebase": "^10.11.1",
     "flowbite-react": "^0.7.6",
     "html2canvas": "^1.4.1",
     "html2pdf.js": "^0.10.1",

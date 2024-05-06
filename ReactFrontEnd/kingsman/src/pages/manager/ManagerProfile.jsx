@@ -11,7 +11,6 @@ import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
-
 export default function ManagerProfile() {
   const { currentUser } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
@@ -25,8 +24,6 @@ export default function ManagerProfile() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({});
   const dispatch = useDispatch();
-
-
 
   console.log(imageFileUplordError, imageFileUplordingProcess);
   const handleImageChange = (e) => {
