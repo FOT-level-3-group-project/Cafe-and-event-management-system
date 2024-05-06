@@ -66,7 +66,7 @@ export default function Login() {
                         navigate('/waiter?tab=dashboard');
                     }
                     // else {
-                    //     navigate('/updateProfile');
+                    //     navigate('/defaultProfile');
                     // }
             }
         } catch (error) {

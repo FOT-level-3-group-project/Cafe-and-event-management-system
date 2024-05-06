@@ -62,7 +62,7 @@ const MonthlyProfit = () => {
         </div>
 
     {/* Container for the table */}
-      <div id="monthly-report" className="overflow-x-auto w-1/2 mx-auto">
+      <div id="monthly-report" className="overflow-x-auto w-1/2 mx-auto p-5">
         <div className="inline-block border w-full">
           <div className='flex p-4'>
             <div className='w-1/2'>
@@ -160,10 +160,10 @@ const MonthlyProfit = () => {
                <Table.Cell></Table.Cell>
                <Table.Cell  className='pr-2 text-right '> xxxxxx </Table.Cell>
             </Table.Row>
-            <Table.Row className='border-b-2 font-semibold text-green-700'>
-              <Table.Cell className="">TOTAL INCOME</Table.Cell>
+            <Table.Row className='border-t-2 font-semibold text-green-700'>
+              <Table.Cell>TOTAL INCOME</Table.Cell>
               <Table.Cell></Table.Cell>
-              <Table.Cell className='pr-2 text-righ '>xxxxxx</Table.Cell>
+               <Table.Cell className="pr-2 text-right ">xxxxxx </Table.Cell>
             </Table.Row>
             <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
               <Table.Cell>Less: Taxes</Table.Cell>
