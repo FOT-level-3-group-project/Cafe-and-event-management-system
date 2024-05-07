@@ -97,6 +97,10 @@ export default function ManagerProfile() {
     e.preventDefault();
     setUpdateUserError(null);
     setUpdateUserSuccess(null);
+
+    
+
+
     if (Object.keys(formData).length === 0) {
       setUpdateUserError('No changes made');
       return;
@@ -144,67 +148,83 @@ export default function ManagerProfile() {
   console.log(formData);
   return (
 
-    <div className='max-w-lg mx-auto p-3 w-full'>
+    <div className=' p-3 w-full'>
       <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
-      <form className='flex flex-col gap-5' onSubmit={handleSubmit}>
-        <input type="file" accept='image/*' onChange={handleImageChange} ref={filePickerRef} hidden />
-        <div className='relative w-32 h-32 self-center cursor-pointer shadow-md overflow-hidden rounded-full' onClick={() => filePickerRef.current.click()}>
+      <form onSubmit={handleSubmit} className=' w-3/5 mx-auto'>
+        <div className='flex flex-row gap-5'>
+          <div className='flex flex-col gap-5  basis-1/2'>
+            <input type="file" accept='image/*' onChange={handleImageChange} ref={filePickerRef} hidden />
+            <div className='relative w-32 h-32 self-center cursor-pointer shadow-md overflow-hidden rounded-full' onClick={() => filePickerRef.current.click()}>
 
-          {imageFileUplordingProcess > 0 && (
+              {imageFileUplordingProcess > 0 && (
 
-            <CircularProgressbar value={imageFileUplordingProcess || 0}
-              text={`${imageFileUplordingProcess}%`}
-              strokeWidth={5}
-              styles={{
-                root: {
-                  width: '100%',
-                  height: '100%',
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                },
-                path: {
-                  stroke: `rgba(62, 152, 199, ${imageFileUplordingProcess / 100})`,
-                },
-              }} />
+                <CircularProgressbar value={imageFileUplordingProcess || 0}
+                  text={`${imageFileUplordingProcess}%`}
+                  strokeWidth={5}
+                  styles={{
+                    root: {
+                      width: '100%',
+                      height: '100%',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                    },
+                    path: {
+                      stroke: `rgba(62, 152, 199, ${imageFileUplordingProcess / 100})`,
+                    },
+                  }} />
 
-          )}
-          {/* add the profile pic path */}
-          <img src={imageFileURL || currentUser.profilePicture} alt='user' defaultValue={currentUser.profilePicture} className={`rounded-full w-full h-full object-cover border-8 border-[lightgray] ${imageFileUplordingProcess &&
-            imageFileUplordingProcess < 100 &&
-            'opacity-60'
-            }`} />
+              )}
+              {/* add the profile pic path */}
+              <img src={imageFileURL || currentUser.profilePicture} alt='user' defaultValue={currentUser.profilePicture} className={`rounded-full w-full h-full object-cover border-8 border-[lightgray] ${imageFileUplordingProcess &&
+                imageFileUplordingProcess < 100 &&
+                'opacity-60'
+                }`} />
+            </div>
+            {/* // profile image uplord error alert  */}
+            {imageFileUplordError && (
+              <Alert color='failure'>
+                {imageFileUplordError}
+              </Alert>
+            )
+            }
+
+            <TextInput type='text' id='first_name' placeholder='First Name' defaultValue={currentUser.first_name} onChange={handleChange} />
+            <TextInput type='text' id='last_name' placeholder='Last Name' defaultValue={currentUser.last_name} onChange={handleChange} />
+            <TextInput type='email' id='email' placeholder='email' defaultValue={currentUser.email} onChange={handleChange} />
+            <TextInput type={showPassword ? 'text' : 'password'} id='password' placeholder='password' defaultValue={currentUser.password} onChange={handleChange} />
+
+            {/* Button to toggle password visibility */}
+            <div className='flex justify-between'>
+              <span></span>
+              <Link
+                type='button'
+                onClick={togglePasswordVisibility}>
+                {showPassword ? 'Hide Password' : 'Show Password'}
+              </Link>
+            </div>
+
+          </div>
+          <div className='flex flex-col gap-5 basis-1/2 mt-36'>
+            <TextInput type='text' id='contact_number' placeholder='Contact Number' defaultValue={currentUser.contact_number} onChange={handleChange} />
+            <TextInput type='text' id='address' placeholder='Address' defaultValue={currentUser.address} onChange={handleChange} />
+            <TextInput type='text' id='idNumber' placeholder='NIC Number' defaultValue={currentUser.idNumber} onChange={handleChange} />
+            <TextInput type='text' id='uniform_size' placeholder='Uniform Size' defaultValue={currentUser.uniform_size} onChange={handleChange} />
+            <TextInput type='text' id='emergency_contact' placeholder='Emergency contact Number' defaultValue={currentUser.emergency_contact} onChange={handleChange} />
+          </div>
+
         </div>
-        {/* // profile image uplord error alert  */}
-        {imageFileUplordError && (
-          <Alert color='failure'>
-            {imageFileUplordError}
-          </Alert>
-        )
-        }
-
-        < TextInput type='text' id='first_name' placeholder='First Name' defaultValue={currentUser.first_name} onChange={handleChange} />
-        <TextInput type='text' id='last_name' placeholder='Last Name' defaultValue={currentUser.last_name} onChange={handleChange} />
-        <TextInput type='email' id='email' placeholder='email' defaultValue={currentUser.email} onChange={handleChange} />
-        <TextInput type={showPassword ? 'text' : 'password'} id='password' placeholder='password' defaultValue={currentUser.password} onChange={handleChange} />
-
-        {/* Button to toggle password visibility */}
-        <div className='flex justify-between'>
-          <span></span>
-          <Link
-            type='button'
-            onClick={togglePasswordVisibility}>
-            {showPassword ? 'Hide Password' : 'Show Password'}
-          </Link>
+        <div className='mt-5'>
+          <Button className='w-full' type='submit' gradientDuoTone='greenToBlue' outline >Update</Button>
+          <div className='text-red-500 flex justify-between mt-5'>
+            <span></span>
+            <span onClick={handleLogOut} className='cursor-pointer'> Log out</span>
+          </div>
         </div>
-        <Button type='submit' gradientDuoTone='greenToBlue' outline >Update</Button>
       </form>
 
 
-      <div className='text-red-500 flex justify-between mt-5'>
-        <span></span>
-        <span onClick={handleLogOut} className='cursor-pointer'> Log out</span>
-      </div>
+
 
       {/* user update success alert  */}
       {updateUserSuccess && (
