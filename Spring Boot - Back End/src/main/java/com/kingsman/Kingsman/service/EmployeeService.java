@@ -21,11 +21,66 @@ public class EmployeeService {
         Employee existingEmployee = employeeRepository.findById(id).orElse(null);
 
         if(existingEmployee != null){
-            existingEmployee.setFirst_name(updateEmployee.getFirst_name());
-            existingEmployee.setEmail(updateEmployee.getEmail());
-            existingEmployee.setLast_name(updateEmployee.getLast_name());
-            existingEmployee.setProfilePicture(updateEmployee.getProfilePicture());
-            existingEmployee.setPassword(updateEmployee.getPassword());
+
+            if((updateEmployee.getFirst_name() == null)){ //if updated employee FName is "null", assign the existing emp FName
+                existingEmployee.setFirst_name(existingEmployee.getFirst_name());
+            }else{
+                existingEmployee.setFirst_name(updateEmployee.getFirst_name());
+            }
+
+            if((updateEmployee.getLast_name() == null)){//if updated employee LName is "null", assign the existing emp LName
+                existingEmployee.setEmail(existingEmployee.getEmail());
+            }else{
+                existingEmployee.setLast_name(updateEmployee.getLast_name());
+            }
+
+            if((updateEmployee.getEmail() == null)){//if updated employee email is "null", assign the existing emp email
+                existingEmployee.setEmail(existingEmployee.getEmail());
+            }else{
+                existingEmployee.setEmail(updateEmployee.getEmail());
+            }
+
+            if((updateEmployee.getProfilePicture() == null)){//if updated employee ProfilePic is "null", assign the existing emp ProfilePic
+                existingEmployee.setProfilePicture(existingEmployee.getProfilePicture());
+            }else {
+                existingEmployee.setProfilePicture(updateEmployee.getProfilePicture());
+            }
+
+            if((updateEmployee.getPassword() == null)) {//if updated employee Password is "null", assign the existing emp Password
+                existingEmployee.setPassword(existingEmployee.getPassword());
+            }else{
+                existingEmployee.setPassword(updateEmployee.getPassword());
+            }
+
+            if((updateEmployee.getContact_number() == null)){//if updated employee ContactNumber is "null", assign the existing emp ContactNumber
+                existingEmployee.setContact_number(existingEmployee.getContact_number());
+            }else{
+                existingEmployee.setContact_number(updateEmployee.getContact_number());
+            }
+
+            if((updateEmployee.getAddress() == null)){//if updated employee Address is "null", assign the existing emp Address
+                existingEmployee.setAddress(existingEmployee.getAddress());
+            }else{
+                existingEmployee.setAddress(updateEmployee.getAddress());
+            }
+
+            if((updateEmployee.getIdNumber() == null)){//if updated employee IdNumber  is "null", assign the existing emp IdNumber
+                existingEmployee.setIdNumber(existingEmployee.getIdNumber());
+            }else{
+                existingEmployee.setIdNumber(updateEmployee.getIdNumber());
+            }
+
+            if((updateEmployee.getUniform_size() == null)){//if updated employee Uniform Size is "null", assign the existing emp Uniform Size
+                existingEmployee.setUniform_size(existingEmployee.getUniform_size());
+            }else{
+                existingEmployee.setUniform_size(updateEmployee.getUniform_size());
+            }
+
+            if((updateEmployee.getEmergency_contact() == null)){//if updated employee EmgContact is "null", assign the existing emp Emg
+                existingEmployee.setEmergency_contact(existingEmployee.getEmergency_contact());
+            }else{
+                existingEmployee.setEmergency_contact(updateEmployee.getEmergency_contact());
+            }
 
             return employeeRepository.save(existingEmployee);
 
