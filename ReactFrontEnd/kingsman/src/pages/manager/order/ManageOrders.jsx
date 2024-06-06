@@ -224,15 +224,14 @@ export default function ManageOrder() {
                                             <td className="px-6 py-2 text-center text-xs">{formatDate(order.orderDateTime)}</td>
                                             <td className="px-6 py-2">
                                                 <div className=" flex items-center justify-center w-full">
-                                                    {/* <a href={`/manager?tab=view-order&order=${order.orderId}`}  className=" px-2 py-1 text-sm text-white text-center bg-blue-500 rounded-md hover:bg-blue-700">
-                                                        <i className="ri-eye-fill"></i> View
+                                                    <a href={`/manager?tab=update-order&order=${order.orderId}`} className=" px-2 py-1 text-sm text-white text-center bg-amber-500 rounded-md hover:bg-amber-600">
+                                                        <i className="ri-edit-fill"></i> Edit
                                                     </a>
                                                     &nbsp;
-                                                    <a href={`/cashier?tab=bill&order=${order.orderId}`} className=" px-2 py-1 text-sm text-white text-center bg-green-500 rounded-md hover:bg-green-700">
-                                                        <i className="ri-arrow-right-s-fill"></i> Process
-                                                    </a> */}
+                                                    <a href={`/manager?tab=view-order&order=${order.orderId}`}  className=" px-2 py-1 text-sm text-white text-center bg-red-500 rounded-md hover:bg-red-700">
+                                                        <i className="ri-delete-bin-2-fill"></i> Delete
+                                                    </a>
                                                 </div>
-                                                
                                             </td>
                                         </tr>
                                     ))

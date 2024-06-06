@@ -20,12 +20,20 @@ export default function ManageOrder() {
             const response = await fetch('http://localhost:8080/api/orders/all-orders-general');
             const data = await response.json();
             
-            const today = new Date().toISOString().split('T')[0]; 
+            // Function to format date in YYYY-MM-DD format
+            const formatDate = (date) => {
+                return new Date(date).toLocaleDateString('en-US', { timeZone: 'Asia/Colombo' });
+            };
+    
+            // Get today's date in Sri Lanka 
+            const today = formatDate(new Date());
+    
+            // Filter orders for today
             const todayOrders = data.filter(order => {
-                const orderDate = new Date(order.orderDateTime).toISOString().split('T')[0];
+                // Convert order date to Sri Lanka timezone
+                const orderDate = formatDate(order.orderDateTime);
                 return orderDate === today;
             });
-
             // Set the filtered orders
             setOrders(todayOrders);
         } catch (error) {

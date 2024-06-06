@@ -16,11 +16,19 @@ export default function ManageOrder() {
         try {
             const response = await fetch('http://localhost:8080/api/orders/all-orders-general');
             const data = await response.json();
-            const today = new Date().toISOString().split('T')[0]; 
-            
+
+            // Function to format date in YYYY-MM-DD format
+            const formatDate = (date) => {
+                return new Date(date).toLocaleDateString('en-US', { timeZone: 'Asia/Colombo' });
+            };
+    
+            // Get today's date in Sri Lanka 
+            const today = formatDate(new Date());
+    
             // Filter orders for today
             const todayOrders = data.filter(order => {
-                const orderDate = new Date(order.orderDateTime).toISOString().split('T')[0];
+                // Convert order date to Sri Lanka timezone
+                const orderDate = formatDate(order.orderDateTime);
                 return orderDate === today;
             });
 
@@ -216,15 +224,13 @@ export default function ManageOrder() {
                                             <td className="px-6 py-2 text-center text-xs">{formatDate(order.orderDateTime)}</td>
                                             <td className="px-6 py-2">
                                                 <div className=" flex items-center justify-center w-full">
-                                                    <a href={`/cashier?tab=orders-view&order=${order.orderId}`}  className=" px-2 py-1 text-sm text-white text-center bg-blue-500 rounded-md hover:bg-blue-700">
-                                                        <i className="ri-eye-fill"></i> View
-                                                    </a>&nbsp;
-                                                    { order.orderStatus == "Ready" && (
-                                                         <a href={`/cashier?tab=bill&order=${order.orderId}`} className=" px-2 py-1 text-sm text-white text-center bg-green-500 rounded-md hover:bg-green-700">
-                                                            <i className="ri-arrow-right-s-fill"></i> Process
-                                                        </a>
-                                                        
-                                                    )}
+                                                    { order.orderStatus == "Ready" ? (
+                                                            <a href={`/cashier?tab=bill&order=${order.orderId}`} className=" px-2 py-1 text-sm text-white text-center bg-green-500 rounded-md hover:bg-green-700">
+                                                                <i className="ri-arrow-right-s-fill"></i> Process
+                                                            </a>
+                                                        ):
+                                                        "Processing not permitted"
+                                                    }
                                                 </div>
                                                 
                                             </td>

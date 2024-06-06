@@ -181,7 +181,7 @@ export default function TakeOrder() {
             // Generate JSON object with order details
             const orderJSON = {
                 customerId: customerData.cusId || "",
-                orderDateTime: new Date().toISOString(),
+                orderDateTime: new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Colombo' })).toISOString(),
                 orderStatus: "Pending",
                 tableNumber: tableNumber,
                 subTotal: subtotal,

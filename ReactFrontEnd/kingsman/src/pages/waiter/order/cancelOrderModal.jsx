@@ -19,7 +19,7 @@ export default function DeleteOrderModal({ isOpen, onToggle, onDelete }) {
                             Yes, I&apos;m sure
                         </Button>
                         <Button color="gray" onClick={onToggle}>
-                            No, cancel
+                            No, Back to Home
                         </Button>
                     </div>
                 </div>
