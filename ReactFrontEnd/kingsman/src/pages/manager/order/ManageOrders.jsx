@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import DeleteOrderModal from './deleteOrderModal';
+import toast from 'react-hot-toast';
 
 export default function ManageOrder() {
     const [orders, setOrders] = useState([]);
@@ -7,6 +9,8 @@ export default function ManageOrder() {
     const [selectedStatus, setSelectedStatus] = useState('All');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(15);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState(null); 
 
     useEffect(() => {
         fetchOrders();
@@ -74,6 +78,37 @@ export default function ManageOrder() {
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
+    };
+
+    const toggleDeleteModal = (order, event) => {
+        // Stop event propagation
+        if (event) {
+            event.stopPropagation();
+        }
+        setSelectedOrder(order);
+        setIsDeleteModalOpen(prevState => !prevState);
+    };
+
+
+    const handleDeleteOrder = async (orderId) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/orders/${orderId}`, {
+                method: 'DELETE'
+            });
+            if (response.status === 204 || response.ok) {
+                toast('Order Deleted!', {
+                    icon: <i className="ri-file-excel-fill text-red-700"></i>,
+                });
+                setOrders(orders.filter(order => order.orderId !== orderId));
+                setIsDeleteModalOpen(false);
+            } else {
+                toast.error("Something has error. \n Please Contact System Support.", { duration: 6000 });
+                console.error('Failed to delete order:', response);
+            }
+        } catch (error) {
+            toast.error("Something has error. \n Please Contact System Support.", { duration: 6000 });
+            console.error('Error deleting order:', error);
+        }
     };
     
     // Function redirect to order view page
@@ -228,7 +263,7 @@ export default function ManageOrder() {
                                                         <i className="ri-edit-fill"></i> Edit
                                                     </a>
                                                     &nbsp;
-                                                    <a href={`/manager?tab=view-order&order=${order.orderId}`}  className=" px-2 py-1 text-sm text-white text-center bg-red-500 rounded-md hover:bg-red-700">
+                                                    <a  onClick={(event) => toggleDeleteModal(order, event)}  className=" px-2 py-1 text-sm text-white text-center bg-red-500 rounded-md hover:bg-red-700">
                                                         <i className="ri-delete-bin-2-fill"></i> Delete
                                                     </a>
                                                 </div>
@@ -288,6 +323,12 @@ export default function ManageOrder() {
                     </div>
                 </div>
             </div>
+
+            <DeleteOrderModal 
+                isOpen={isDeleteModalOpen} 
+                onToggle={toggleDeleteModal}
+                onDelete={() => handleDeleteOrder(selectedOrder.orderId)}
+            />
         </div>
     );
 }
