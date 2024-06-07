@@ -17,6 +17,7 @@ import AnnualIncome from './IncomeStatement/AnnualIncome';
 import ManagerDash from './ManagerDash';
 import TableManage from './advanceSettings/TableManage';
 import UpdateOrder from './order/UpdateOrder';
+import UpdateOrderItems from './order/UpdateOrderItems';
 
 
 
@@ -63,6 +64,8 @@ export default function Manager() {
 
             {/* Update Order */}
             {tab === 'update-order' && <UpdateOrder/>}
+
+            {tab === 'update-order-items' && <UpdateOrderItems/>}
 
             {/* Attendance */}
             {tab === 'attendance' && <AttendanceFrManager />}

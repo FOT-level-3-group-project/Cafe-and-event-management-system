@@ -522,12 +522,10 @@ export default function UpdateOrder() {
                                     <div className="flex justify-between">
                                             <p className="text-md"></p>
                                             <div>
-                                                {discountPercentage === 5 ? (
+                                                {customerData && Object.keys(customerData).length > 0 && discountPercentage === 5 &&  (
                                                     <p className="top-full left-0 mt-1 text-xs text-gray-500">
                                                         Member discount applied
                                                     </p>
-                                                ) : (
-                                                    ""
                                                 )}
                                             </div>
                                     </div>
@@ -581,7 +579,10 @@ export default function UpdateOrder() {
 
                                     </div>
                                     <button onClick={() => updateOrder()} className="mt-6 w-full rounded-md bg-green-500  py-1.5 font-medium text-white hover:bg-green-600">
-                                        <i className="ri-restaurant-2-fill"></i> Update Order
+                                        <i className="ri-save-fill"></i> Save Order
+                                    </button>
+                                    <button onClick={() => { window.location.href = "manager?tab=update-order-items&order=" + OrderResponse.orderId }}  className="mt-3 w-full rounded-md bg-amber-500  py-1.5 font-medium text-white hover:bg-amber-600">
+                                        <i className="ri-menu-add-fill"></i> Update Order Items
                                     </button>
                                     <button onClick={() => { window.location.href = "/manager?tab=manage-orders" }} className="mt-3 w-full rounded-md bg-blue-500  py-1.5 font-medium text-white hover:bg-blue-600">
                                         <i className="ri-arrow-left-s-line"></i> Back

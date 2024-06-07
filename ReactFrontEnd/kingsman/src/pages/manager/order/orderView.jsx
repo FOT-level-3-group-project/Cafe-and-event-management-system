@@ -248,13 +248,11 @@ const OrderView = () => {
                                 <div className="flex justify-between">
                                         <p className="text-md"></p>
                                         <div>
-                                            {discountPercentage === 5 ? (
-                                                <p className="top-full left-0 mt-1 text-xs text-gray-500">
-                                                    Member discount applied
-                                                </p>
-                                            ) : (
-                                                ""
-                                            )}
+                                                {customerData && Object.keys(customerData).length > 0 && discountPercentage === 5 &&  (
+                                                    <p className="top-full left-0 mt-1 text-xs text-gray-500">
+                                                        Member discount applied
+                                                    </p>
+                                                )}
                                         </div>
                                 </div>
                                 <hr className="mt-2 mb-3"/>
