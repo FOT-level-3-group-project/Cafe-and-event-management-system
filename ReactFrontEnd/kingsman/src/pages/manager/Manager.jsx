@@ -10,11 +10,14 @@ import ViewAllEmployees from './manageEmployees/ViewAllEmployees';
 import AddEvent from './manageEvents/AddEvent';
 import ViewAllEvents from './manageEvents/ViewAllEvents';
 import ManageOrders from './order/ManageOrders';
+import OrderView from './order/orderView';
 import AttendanceFrManager from './attendance/AttendanceFrManager';
 import MonthlyProfit from './IncomeStatement/MonthlyProfit';
 import AnnualIncome from './IncomeStatement/AnnualIncome';
 import ManagerDash from './ManagerDash';
 import TableManage from './advanceSettings/TableManage';
+import UpdateOrder from './order/UpdateOrder';
+import UpdateOrderItems from './order/UpdateOrderItems';
 
 
 
@@ -55,6 +58,14 @@ export default function Manager() {
 
             {/* Manage Orders */}
             {tab === 'manage-orders' && <ManageOrders />}
+
+            {/* View Order */}
+            {tab === 'view-order' && <OrderView/>}
+
+            {/* Update Order */}
+            {tab === 'update-order' && <UpdateOrder/>}
+
+            {tab === 'update-order-items' && <UpdateOrderItems/>}
 
             {/* Attendance */}
             {tab === 'attendance' && <AttendanceFrManager />}

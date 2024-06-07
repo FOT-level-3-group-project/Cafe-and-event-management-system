@@ -37,7 +37,7 @@ export default function TakeOrder() {
 
         useEffect(() => {
             setResponseErrors("")
-            axios.get("http://localhost:8080/api/food/all")
+            axios.get("http://localhost:8080/api/food/available")
                 .then(response => {
                     setFoodItems(response.data);
                 })
@@ -181,7 +181,7 @@ export default function TakeOrder() {
             // Generate JSON object with order details
             const orderJSON = {
                 customerId: customerData.cusId || "",
-                orderDateTime: new Date().toISOString(),
+                orderDateTime: new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Colombo' })).toISOString(),
                 orderStatus: "Pending",
                 tableNumber: tableNumber,
                 subTotal: subtotal,

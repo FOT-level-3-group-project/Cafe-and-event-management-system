@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import DeleteOrderModal from './deleteOrderModal';
+import CancelOrderModal from './cancelOrderModal';
 import toast from 'react-hot-toast';
 
 export default function ManageOrder() {
@@ -7,7 +7,7 @@ export default function ManageOrder() {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchCriteria, setSearchCriteria] = useState('name');
     const [selectedOrder, setSelectedOrder] = useState(null); 
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(14);
 
@@ -17,25 +17,41 @@ export default function ManageOrder() {
 
     const fetchOrders = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/orders');
+            const response = await fetch('http://localhost:8080/api/orders/all-orders-general');
             const data = await response.json();
-            setOrders(data);
+            
+            // Function to format date in YYYY-MM-DD format
+            const formatDate = (date) => {
+                return new Date(date).toLocaleDateString('en-US', { timeZone: 'Asia/Colombo' });
+            };
+    
+            // Get today's date in Sri Lanka 
+            const today = formatDate(new Date());
+    
+            // Filter orders for today
+            const todayOrders = data.filter(order => {
+                // Convert order date to Sri Lanka timezone
+                const orderDate = formatDate(order.orderDateTime);
+                return orderDate === today;
+            });
+            // Set the filtered orders
+            setOrders(todayOrders);
         } catch (error) {
             console.error('Error fetching orders:', error);
         }
     };
 
-    const handleDeleteOrder = async (orderId) => {
+    const handleCancelOrder = async (orderId) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/orders/${orderId}`, {
-                method: 'DELETE'
+            const response = await fetch(`http://localhost:8080/api/orders/status-update/${orderId}/Canceled`, {
+                method: 'PUT'
             });
             if (response.status === 204 || response.ok) {
-                toast('Order Deleted Successfully!', {
-                    icon: <i className="ri-delete-bin-6-fill"></i>,
+                toast('Order cancelled successfully!', {
+                    icon: <i className="ri-file-excel-fill text-red-700"></i>,
                 });
                 setOrders(orders.filter(order => order.orderId !== orderId));
-                setIsDeleteModalOpen(false);
+                setIsCancelModalOpen(false);
             } else {
                 toast.error("Something has error. \n Please Contact System Support.", { duration: 6000 });
                 console.error('Failed to delete order:', response);
@@ -76,10 +92,15 @@ export default function ManageOrder() {
         return `${year}-${month}-${day} ${hours}.${minutes} ${period}`;
     };
 
-    const toggleDeleteModal = (order) => {
+    const toggleCancelModal = (order, event) => {
+        // Stop event propagation
+        if (event) {
+            event.stopPropagation();
+        }
         setSelectedOrder(order);
-        setIsDeleteModalOpen(prevState => !prevState);
+        setIsCancelModalOpen(prevState => !prevState);
     };
+    
 
     const handleNextPage = () => {
         setCurrentPage(prevPage => prevPage + 1);
@@ -91,6 +112,11 @@ export default function ManageOrder() {
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
+    };
+
+    // Function redirect to order view page
+    const redirectToOrderView = (orderId) => {
+        window.location.href = `/waiter?tab=order-view&order=${orderId}`;
     };
 
     return (
@@ -138,7 +164,7 @@ export default function ManageOrder() {
 
                     <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md my-5">
                         <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-                            <thead className="bg-gray-50 text-gray-900  dark:bg-gray-700 dark:text-gray-50">
+                            <thead className="bg-gray-100 text-gray-900  dark:bg-gray-700 dark:text-gray-50">
                                 <tr>
                                     <th scope="col" className="px-6 py-4 font-medium text-center">
                                         Order No
@@ -176,7 +202,7 @@ export default function ManageOrder() {
                                     </tr>
                                 ) : (
                                     currentItems.map(order => (
-                                        <tr key={order.orderId} className="hover:bg-gray-50 dark:hover:bg-gray-500 ">
+                                        <tr onClick={() => redirectToOrderView(order.orderId)} key={order.orderId} className="hover:bg-gray-100 dark:hover:bg-gray-400 cursor-pointer">
                                             <td className="px-6 py-2 text-center"><a className=' hover:text-green-500' href={`/waiter?tab=order-view&order=${order.orderId}`}>{order.orderId}</a></td>
                                             <td className="px-6 py-2 text-center">
                                                     <span className={`inline-flex px-2 py-1 items-center text-white rounded-lg text-xs ${
@@ -197,16 +223,17 @@ export default function ManageOrder() {
                                             <td className="px-6 py-2">
                                                 {order.orderStatus != "Pending" ? (
                                                     <div>
-                                                        <td colSpan="9" className="px-6 py-4 text-center">-</td>
+                                                        <p className="w-full text-center">Action Restricted</p>
                                                     </div>
                                                 ) : (
-                                                    <div className="flex items-center justify-evenly w-full">
-                                                        <a href={`/waiter?tab=update-orders&order=${order.orderId}`} className="text-2xl text-amber-500 text-center">
-                                                            <i className="ri-edit-fill"></i>
+
+                                                    <div className=" flex items-center justify-center w-full">
+                                                        <a  href={`/waiter?tab=update-orders&order=${order.orderId}`}  className=" px-2 py-1 text-sm text-white text-center bg-amber-500 rounded-md hover:bg-amber-600">
+                                                            <i className="ri-edit-fill"></i> Edit
                                                         </a>
-                                                        &nbsp; &nbsp; 
-                                                        <button onClick={() => toggleDeleteModal(order)} className="text-2xl text-red-500 text-center">
-                                                            <i className="ri-delete-bin-6-fill"></i>
+                                                        &nbsp;
+                                                        <button  onClick={(event) => toggleCancelModal(order, event)} className=" px-2 py-1 text-sm text-white text-center bg-red-500 rounded-md hover:bg-red-700">
+                                                            <i className="ri-file-excel-fill"></i> Cancel
                                                         </button>
                                                     </div>
                                                 )}
@@ -219,39 +246,41 @@ export default function ManageOrder() {
                     </div>
                      
                     {/* Pagination */}
-                    <div className="flex justify-center mt-4">
-                        <button
-                            onClick={handlePrevPage}
-                            disabled={currentPage === 1}
-                            className="mx-1 px-4 py-2 text-sm font-medium text-gray-700 bg-green-200 rounded-md hover:bg-green-300 focus:outline-none"
-                        >
-                            <i className="ri-arrow-left-s-line"></i> Previous 
-                        </button>
-                        {Array.from({ length: totalPages }, (_, index) => (
+                    {   filteredOrders.length != 0 &&  
+                        <div className="flex justify-center mt-4">
                             <button
-                                key={index}
-                                onClick={() => handlePageChange(index + 1)}
-                                className={`mx-1 px-4 py-2 text-sm font-medium rounded-md focus:outline-none ${
-                                    currentPage === index + 1 ? 'text-white bg-green-500' : 'text-gray-700 bg-green-200 hover:bg-green-300'
-                                }`}
+                                onClick={handlePrevPage}
+                                disabled={currentPage === 1}
+                                className="mx-1 px-4 py-2 text-sm font-medium text-gray-700 bg-green-200 rounded-md hover:bg-green-300 focus:outline-none"
                             >
-                                {index + 1}
+                                <i className="ri-arrow-left-s-line"></i> Previous 
                             </button>
-                        ))}
-                        <button
-                            onClick={handleNextPage}
-                            disabled={currentPage === totalPages}
-                            className="mx-1 px-4 py-2 text-sm font-medium text-gray-700 bg-green-200 rounded-md hover:bg-green-300 focus:outline-none"
-                        >
-                            Next <i className="ri-arrow-right-s-line"></i>
-                        </button>
-                    </div>
+                            {Array.from({ length: totalPages }, (_, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => handlePageChange(index + 1)}
+                                    className={`mx-1 px-4 py-2 text-sm font-medium rounded-md focus:outline-none ${
+                                        currentPage === index + 1 ? 'text-white bg-green-500' : 'text-gray-700 bg-green-200 hover:bg-green-300'
+                                    }`}
+                                >
+                                    {index + 1}
+                                </button>
+                            ))}
+                            <button
+                                onClick={handleNextPage}
+                                disabled={currentPage === totalPages}
+                                className="mx-1 px-4 py-2 text-sm font-medium text-gray-700 bg-green-200 rounded-md hover:bg-green-300 focus:outline-none"
+                            >
+                                Next <i className="ri-arrow-right-s-line"></i>
+                            </button>
+                        </div>
+                    }
                 </div>
             </div>
-            <DeleteOrderModal 
-                isOpen={isDeleteModalOpen} 
-                onToggle={toggleDeleteModal}
-                onDelete={() => handleDeleteOrder(selectedOrder.orderId)} 
+            <CancelOrderModal 
+                isOpen={isCancelModalOpen} 
+                onToggle={toggleCancelModal}
+                onDelete={() => handleCancelOrder(selectedOrder.orderId)} 
             />
 
         </div>

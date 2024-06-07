@@ -11,6 +11,8 @@ import java.util.List;
 public class OrderDTO {
     private Long orderId;
     private Long employeeId;
+    private String employeeFirstName;
+    private String employeeLastName;
     private Long customerId;
     private List<OrderItemDTO> orderItems;
     private Date orderDateTime;

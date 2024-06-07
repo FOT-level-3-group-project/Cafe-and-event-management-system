@@ -2,9 +2,12 @@ import  { useState,useEffect, } from "react";
 import {  useSelector } from 'react-redux'
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import SearchCustomerModal from "../../waiter/customer/SearchCustomerModal";
+import CustomerAddModal from "../../waiter/customer/CustomerAddModal";
+import UpdateCustomerModal from "../../waiter/customer/UpdateCustomerModal";
 
 
-export default function Bill() {
+export default function UpdateOrder() {
         const [responseErrors, setResponseErrors] = useState('');
         const [OrderResponse, setOrderResponse] = useState({});
         const { currentUser } = useSelector((state) => state.user);
@@ -12,12 +15,17 @@ export default function Bill() {
         const [orderItems, setOrderItems] = useState([]);
         const [tableNumber, setTableNumber] = useState(0);
         const [note, setNote] = useState('');
+        const [orderStatus, setOrderStatus] = useState('');
         const [subtotal, setSubtotal] = useState(0);
         const [totalAfterDiscount, setTotalAfterDiscount] = useState(0);
         const [discountPercentage, setDiscountPercentage] = useState(0);
 
         const [paymentMethod, setPaymentMethod] = useState('');
         const [cashAmount, setCashAmount] = useState(0);
+
+        const [customerAddModal, SetCustomerAddModal] = useState(false);
+        const [customerSearchModal, SetCustomerSearchModal] = useState(false);
+        const [customerUpdateModal, SetCustomerUpdateModal] = useState(false);
 
         useEffect(() => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -27,7 +35,7 @@ export default function Bill() {
                 .then(response => {
                     if (response.status === 200){
                         setOrderResponse(response.data);
-                        const { orderItems, tableNumber, specialNote, subTotal, discountPercentage, totalAfterDiscount, customer } = response.data;
+                        const { orderItems, tableNumber, specialNote, subTotal, discountPercentage, totalAfterDiscount, paymentMethod, orderStatus, customer } = response.data;
                         const convertedOrderItems = orderItems.map(item => ({
                             orderItemId: item.orderItemId,
                             foodId: item.foodItemId,
@@ -42,16 +50,19 @@ export default function Bill() {
                         setSubtotal(subTotal);
                         setDiscountPercentage(discountPercentage);
                         setTotalAfterDiscount(totalAfterDiscount);
+                        setCashAmount(totalAfterDiscount);
+                        setPaymentMethod(paymentMethod);
+                        setOrderStatus(orderStatus);
                         if(customer){
                             setCustomerData(customer);
                             setDiscountPercentage(5);
                         }
                     }else {
-                        window.location.href = "/cashier?tab=orders&error=order-not-found";
+                        window.location.href = "/manager?tab=manage-orders&error=order-not-found";
                     }
                 })
                 .catch(error => {
-                    window.location.href = "/cashier?tab=orders&error=order-not-found";
+                    window.location.href = "/manager?tab=manage-orders&error=order-not-found";
                     console.error("Error fetching order details:", error);
                 });
     
@@ -83,7 +94,7 @@ export default function Bill() {
             if (orderItems.length < 1) {
                 return setResponseErrors("At least one item must be ordered.");
             }
-            if (paymentMethod === '') {
+            if (paymentMethod === '' && orderStatus == "Completed") {
                 return setResponseErrors("Please select a payment method.");
             }  
             if (paymentMethod === 'cash' && (isNaN(parseFloat(cashAmount)) || parseFloat(cashAmount) < totalAfterDiscount)) {
@@ -100,16 +111,17 @@ export default function Bill() {
                 orderId: OrderResponse.orderId,
                 customerId: customerData.cusId || "",
                 orderDateTime:OrderResponse.orderDateTime,
-                orderStatus: 'Completed',
+                orderStatus: orderStatus,
                 tableNumber: tableNumber,
                 subTotal: subtotal,
                 discountValue: subtotal * (discountPercentage / 100),
                 discountPercentage: discountPercentage,
                 totalAfterDiscount: totalAfterDiscount,
                 paymentMethod: paymentMethod,
-                paymentStatus: true,
+                paymentStatus: paymentMethod ? true : false,
                 employeeId: currentUser.id,
-                orderItems: convertedOrderItems
+                orderItems: convertedOrderItems,
+                specialNote:note
             };
             console.log(orderItems);
         
@@ -127,7 +139,7 @@ export default function Bill() {
                     setOrderItems([]);
                     setResponseErrors("");
                     setTableNumber(0);
-                    window.location.href = "/cashier?tab=orders" ;
+                    window.location.href = "/manager?tab=manage-orders" ;
                 } else {
                     // Unexpected response
                     console.error('Unexpected response status:', response);
@@ -141,6 +153,35 @@ export default function Bill() {
                 setResponseErrors(error);
                 console.error("Error:", error);
             });
+        };
+
+
+        const OpenSearchCustomerModal = () => {
+            SetCustomerSearchModal(prevState => !prevState);
+        }
+
+        const handleCustomerModalResponse = (Data) => {
+            setCustomerData(Data); 
+        };
+
+        const openCustomerAddModal = () => {
+            SetCustomerAddModal(prevState => !prevState);
+        }
+
+        const OpenCustomerUpdateModal = () => {
+            SetCustomerUpdateModal(prevState => !prevState);
+        }
+
+        const handleOrderStatusChange = (newStatus) => {
+            setOrderStatus(newStatus);
+        };
+
+        const handleTableNumberChange = (newTableNumber) => {
+            setTableNumber(newTableNumber);
+        };
+
+        const handleNoteChange = (newNote) => {
+            setNote(newNote);
         };
           
         const convertDate = (dateString) => {
@@ -241,18 +282,24 @@ export default function Bill() {
                                                     </td>
                                                     <td className="p-1 whitespace-nowrap">
                                                         <div className="text-left">
-                                                        <span className={`inline-flex p-1 mr-auto items-center font-semibold text-xs text-white rounded-lg ${
-                                                                            OrderResponse.orderStatus === "Pending" ? "bg-yellow-300" :
-                                                                            OrderResponse.orderStatus === "Processing" ? "bg-blue-300" :
-                                                                            OrderResponse.orderStatus === "Ready" ? "bg-green-300" :
-                                                                            OrderResponse.orderStatus === "Completed" ? "bg-green-500" :
-                                                                            ""
-                                                                        }`}
-                                                        >
-                                                            &nbsp;
-                                                            {OrderResponse.orderStatus}
-                                                            &nbsp;
-                                                        </span>
+                                                            <select
+                                                                className={`inline-flex mr-auto items-center font-semibold text-xs text-black p-1 mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-0 focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                                                                    OrderResponse.orderStatus === "Pending" ? "bg-yellow-300" :
+                                                                    OrderResponse.orderStatus === "Processing" ? "bg-blue-300" :
+                                                                    OrderResponse.orderStatus === "Ready" ? "bg-green-300" :
+                                                                    OrderResponse.orderStatus === "Completed" ? "bg-green-500 text-white" :
+                                                                    OrderResponse.orderStatus === "Canceled" ? "bg-red-500" :
+                                                                    ""
+                                                                }`}
+                                                                value={orderStatus}
+                                                                onChange={(e) => handleOrderStatusChange(e.target.value)}
+                                                            >
+                                                                <option value="Pending" className="bg-yellow-300 text-black">Pending</option>
+                                                                <option value="Processing" className="bg-blue-300 text-black">Processing</option>
+                                                                <option value="Ready" className="bg-green-300 text-black">Ready</option>
+                                                                <option value="Completed" className="bg-green-500 text-white">Completed</option>
+                                                                <option value="Canceled" className="bg-red-500 text-black">Canceled</option>
+                                                            </select>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -265,12 +312,20 @@ export default function Bill() {
                                                     </td>
                                                     <td className="p-1 whitespace-nowrap">
                                                         <div className="text-left">
-                                                            {tableNumber !== 0 ? (
-                                                                // Convert tableNumber to string  before rendering
-                                                                tableNumber.toString() 
-                                                            ) : (
-                                                                "No Table Assigned"
-                                                            )}
+
+                                                            <select
+                                                                id="table"
+                                                                value={tableNumber}
+                                                                onChange={(e) => handleTableNumberChange(e.target.value)}
+                                                                className="inline-flex mr-auto items-center font-semibold text-xs text-black p-1 mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-0 focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                                            >
+                                                                <option value={0}>No Table Assigned</option>
+                                                                {[...Array(10).keys()].map((num) => (
+                                                                    <option key={num + 1} value={num + 1}>
+                                                                        Table {num + 1}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
 
                                                         </div>
                                                     </td>
@@ -284,7 +339,14 @@ export default function Bill() {
                                                     </td>
                                                     <td className="p-1 whitespace-nowrap">
                                                         <div className="text-left">
-                                                            {note}
+                                                            <textarea
+                                                                id="note"
+                                                                rows={1}
+                                                                className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                                placeholder={ note ? note : "Write a Note here..."}
+                                                                value={note}
+                                                                onChange={(e) => handleNoteChange(e.target.value)}
+                                                            />
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -293,8 +355,6 @@ export default function Bill() {
                                     </div>
                                 </div>
                             </div>
-                            
-                            {customerData && Object.keys(customerData).length > 0  && (
                                 <div className="w-1/2 ml-1 p-6 rounded-lg border bg-white mb-3 shadow-md md:mt-0 text-sm dark:bg-gray-600 dark: border-none">
                                     <div>
                                         <h4 className="font-bold">Customer Details</h4>
@@ -350,9 +410,30 @@ export default function Bill() {
                                                 />
                                             </div>
                                         </div>
+                                        <div className='flex items-center justify-between w-full overflow-hidden'>
+                                            <button onClick={OpenSearchCustomerModal} className="flex-grow flex items-center justify-center px-3 py-2 bg-cyan-500 text-white font-semibold rounded hover:bg-cyan-600 mx-1">
+                                                <i className="ri-user-search-fill"></i>
+                                                <span className="ml-1">Search</span>
+                                            </button>
+                                            <button onClick={openCustomerAddModal} className="flex-grow flex items-center justify-center px-3 py-2 bg-green-500 mr-1 text-white font-semibold rounded hover:bg-green-600 mx-1">
+                                                <i className="ri-user-add-fill"></i>
+                                                <span className="ml-1">Add</span>
+                                            </button>
+                                            {customerData.cusName && (
+                                                <>
+                                                    <button onClick={OpenCustomerUpdateModal} className="flex-grow flex items-center justify-center px-3 py-2 bg-amber-500 text-white font-semibold rounded hover:bg-amber-600 mx-1">
+                                                        <i className="ri-edit-fill"></i>
+                                                        <span className="ml-1">Update</span>
+                                                    </button>
+                                                    <button onClick={() => handleClearFields()} className="flex-grow flex items-center justify-center px-3 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600 mx-1">
+                                                        <i className="ri-close-large-line"></i>
+                                                        <span className="ml-1">Clear</span>
+                                                    </button>
+                                                </>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                            )}
                         </div>
 
                         <div className="flex justify-between">
@@ -441,12 +522,10 @@ export default function Bill() {
                                     <div className="flex justify-between">
                                             <p className="text-md"></p>
                                             <div>
-                                                {discountPercentage === 5 ? (
+                                                {customerData && Object.keys(customerData).length > 0 && discountPercentage === 5 &&  (
                                                     <p className="top-full left-0 mt-1 text-xs text-gray-500">
                                                         Member discount applied
                                                     </p>
-                                                ) : (
-                                                    ""
                                                 )}
                                             </div>
                                     </div>
@@ -469,6 +548,8 @@ export default function Bill() {
                                                 <option hidden value="">Select Payment Method</option>
                                                 <option value="cash">Cash</option>
                                                 <option value="card">Card Visa / Master</option>
+                                                <option value="Return">Return</option>
+                                                <option value="">Payment Removed</option>
                                             </select>
                                         </div>
                                         {paymentMethod === 'cash' && (
@@ -498,9 +579,12 @@ export default function Bill() {
 
                                     </div>
                                     <button onClick={() => updateOrder()} className="mt-6 w-full rounded-md bg-green-500  py-1.5 font-medium text-white hover:bg-green-600">
-                                        <i className="ri-restaurant-2-fill"></i> Complete Order
+                                        <i className="ri-save-fill"></i> Save Order
                                     </button>
-                                    <button onClick={() => { window.location.href = "/cashier?tab=orders" }} className="mt-3 w-full rounded-md bg-blue-500  py-1.5 font-medium text-white hover:bg-blue-600">
+                                    <button onClick={() => { window.location.href = "manager?tab=update-order-items&order=" + OrderResponse.orderId }}  className="mt-3 w-full rounded-md bg-amber-500  py-1.5 font-medium text-white hover:bg-amber-600">
+                                        <i className="ri-menu-add-fill"></i> Update Order Items
+                                    </button>
+                                    <button onClick={() => { window.location.href = "/manager?tab=manage-orders" }} className="mt-3 w-full rounded-md bg-blue-500  py-1.5 font-medium text-white hover:bg-blue-600">
                                         <i className="ri-arrow-left-s-line"></i> Back
                                     </button>
 
@@ -513,6 +597,25 @@ export default function Bill() {
                 </div>
             </div>
         </div>
+
+        <SearchCustomerModal 
+            isOpen={customerSearchModal}
+            onToggle={OpenSearchCustomerModal}
+            searchModalResponse={handleCustomerModalResponse}
+        />
+
+        <CustomerAddModal
+            isOpen={customerAddModal}
+            onToggle={openCustomerAddModal}
+            customerAddModalResponse={handleCustomerModalResponse}
+        />
+
+        <UpdateCustomerModal
+            isOpen={customerUpdateModal}
+            onToggle={OpenCustomerUpdateModal}
+            customerUpdateModalResponse={handleCustomerModalResponse}
+            currentCustomerData={customerData}
+        />
 
     </div>
   )

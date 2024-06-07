@@ -50,6 +50,12 @@ public class FoodItemController {
         return ResponseEntity.ok(items);
     }
 
+    @GetMapping("/available") // get all available food items
+    public ResponseEntity<List<FoodItem>> getAllAvailableItems() {
+        List<FoodItem> availableItems = foodItemService.getAllAvailableItems();
+        return ResponseEntity.ok(availableItems);
+    }
+
     @DeleteMapping("/{id}") //method removes a food item based on its ID.
     public ResponseEntity<Void> deleteFoodItem(@PathVariable Long id) {
         foodItemService.deleteFoodItem(id);

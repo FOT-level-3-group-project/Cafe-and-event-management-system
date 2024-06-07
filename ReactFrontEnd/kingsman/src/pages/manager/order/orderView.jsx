@@ -1,14 +1,20 @@
 
+import * as React from 'react';
 import  { useState,useEffect, } from "react";
 import axios from 'axios';
+import OrderPDF from '../../cashier/Order/OrderPDF';
 
 
-export default function OrderView() {
+const OrderView = () => {
+
+        const [showPDF, setShowPDF] = useState(false); // State to control the visibility of the PDF component
+
+        const handleTogglePDF = () => {
+            setShowPDF(!showPDF); // Toggle the visibility of the PDF component
+        };
 
         const [OrderResponse, setOrderResponse] = useState({});
-
         const [customerData, setCustomerData] = useState({});
-        
 
         const [orderItems, setOrderItems] = useState([]);
         const [tableNumber, setTableNumber] = useState(0);
@@ -43,13 +49,15 @@ export default function OrderView() {
                         setTotalAfterDiscount(totalAfterDiscount);
                         if(customer){
                             setCustomerData(customer);
+                            setDiscountPercentage(5);
                         }
                     }else {
-                        window.location.href = "/waiter?tab=manage-orders&error=order-not-found";
+                        window.location.href = "/cashier?tab=orders&error=order-not-found";
                     }
+                    console.log(response.data);
                 })
                 .catch(error => {
-                    window.location.href = "/waiter?tab=manage-orders&error=order-not-found";
+                    window.location.href = "/cashier?tab=orders&error=order-not-found";
                     console.error("Error fetching order details:", error);
                 });
         }, []);
@@ -97,6 +105,7 @@ export default function OrderView() {
                                                     OrderResponse.orderStatus === "Processing" ? "bg-blue-300" :
                                                     OrderResponse.orderStatus === "Ready" ? "bg-green-300" :
                                                     OrderResponse.orderStatus === "Completed" ? "bg-green-500" :
+                                                    OrderResponse.orderStatus === "Canceled" ? "bg-red-500" :
                                                     ""
                                                 }`}
                                 >
@@ -104,9 +113,7 @@ export default function OrderView() {
                                     {OrderResponse.orderStatus}
                                     &nbsp;
                                 </span>
-                                &nbsp;
-                                | 
-                                &nbsp; 
+                                &nbsp;|  &nbsp; 
                                 {convertDate(OrderResponse.orderDateTime)}
                                 &nbsp; |  &nbsp; 
                                 By {OrderResponse.employeeFirstName} {OrderResponse.employeeLastName}
@@ -178,7 +185,7 @@ export default function OrderView() {
                                     <thead className="bg-gray-50 text-xs font-semibold uppercase text-gray-400 dark:bg-gray-700">
                                         <tr>
                                             <th className="px-2 py-1">
-                                                <div className="text-left font-semibold">#</div>
+                                                <div className="text-left font-semibold"> #</div>
                                             </th>
                                             <th className="px-2 py-1">
                                                 <div className="text-left font-semibold"> Name</div>
@@ -219,12 +226,13 @@ export default function OrderView() {
                                                     </td>
                                                 </tr>
                                             ))
-                                        )}
+                                        )}{}
                                     </tbody>
                                 </table>
                             </div>
 
                             <div className="px-6 py-3">
+                                <hr className="mt-1 mb-3"/>
                                 <div className="flex justify-between">
                                     <p className="text-md">Subtotal</p>
                                     <div>
@@ -237,6 +245,16 @@ export default function OrderView() {
                                         <p className="mb-1 text-md">LKR {(subtotal * (discountPercentage / 100)).toFixed(2)}</p>
                                     </div>
                                 </div>
+                                <div className="flex justify-between">
+                                        <p className="text-md"></p>
+                                        <div>
+                                                {customerData && Object.keys(customerData).length > 0 && discountPercentage === 5 &&  (
+                                                    <p className="top-full left-0 mt-1 text-xs text-gray-500">
+                                                        Member discount applied
+                                                    </p>
+                                                )}
+                                        </div>
+                                </div>
                                 <hr className="mt-2 mb-3"/>
                                 <div className="flex justify-between">
                                     <p className="text-lg font-bold">Total</p>
@@ -244,7 +262,6 @@ export default function OrderView() {
                                         <p className="mb-1 text-lg font-bold">LKR {totalAfterDiscount.toFixed(2)}</p>
                                     </div>
                                 </div>
-                                <hr className="mt-2 mb-3"/>
 
                                 <div className="flex w-full justify-evenly my-2">
                                     <div className="w-1/2 mr-1">
@@ -253,7 +270,7 @@ export default function OrderView() {
                                             id="table"
                                             type="text"
                                             readOnly
-                                            value={tableNumber}
+                                            value={tableNumber && tableNumber.value != 0 ? tableNumber : "Table Not Assigned"}
                                             className="block  p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                         />
                                     </div>
@@ -274,13 +291,26 @@ export default function OrderView() {
                                     </div>
                                 </div>
 
+                                {showPDF &&
+                                    <div className='flex items-center justify-end w-full overflow-hidden px-1 mb-2'>
+                                        <OrderPDF order={OrderResponse} />
+                                    </div>
+                                }
+
                                 <div>
                                     <div className='flex items-center justify-between w-full overflow-hidden'>
-                                        <a href="/waiter?tab=manage-orders" className="flex-grow flex items-center justify-center px-3 py-2 bg-cyan-500 text-white font-semibold rounded hover:bg-cyan-600 mx-1">
+                                        <a href="/manager?tab=manage-orders" className="flex-grow flex items-center justify-center px-3 py-2 bg-cyan-500 text-white font-semibold rounded hover:bg-cyan-600 mr-2">
                                             <i className="ri-arrow-left-s-line"></i>
                                             <span className="ml-1">Back</span>
                                         </a>
-                                        <a  href={`/waiter?tab=update-orders&order=${OrderResponse.orderId}`} className="flex-grow flex items-center justify-center px-3 py-2 bg-amber-500 text-white font-semibold rounded hover:bg-amber-600 mx-1">
+
+                                        {!showPDF &&
+                                            <button onClick={handleTogglePDF} className='flex-grow flex items-center justify-center px-3 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 -1'>
+                                                Generate PDF
+                                            </button>
+                                        }
+                    
+                                        <a href={`/manager?tab=update-order&order=${OrderResponse.orderId}`} className="flex-grow flex items-center justify-center px-3 py-2 bg-amber-500 text-white font-semibold rounded hover:bg-amber-600 ml-2">
                                             <i className="ri-edit-fill"></i>
                                             <span className="ml-1">Edit Order</span>
                                         </a>
@@ -297,3 +327,5 @@ export default function OrderView() {
     </div>
   )
 }
+
+export default OrderView;

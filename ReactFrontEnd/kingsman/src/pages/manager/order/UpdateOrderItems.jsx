@@ -1,25 +1,17 @@
+
 import  { useState,useEffect, } from "react";
-import {  useSelector } from 'react-redux'
-import CustomerAddModal from "../customer/CustomerAddModal";
-import SearchCustomerModal from "../customer/SearchCustomerModal";
-import UpdateCustomerModal from "../customer/UpdateCustomerModal";
 import axios from 'axios';
-import QuantityInputModal from "../FoodItems/QuantityInputModal";
-import QuantityUpdateModal from "../FoodItems/QuantityUpdateModal";
 import toast from 'react-hot-toast';
+import QuantityUpdateModal from "../../waiter/FoodItems/QuantityUpdateModal";
+import QuantityInputModal from "../../waiter/FoodItems/QuantityInputModal";
 
 
 
 
-export default function UpdateOrder() {
+export default function UpdateOrderItems() {
+
         const [responseErrors, setResponseErrors] = useState('');
         const [OrderResponse, setOrderResponse] = useState({});
-        const { currentUser } = useSelector((state) => state.user);
-
-        const [customerAddModal, SetCustomerAddModal] = useState(false);
-        const [customerSearchModal, SetCustomerSearchModal] = useState(false);
-        const [customerUpdateModal, SetCustomerUpdateModal] = useState(false);
-        const [customerData, setCustomerData] = useState({});
 
         const [quantityModalOpen, setQuantityModalOpen] = useState(false);
         const [quantityUpdateModalOpen, setQuantityUpdateModalOpen] = useState(false);
@@ -32,8 +24,6 @@ export default function UpdateOrder() {
         const [orderItems, setOrderItems] = useState([]);
         const [orderItemsConvertedResponse, setOrderItemsConvertedResponse] = useState([]);
         const [billItemData, setBillItemData] = useState({});
-        const [tableNumber, setTableNumber] = useState(0);
-        const [note, setNote] = useState('');
 
         const [subtotal, setSubtotal] = useState(0);
         const [totalAfterDiscount, setTotalAfterDiscount] = useState(0);
@@ -47,7 +37,7 @@ export default function UpdateOrder() {
                 .then(response => {
                     if (response.status === 200){
                         setOrderResponse(response.data);
-                        const { orderItems, tableNumber, specialNote, subTotal, discountPercentage, totalAfterDiscount, customer } = response.data;
+                        const { orderItems, subTotal, discountPercentage, totalAfterDiscount } = response.data;
                         const convertedOrderItems = orderItems.map(item => ({
                             orderItemId: item.orderItemId,
                             foodId: item.foodItemId,
@@ -58,20 +48,15 @@ export default function UpdateOrder() {
                         }));
                         setOrderItems(convertedOrderItems);
                         setOrderItemsConvertedResponse(convertedOrderItems);
-                        setTableNumber(tableNumber);
-                        setNote(specialNote);
                         setSubtotal(subTotal);
                         setDiscountPercentage(discountPercentage);
                         setTotalAfterDiscount(totalAfterDiscount);
-                        if(customer){
-                            setCustomerData(customer);     //details tika set wenawa
-                        }
                     }else {
-                        window.location.href = "/waiter?tab=manage-orders&error=order-not-found";
+                        window.location.href = "/manager?tab=manage-orders&error=order-not-found";
                     }
                 })
                 .catch(error => {
-                    window.location.href = "/waiter?tab=manage-orders&error=order-not-found";
+                    window.location.href = "/manager?tab=manage-orders&error=order-not-found";
                     console.error("Error fetching order details:", error);
                 });
     
@@ -96,18 +81,6 @@ export default function UpdateOrder() {
 
         }, [orderItems, discountPercentage]);
 
-        const openCustomerAddModal = () => {
-            SetCustomerAddModal(prevState => !prevState);
-        }
-
-        const OpenSearchCustomerModal = () => {
-            SetCustomerSearchModal(prevState => !prevState);
-        }
-
-        const OpenCustomerUpdateModal = () => {
-            SetCustomerUpdateModal(prevState => !prevState);
-        }
-
         const OpenQuantityModal = () => {
             setQuantityModalOpen(prevState => !prevState);
         }
@@ -122,25 +95,6 @@ export default function UpdateOrder() {
             setQuantityUpdateModalOpen(false);
         };
 
-        const handleCustomerModalResponse = (Data) => {
-            setCustomerData(Data); 
-        };
-
-        const handleClearFields = () => {
-            setCustomerData({
-                cusName: '',
-                cusMobile: '',
-                cusEmail: ''
-            });
-        };
-
-        const handleTableNumberChange = (e) => {
-            setTableNumber(parseInt(e.target.value));
-        };
-
-        const handleNoteChange = (event) => {
-            setNote(event.target.value);
-        };
 
         // Filter food items based on  category and search query
         const filteredFoodItems = foodItems.filter(item =>
@@ -230,17 +184,17 @@ export default function UpdateOrder() {
             // Generate JSON object with order details
             const orderJSON = {
                 orderId: OrderResponse.orderId,
-                customerId: customerData.cusId || "",
+                customerId: OrderResponse.customerId || "",
                 orderDateTime:OrderResponse.orderDateTime,
                 orderStatus: OrderResponse.orderStatus,
-                tableNumber: tableNumber,
+                tableNumber: OrderResponse.tableNumber,
                 subTotal: subtotal,
-                discountValue: 0.0,
-                discountPercentage: 0.0,
+                discountValue: OrderResponse.discountValue,
+                discountPercentage: OrderResponse.discountPercentage,
                 totalAfterDiscount: totalAfterDiscount,
-                paymentMethod: "",
-                paymentStatus: false,
-                employeeId: currentUser.id,
+                paymentMethod: OrderResponse.paymentMethod,
+                paymentStatus: OrderResponse.paymentStatus,
+                employeeId: OrderResponse.employeeId,
                 orderItems: convertedOrderItems
             };
             console.log(orderItems);
@@ -253,13 +207,10 @@ export default function UpdateOrder() {
             .then(response => {
                 if (response.status === 200) {
                     // Successful
-                    toast.success('Order Updated.');
-                    setCustomerData({});
-                    handleClearFields();
+                    toast.success('Order Item Updated.');
                     setOrderItems([]);
                     setResponseErrors("");
-                    setTableNumber(0);
-                    window.location.href = "/waiter?tab=manage-orders" ;
+                    window.location.href = "/manager?tab=update-order&order=" + OrderResponse.orderId;
                 } else {
                     // Unexpected response
                     console.error('Unexpected response status:', response);
@@ -412,92 +363,9 @@ export default function UpdateOrder() {
                     {/* Side Bar*/}
                     
                     <div className="h-full  md:w-2/5">
-                        <div className="p-6 rounded-lg border bg-white mb-3 shadow-md md:mt-0 text-sm dark:bg-gray-600 dark: border-none">
-                            <div>
-                                <h4 className="font-bold">Customer Details</h4>
-                                <hr className="my-2" />
-                            </div>
-                            <div className="rounded  pt-1">
-                                <div className="w-full flex flex-col mb-2">
-                                    <div className="w-full flex justify-between">
-                                        <div className="w-1/2 mb-6 md:mb-0 mr-1">
-                                            <label
-                                                className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
-                                                htmlFor="grid-name"
-                                            >
-                                                Name
-                                            </label>
-                                            <input
-                                                className="appearance-none block w-full bg-transparent text-grey-darker rounded py-2 px-4 mb-3 selection:border-none focus:outline-none  focus:border-black focus:ring-0 dark:border-grey-darker dark:focus:border-gray-500"
-                                                id="grid-name"
-                                                type="text"
-                                                value={customerData.cusName}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="w-1/2 mb-6 md:mb-0 mx-auto ml-1">
-                                            <label
-                                                className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
-                                                htmlFor="grid-mobile"
-                                            >
-                                                Mobile
-                                            </label>
-                                            <input
-                                                className="appearance-none block w-full bg-transparent text-grey-darker border rounded py-2 px-4 mb-3 selection:border-none focus:outline-none  focus:border-black focus:ring-0 dark:border-grey-darker dark:focus:border-gray-500"
-                                                id="grid-mobile"
-                                                type="text"
-                                                value={customerData.cusMobile}
-                                                readOnly
-                                            />
-                                        </div>
-                                    </div>
-                                    {/* <div className="w-full mb-6 md:mb-0">
-                                        <label
-                                            className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
-                                            htmlFor="grid-email"
-                                        >
-                                            Email
-                                        </label>
-                                        <input
-                                            className=" appearance-none block w-full bg-transparent text-grey-darker border rounded py-2 px-4 mb-3 selection:border-none focus:outline-none  focus:border-black focus:ring-0 dark:border-grey-darker dark:focus:border-gray-500"
-                                            id="grid-email"
-                                            type="email"
-                                            value={customerData.cusEmail}
-                                            readOnly
-                                        />
-                                    </div> */}
-                                </div>
-                            </div>
-                            <div>
-                            <div className='flex items-center justify-between w-full overflow-hidden'>
-                                <button onClick={OpenSearchCustomerModal} className="flex-grow flex items-center justify-center px-3 py-2 bg-cyan-500 text-white font-semibold rounded hover:bg-cyan-600 mx-1">
-                                    <i className="ri-user-search-fill"></i>
-                                    <span className="ml-1">Search</span>
-                                </button>
-                                <button onClick={openCustomerAddModal} className="flex-grow flex items-center justify-center px-3 py-2 bg-green-500 mr-1 text-white font-semibold rounded hover:bg-green-600 mx-1">
-                                    <i className="ri-user-add-fill"></i>
-                                    <span className="ml-1">Add</span>
-                                </button>
-                                {customerData.cusName && (
-                                    <>
-                                        <button onClick={OpenCustomerUpdateModal} className="flex-grow flex items-center justify-center px-3 py-2 bg-amber-500 text-white font-semibold rounded hover:bg-amber-600 mx-1">
-                                            <i className="ri-edit-fill"></i>
-                                            <span className="ml-1">Update</span>
-                                        </button>
-                                        <button onClick={() => handleClearFields()} className="flex-grow flex items-center justify-center px-3 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600 mx-1">
-                                            <i className="ri-close-large-line"></i>
-                                        </button>
-                                    </>
-                                )}
-                            </div>
+                        <div className=" py-2 flex flex-col justify-between rounded-lg border bg-white mb-6 shadow-md md:mt-0 dark:bg-gray-600 dark:border-none min-h-[calc(100vh-8rem)] h-auto">
 
-                            </div>
-                        </div>
-
-
-                        <div className=" py-2 flex flex-col justify-between rounded-lg border bg-white mb-6 shadow-md md:mt-0 dark:bg-gray-600 dark:border-none min-h-[calc(100vh-22rem)] h-auto">
-
-                            <div className="overflow-x-auto overflow-scroll max-h-[calc(100vh-40rem)] h-auto px-2 py-2">
+                            <div className="overflow-x-auto overflow-scroll max-h-[calc(100vh-18rem)] h-auto px-2 py-2">
                                 <table className="w-full table-auto">
                                     <thead className="bg-gray-50 text-xs font-semibold uppercase text-gray-400 dark:bg-gray-700">
                                         <tr>
@@ -550,7 +418,7 @@ export default function UpdateOrder() {
                                                     </td>
                                                 </tr>
                                             ))
-                                        )}{}
+                                        )}
                                     </tbody>
                                 </table>
                             </div>
@@ -563,40 +431,14 @@ export default function UpdateOrder() {
                                         <p className="mb-1 text-lg font-bold">LKR {totalAfterDiscount.toFixed(2)}</p>
                                     </div>
                                 </div>
-                                <div>
-                                    <label htmlFor="table"  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Table :</label>
-                                    <select
-                                        id="table"
-                                        value={tableNumber}
-                                        onChange={handleTableNumberChange}
-                                        className="block p-1 mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-0 focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                    >
-                                        <option value={0}>No Table Assigned</option>
-                                        {[...Array(10).keys()].map((num) => (
-                                            <option key={num + 1} value={num + 1}>
-                                                Table {num + 1}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="w-full mt-1">
-                                        <label
-                                            htmlFor="note"
-                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                        >
-                                            Note :
-                                        </label>
-                                        <textarea
-                                            id="note"
-                                            rows={1}
-                                            className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            value={note}
-                                            onChange={handleNoteChange}
-                                        />
-                                </div>
                                 <button onClick={() => updateOrder()} className="mt-6 w-full rounded-md bg-amber-500  py-1.5 font-medium text-white hover:bg-amber-600">
                                     <i className="ri-restaurant-2-fill"></i> Update Order
                                 </button>
+                                <br/>
+                                <a href={"/manager?tab=update-order&order="+OrderResponse.orderId} className="mt-3 flex-grow flex items-center justify-center px-3 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600">
+                                    <i className="ri-arrow-left-s-line"></i>
+                                    <span className="ml-1">Back</span>
+                                </a>
                             </div>
 
                         </div>
@@ -607,25 +449,6 @@ export default function UpdateOrder() {
         </div>
 
         {/* Modals */}
-        <CustomerAddModal 
-            isOpen={customerAddModal}
-            onToggle={openCustomerAddModal}
-            customerAddModalResponse={handleCustomerModalResponse}
-        />
-
-        <SearchCustomerModal 
-            isOpen={customerSearchModal}
-            onToggle={OpenSearchCustomerModal}
-            searchModalResponse={handleCustomerModalResponse}
-        />
-
-        <UpdateCustomerModal 
-            isOpen={customerUpdateModal}
-            onToggle={OpenCustomerUpdateModal}
-            customerUpdateModalResponse={handleCustomerModalResponse}
-            currentCustomerData={customerData}
-        />
-
         <QuantityInputModal 
                 isOpen={quantityModalOpen}
                 onToggle={OpenQuantityModal}

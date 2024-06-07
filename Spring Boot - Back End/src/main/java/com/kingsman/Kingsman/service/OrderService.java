@@ -42,6 +42,7 @@ public class OrderService {
 
     public List<OrderDTO> getAllOrders() { //This method retrieves all orders from the repository and maps them to a list of OrderDTO objects.
         List<Order> orders = orderRepository.findAll(); // Fetch all orders
+        orders.sort(Comparator.comparing(Order::getOrderDateTime).reversed()); // Sort orders by orderDateTime in descending order
         return mapOrderListToDTOList(orders);
     }
 
@@ -191,15 +192,19 @@ public class OrderService {
 
     private OrderDTO convertToDTO(Order order) {
         OrderDTO orderDTO = new OrderDTO();
-        // Copy existing properties
-        orderDTO.setEmployeeId(order.getEmployee().getId().longValue());
         BeanUtils.copyProperties(order, orderDTO);
+
+        // Set employee details
+        Employee employee = order.getEmployee();
+        orderDTO.setEmployeeId(employee.getId().longValue());
+        orderDTO.setEmployeeFirstName(employee.getFirst_name());
+        orderDTO.setEmployeeLastName(employee.getLast_name());
 
         // Map order items
         List<OrderItemDTO> orderItemDTOs = order.getOrderItems().stream()
                 .map(this::convertOrderItemToDTO)
                 .collect(Collectors.toList());
-        orderDTO.setOrderItems(orderItemDTOs);   // ena tika okkoma list eka map ekata dana eka
+        orderDTO.setOrderItems(orderItemDTOs);
 
         // Fetch and set customer details if customerId is not null
         if (order.getCustomerId() != null) {

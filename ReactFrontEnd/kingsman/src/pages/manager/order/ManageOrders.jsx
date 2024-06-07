@@ -1,11 +1,16 @@
-
 import React, { useState, useEffect } from 'react';
+import DeleteOrderModal from './deleteOrderModal';
+import toast from 'react-hot-toast';
 
-export default function ManageOrders() {
+export default function ManageOrder() {
     const [orders, setOrders] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchCriteria, setSearchCriteria] = useState('name');
     const [selectedStatus, setSelectedStatus] = useState('All');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(15);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState(null); 
 
     useEffect(() => {
         fetchOrders();
@@ -15,8 +20,8 @@ export default function ManageOrders() {
         try {
             const response = await fetch('http://localhost:8080/api/orders');
             const data = await response.json();
-            // Set Orders
             setOrders(data);
+            console.log(data)
         } catch (error) {
             console.error('Error fetching orders:', error);
         }
@@ -37,14 +42,16 @@ export default function ManageOrders() {
                 return order.customer && order.customer.cusName.toLowerCase().includes(searchQuery.toLowerCase());
             } else if (searchCriteria === 'mobile') {
                 return order.customer && order.customer.cusMobile && order.customer.cusMobile.includes(searchQuery);
+            }else if (searchCriteria === 'date') {
+                const orderDate = new Date(order.orderDateTime);
+                const searchDate = new Date(searchQuery);
+                return orderDate.toDateString() === searchDate.toDateString();
             }
         } else {
             return true; // If no search query provided, include all orders
         }
     });
-    
 
-    
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         const year = date.getFullYear();
@@ -56,8 +63,58 @@ export default function ManageOrders() {
         return `${year}-${month}-${day} ${hours}.${minutes} ${period}`;
     };
 
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
+    const handleNextPage = () => {
+        setCurrentPage(prevPage => prevPage + 1);
+    };
+
+    const handlePrevPage = () => {
+        setCurrentPage(prevPage => prevPage - 1);
+    };
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+
+    const toggleDeleteModal = (order, event) => {
+        // Stop event propagation
+        if (event) {
+            event.stopPropagation();
+        }
+        setSelectedOrder(order);
+        setIsDeleteModalOpen(prevState => !prevState);
+    };
+
+
+    const handleDeleteOrder = async (orderId) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/orders/${orderId}`, {
+                method: 'DELETE'
+            });
+            if (response.status === 204 || response.ok) {
+                toast('Order Deleted!', {
+                    icon: <i className="ri-file-excel-fill text-red-700"></i>,
+                });
+                setOrders(orders.filter(order => order.orderId !== orderId));
+                setIsDeleteModalOpen(false);
+            } else {
+                toast.error("Something has error. \n Please Contact System Support.", { duration: 6000 });
+                console.error('Failed to delete order:', response);
+            }
+        } catch (error) {
+            toast.error("Something has error. \n Please Contact System Support.", { duration: 6000 });
+            console.error('Error deleting order:', error);
+        }
+    };
     
+    // Function redirect to order view page
+    const redirectToOrderView = (orderId) => {
+        window.location.href = `/manager?tab=view-order&order=${orderId}`;
+    };
 
     return (
         <div className="w-full bg-slate-200 dark:bg-slate-500 py-5">
@@ -96,6 +153,12 @@ export default function ManageOrders() {
                             >                                
                                 Completed
                             </button>
+                            <button onClick={() => setSelectedStatus('Canceled')} 
+                                className={`px-5 py-2 text-xs font-medium text-gray-600 transition-colors duration-200 sm:text-sm dark:bg-gray-800 dark:text-gray-300 ${
+                                selectedStatus === 'Canceled' && 'bg-gray-100'}`}
+                            >                                
+                                Canceled
+                            </button>
                         </div>
                         <div className=" w-1/2 relative flex items-center mt-4 md:mt-0">
                                 <div className="relative flex-1">
@@ -103,7 +166,7 @@ export default function ManageOrders() {
                                         <i className="ri-search-line"></i>
                                     </div>
                                     <input
-                                        type="search"
+                                        type={searchCriteria == "date" ? "date" : "search"}
                                         id="default-search"
                                         className="block p-2 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-0 focus:border-gray-300 dark:bg-slate-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                                         placeholder="Search Order ID, Customer..."
@@ -128,6 +191,7 @@ export default function ManageOrders() {
                                         <option value="name">By Name</option>
                                         <option value="mobile">By Mobile</option>
                                         <option value="id">By Order ID</option>
+                                        <option value="date">By Order Date</option>
                                     </select>
                                 </div>
                         </div>
@@ -136,7 +200,7 @@ export default function ManageOrders() {
 
                     <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md my-5">
                         <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-                            <thead className="bg-gray-50 text-gray-900  dark:bg-gray-700 dark:text-gray-50">
+                            <thead className="bg-gray-100 text-gray-900  dark:bg-gray-700 dark:text-gray-50">
                                 <tr>
                                     <th scope="col" className="px-6 py-4 font-medium text-center">
                                         Order No
@@ -157,7 +221,10 @@ export default function ManageOrders() {
                                         Customer Mobile
                                     </th>
                                     <th scope="col" className="px-6 py-4 font-medium text-center">
-                                        Date
+                                        By
+                                    </th>
+                                    <th scope="col" className="px-6 py-4 font-medium text-center">
+                                        Date & Time
                                     </th>
                                     <th scope="col" className="px-6 py-4 font-medium text-center">
                                         Action
@@ -170,8 +237,8 @@ export default function ManageOrders() {
                                         <td colSpan="9" className="px-6 py-4 text-center">There are No Reports for Today to Show. Please Create an Order.</td>
                                     </tr>
                                 ) : (
-                                    filteredOrders.map(order => (
-                                        <tr key={order.orderId} className="hover:bg-gray-50 dark:hover:bg-gray-500 ">
+                                    currentItems.map(order => (
+                                        <tr onClick={() => redirectToOrderView(order.orderId)} key={order.orderId} className="hover:bg-gray-100 dark:hover:bg-gray-400 cursor-pointer ">
                                             <td className="px-6 py-2 text-center"><a className=' hover:text-green-500' href={`cashier?tab=orders-view&order=${order.orderId}`}>{order.orderId}</a></td>
                                             <td className="px-6 py-2 text-center">
                                                     <span className={`inline-flex px-2 py-1 items-center text-white rounded-lg text-xs ${
@@ -179,6 +246,7 @@ export default function ManageOrders() {
                                                                         order.orderStatus === "Processing" ? "bg-blue-300" :
                                                                         order.orderStatus === "Ready" ? "bg-green-300" :
                                                                         order.orderStatus === "Completed" ? "bg-green-500" :
+                                                                        order.orderStatus === "Canceled" ? "bg-red-500" :
                                                                         ""
                                                                     }`}
                                                     >{order.orderStatus}</span>
@@ -187,14 +255,16 @@ export default function ManageOrders() {
                                             <td className="px-6 py-2 text-center">{order.totalAfterDiscount.toFixed(2)}</td>
                                             <td className="px-6 py-2 text-center">{order.customer ? order.customer.cusName : '-'}</td>
                                             <td className="px-6 py-2 text-center">{order.customer ? order.customer.cusMobile : '-'}</td>
+                                            <td className="px-6 py-2 text-center">{order.employeeFirstName} {order.employeeLastName}</td>
                                             <td className="px-6 py-2 text-center text-xs">{formatDate(order.orderDateTime)}</td>
                                             <td className="px-6 py-2">
-                                                <div className="flex flex-col items-center justify-center">
-                                                    <a href={`/cashier?tab=orders-view&order=${order.orderId}`} className="w-full text-white p-1 text-xl text-center bg-blue-500 rounded-md hover:bg-blue-700">
-                                                        <i className="ri-eye-fill"></i> View
+                                                <div className=" flex items-center justify-center w-full">
+                                                    <a href={`/manager?tab=update-order&order=${order.orderId}`} className=" px-2 py-1 text-sm text-white text-center bg-amber-500 rounded-md hover:bg-amber-600">
+                                                        <i className="ri-edit-fill"></i> Edit
                                                     </a>
-                                                    <a href={`/cashier?tab=bill&order=${order.orderId}`} className="w-full p-2 text-xl text-white text-center bg-yellow-400 rounded-md hover:bg-yellow-500 mt-2">
-                                                        <i className="ri-edit-fill"></i> Update
+                                                    &nbsp;
+                                                    <a  onClick={(event) => toggleDeleteModal(order, event)}  className=" px-2 py-1 text-sm text-white text-center bg-red-500 rounded-md hover:bg-red-700">
+                                                        <i className="ri-delete-bin-2-fill"></i> Delete
                                                     </a>
                                                 </div>
                                             </td>
@@ -204,10 +274,62 @@ export default function ManageOrders() {
                             </tbody>
                         </table>
                     </div>
+                    {/* Pagination */}
+                    <div className="flex justify-center mt-4">
+                        <button
+                            onClick={handlePrevPage}
+                            disabled={currentPage === 1}
+                            className="mx-1 px-4 py-2 text-sm font-medium text-gray-700 bg-green-200 rounded-md hover:bg-green-300 focus:outline-none"
+                        >
+                            <i className="ri-arrow-left-s-line"></i> Previous
+                        </button>
+                        {Array.from({ length: totalPages }, (_, index) => {
+                            // Display numbers if currentPage is more than 3 pages from the first or last page
+                            if (
+                                index === 1 && currentPage > 3 ||
+                                index === totalPages - 2 && currentPage < totalPages - 2
+                            ) {
+                                return <span key={index}>...</span>;
+                            }
+
+                            // Display page numbers
+                            if (
+                                index === 0 || 
+                                index === totalPages - 1 || 
+                                (index >= currentPage - 2 && index <= currentPage + 2)
+                            ) {
+                                return (
+                                    <button
+                                        key={index}
+                                        onClick={() => handlePageChange(index + 1)}
+                                        className={`mx-1 px-4 py-2 text-sm font-medium rounded-md focus:outline-none ${
+                                            currentPage === index + 1 ? 'text-white bg-green-500' : 'text-gray-700 bg-green-200 hover:bg-green-300'
+                                        }`}
+                                    >
+                                        {index + 1}
+                                    </button>
+                                );
+                            }
+
+                            return null;
+                        })}
+                        <button
+                            onClick={handleNextPage}
+                            disabled={currentPage === totalPages}
+                            className="mx-1 px-4 py-2 text-sm font-medium text-gray-700 bg-green-200 rounded-md hover:bg-green-300 focus:outline-none"
+                        >
+                            Next <i className="ri-arrow-right-s-line"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
+
+            <DeleteOrderModal 
+                isOpen={isDeleteModalOpen} 
+                onToggle={toggleDeleteModal}
+                onDelete={() => handleDeleteOrder(selectedOrder.orderId)}
+            />
         </div>
     );
 }
-
 
