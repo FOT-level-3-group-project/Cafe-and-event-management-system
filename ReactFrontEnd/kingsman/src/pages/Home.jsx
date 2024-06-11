@@ -1,5 +1,6 @@
 import React from 'react'
 import { Carousel } from 'flowbite-react'
+import { Link } from 'react-router-dom'
 
 export default function Home() {
   return (
@@ -17,7 +18,9 @@ export default function Home() {
 
       {/* add feedback button   */}
       <div className='flex justify-end mt-10 mr-10'>
+        <Link to='/feedback'>
         <button className='px-5 py-2 bg-gradient-to-r from-green-800 via-green-600 to-green-400 rounded-lg text-white'>Feedback</button>
+        </Link>
       </div>
       
       

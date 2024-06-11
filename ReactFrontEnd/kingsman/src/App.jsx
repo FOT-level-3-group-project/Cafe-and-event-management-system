@@ -14,6 +14,7 @@ import OnlyManagerPrivateRoute from './components/OnlyManagerPrivateRoute'
 import ResetPassword from './pages/ResetPassword';
 import FoodMenu from './pages/chef/foodManagement/FoodMenu';
 import DefaultUpdateProfile from './pages/DefaultUpdateProfile'
+import UserFeedback from './pages/user/UserFeedback'
 //import { Link } from 'react-router-dom'
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
     <Header/>
       <Routes>
         <Route path="/" element={<Home/>} />
+        <Route path="/feedback" element={<UserFeedback/>} />
 
         <Route element={<PrivateRoute/>}>
           <Route path="/cashier" element={<Cashier/>}/>

@@ -61,7 +61,7 @@ export default function UserFeedback() {
     };
 
     return (
-        <div className="flex justify-center items-center mt-0 ">
+        <div className="flex justify-center items-center mt-0">
             <div className="flex flex-row w-full">
                 {/* Left side for ShowFeedback */}
                 <div className="w-1/3 p-5">
