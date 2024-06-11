@@ -34,11 +34,12 @@ export default function CashierSideBar() {
         <Sidebar className='w-full md:w-56'>
             <Sidebar.Items>
                 <Sidebar.ItemGroup>
-                    <Link to='/cashier?tab=dashboard'>
+                    <Link to='/cashier?tab=TodayAttendancePieChart'>
                         <Sidebar.Item active={tab === 'dashboard'} icon={FaChartPie} as='div'>
                             Dashboard
                         </Sidebar.Item>
                     </Link>
+                    
                     <Sidebar.Collapse label='Attendance' icon={HiUser}>
                         <Link to='/cashier?tab=addAttendance'>
                             <Sidebar.Item active={tab === 'addAttendance'} icon={HiUser} as='div'> Add Attendance </Sidebar.Item>
