@@ -14,6 +14,12 @@ export default function Home() {
           <img src="../src/image/HomePage3.png" alt="..." />
         </Carousel>
       </div>
+
+      {/* add feedback button   */}
+      <div className='flex justify-end mt-10 mr-10'>
+        <button className='px-5 py-2 bg-gradient-to-r from-green-800 via-green-600 to-green-400 rounded-lg text-white'>Feedback</button>
+      </div>
+      
       
     </div>
   )
