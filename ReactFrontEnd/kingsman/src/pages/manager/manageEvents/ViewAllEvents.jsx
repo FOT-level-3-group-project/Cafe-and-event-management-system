@@ -136,7 +136,7 @@ const ViewAllEvents = () => {
         }
     };
 
-    // Render form if eventToUpdate is not null
+    // update
     if (eventToUpdate) {
         return (
             <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row w-full '>
@@ -208,7 +208,8 @@ const ViewAllEvents = () => {
         </div>
         );
     }
-    
+
+    //View all events
     return (
     <div className="container mx-auto px-4 py-8 ">
       <div className="container mx-auto px-4 py-8 flex justify-between items-center">
@@ -246,7 +247,8 @@ const ViewAllEvents = () => {
             <Table.HeadCell  className='bg-green-100'>Quantity</Table.HeadCell>
             <Table.HeadCell  className='bg-green-100'>Entertainer</Table.HeadCell>
             <Table.HeadCell  className='bg-green-100'>Description</Table.HeadCell>
-            <Table.HeadCell  className='bg-green-100 text-center' colSpan={3} >Actions</Table.HeadCell>
+          {/*  <Table.HeadCell  className='bg-green-100 text-center' colSpan={3} >Actions</Table.HeadCell> */}
+            <Table.HeadCell  className='bg-green-100 text-center' colSpan={3}> </Table.HeadCell>
           </Table.Head>
           <Table.Body>
             {events

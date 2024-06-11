@@ -27,7 +27,6 @@ public class ManageEventsController {
     @DeleteMapping("/delete/{eventID}")
     public ResponseEntity<?> deleteEventByEventID(@PathVariable String eventID) {
         try {
-            // Delegate deletion logic to service layer
             String deletedEventName = manageEventsService.deleteEventByEventID(eventID);
             return new ResponseEntity<>("Event with name " + deletedEventName + " has been deleted", HttpStatus.OK);
         } catch (Exception e) {
@@ -38,7 +37,6 @@ public class ManageEventsController {
     @GetMapping("get/{eventID}")
     public ResponseEntity<?> getEventByEventID(@PathVariable String eventID) {
         try {
-            // Delegate retrieval logic to service layer
             Event event = manageEventsService.getEventById(eventID);
             return new ResponseEntity<>(event, HttpStatus.OK);
         } catch (Exception e) {

@@ -17,15 +17,19 @@ public class ManageEventsService {
         return viewEventsRepository.findAll();
     }
 
+    //delete event
     @Transactional
     public String deleteEventByEventID(String eventID) {
         viewEventsRepository.deleteByEventID(eventID);
         return eventID;
     }
 
+    //display event details
     public Event getEventById(String eventID) {
         return viewEventsRepository.findEventByEventID(eventID).orElse(null);
     }
+
+    //update event
     public String updateEventByEventID(String eventID, Event event) {
         Event existingEvent = viewEventsRepository.findEventByEventID(eventID).orElse(null);
         if (existingEvent == null) {
