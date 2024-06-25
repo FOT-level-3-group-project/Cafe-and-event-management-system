@@ -23,8 +23,11 @@ public class NotificationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Notification> getNotificationById(@PathVariable Long id) {
-        Optional<Notification> notification = notificationService.getNotificationById(id);
-        return notification.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        Notification notification = notificationService.getNotificationById(id);
+        if (notification == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(notification);
     }
 
     @GetMapping("/forWho/{forWho}")
@@ -32,7 +35,7 @@ public class NotificationController {
         return notificationService.getNotificationsByForWho(forWho);
     }
 
-    @PostMapping
+    @PostMapping //crate notification
     public Notification createNotification(@RequestBody Notification notification) {
         return notificationService.createNotification(notification);
     }
@@ -50,5 +53,16 @@ public class NotificationController {
     public ResponseEntity<Void> deleteNotification(@PathVariable Long id) {
         notificationService.deleteNotification(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/read") //change isRead faults to true
+    public ResponseEntity<Notification> markAsRead(@PathVariable Long id) {
+        Notification notification = notificationService.getNotificationById(id);
+        if (notification == null) {
+            return ResponseEntity.notFound().build();
+        }
+        notification.setRead(true);
+        Notification updatedNotification = notificationService.saveNotification(notification);
+        return ResponseEntity.ok(updatedNotification);
     }
 }

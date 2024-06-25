@@ -30,6 +30,8 @@ public class OrderService {
     @Autowired
     private FoodItemService foodItemService;
 
+    @Autowired
+    private NotificationService notificationService;
     private final OrderRepository orderRepository;
 
     private final OrderItemRepository orderItemRepository;
@@ -70,7 +72,24 @@ public class OrderService {
         List<OrderItem> orderItems = createOrderItems(orderDTO.getOrderItems(), order);
         order.setOrderItems(orderItems);
         Order savedOrder = orderRepository.save(order);
+
+        //crate notification for chef
+        createNotificationForChef(savedOrder);
+
         return convertToDTO(savedOrder);
+    }
+
+    //create the notification when place the order
+    private void createNotificationForChef(Order order) {
+        String title = "New Order";
+        String message = "Order ID: " + order.getOrderId() + ", Table Number : " + order.getTableNumber() + " " + order.getOrderItems();
+        boolean isRead = false;
+        LocalDateTime createdAt = LocalDateTime.now();
+        LocalDateTime updatedAt = createdAt;
+        String forWho = "chef";
+
+        Notification notification = new Notification(title, message, isRead, createdAt, updatedAt, forWho);
+        notificationService.createNotification(notification);
     }
 
     public OrderDTO updateOrder(Long orderId, OrderDTO orderDTO) {
