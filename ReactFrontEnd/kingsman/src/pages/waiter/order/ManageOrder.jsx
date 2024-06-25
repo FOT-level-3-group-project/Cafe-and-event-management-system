@@ -70,12 +70,15 @@ export default function ManageOrder() {
                 return order.customer && order.customer.cusName.toLowerCase().includes(searchQuery.toLowerCase());
             } else if (searchCriteria === 'mobile') {
                 return order.customer && order.customer.cusMobile && order.customer.cusMobile.includes(searchQuery);
+            }else if (searchCriteria === 'status') {
+                return order.orderStatus.toLowerCase().includes(searchQuery.toLowerCase());
+                console.log(order.orderStatus);
             }
         } else {
             return true;
         }
     });
-
+    
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
@@ -152,10 +155,11 @@ export default function ManageOrder() {
                                         className=" p-4 ml-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-0 focus:border-gray-300 dark:bg-slate-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                                         value={searchCriteria}
                                         onChange={e => setSearchCriteria(e.target.value)}
-                                    >
-                                        <option value="name">By Name</option>
+                                    >                                                                          
+                                        <option value="name">By Name</option>                    
                                         <option value="mobile">By Mobile</option>
                                         <option value="id">By Order ID</option>
+                                        <option value="status">By Status</option>
                                     </select>
                                 </div>
                             </div>
@@ -203,7 +207,7 @@ export default function ManageOrder() {
                                 ) : (
                                     currentItems.map(order => (
                                         <tr onClick={() => redirectToOrderView(order.orderId)} key={order.orderId} className="hover:bg-gray-100 dark:hover:bg-gray-400 cursor-pointer">
-                                            <td className="px-6 py-2 text-center"><a className=' hover:text-green-500' href={`/waiter?tab=order-view&order=${order.orderId}`}>{order.orderId}</a></td>
+                                            <td className="px-6 py-2 text-center"><a className=' hover:text-green-500' href={`/waiter?tab=order-view&order=${order.orderId}`}>{order.orderId}</a></td> 
                                             <td className="px-6 py-2 text-center">
                                                     <span className={`inline-flex px-2 py-1 items-center text-white rounded-lg text-xs ${
                                                                         order.orderStatus === "Pending" ? "bg-yellow-300" :
@@ -214,7 +218,7 @@ export default function ManageOrder() {
                                                                     }`}
                                                     >{order.orderStatus}</span>
                                             </td>
-                                            <td className="px-6 py-2 text-center">{order.tableNumber ==0 ? "-" : order.tableNumber }</td>
+                                            <td className="px-6 py-2 text-center">{order.tableNumber ==0 ? "-" : order.tableNumber }</td>               
                                             <td className="px-6 py-2 text-center">{order.orderItems.length}</td>
                                             <td className="px-6 py-2 text-center">{order.totalAfterDiscount.toFixed(2)}</td>
                                             <td className="px-6 py-2 text-center">{order.customer ? order.customer.cusName : '-'}</td>
