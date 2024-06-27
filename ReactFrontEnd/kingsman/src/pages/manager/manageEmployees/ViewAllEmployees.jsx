@@ -115,7 +115,7 @@ const ViewAllEmployees = () => {
 
 
      return (
-       <div className="flex flex-col w-full bg-gray-200">
+       <div className="flex flex-col w-full bg-gray-50">
          <div className="flex items-center m-4 justify-between border-b bg-white dark:bg-gray-500 p-3 shadow-md rounded-md">
            <h1 className="text-2xl font-bold mb-3">Employee Details</h1>
 
