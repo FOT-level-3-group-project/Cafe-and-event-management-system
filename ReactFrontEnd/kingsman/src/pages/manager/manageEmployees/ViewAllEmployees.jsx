@@ -228,22 +228,21 @@ const ViewAllEmployees = () => {
                        index % 2 === 0
                          ? "bg-gray-100 dark:bg-gray-500 dark:text-white"
                          : "bg-gray-150 dark:bg-gray-700 dark:text-white"
-                     }
-                   >
-                     <Table.Cell onClick={() => handleImageClick(employee.profilePicture)} style={{ cursor: 'pointer' }} className="text-black dark:text-slate-200 dark:bg-gray-600 ">
-                         {employee.profilePicture ? (
-                          <img
-                            src={employee.profilePicture}
-                            className="rounded-full w-full h-full object-cover"
-                          />
-                        ) : (
-                          <img
-                            src={defaultPropic}
-                            className="rounded-full w-full h-full object-cover opacity-50"
-                          />
-                        )}
+                    }>
+                     
 
-                      </Table.Cell>
+                    <Table.Cell
+                      onClick={() => handleImageClick(employee.profilePicture)}
+                      style={{ cursor: 'pointer' }}
+                      className="text-black dark:text-slate-200 dark:bg-gray-600"
+                    >
+                      <img
+                        src={employee.profilePicture ? employee.profilePicture : defaultPropic}
+                        className="rounded-full w-full h-full object-cover"
+                        style={{ width: '40px', height: '40px', opacity: employee.profilePicture ? 1 : 0.5 }}
+                        alt="Profile"
+                      />
+                    </Table.Cell>
                      <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.username} </Table.Cell>
                      <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{`${employee.first_name} ${employee.last_name}`} </Table.Cell>
                      <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.position}</Table.Cell>
