@@ -8,6 +8,7 @@ import com.kingsman.Kingsman.exception.ResourceNotFoundException;
 import com.kingsman.Kingsman.model.*;
 import com.kingsman.Kingsman.repository.OrderItemRepository;
 import com.kingsman.Kingsman.repository.OrderRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -80,9 +81,13 @@ public class OrderService {
     }
 
     //create the notification when place the order
-    private void createNotificationForChef(Order order) {
+    private void createNotificationForChef(@NotNull Order order) {
         String title = "New Order";
-        String message = "Order ID: " + order.getOrderId() + ", Table Number : " + order.getTableNumber() + " " + order.getOrderItems();
+        String foodName = getOrderEmployeeFoodById(order.getOrderId()).stream()
+                .map(OrderEmployeeFoodDTO::getFoodName) // Extracting the foodName
+                .collect(Collectors.joining(", ")); // Joining them with a comma
+
+        String message = "Order ID: " + order.getOrderId() + ", Table Number : " + order.getTableNumber() + ", Food Name : " + foodName;
         boolean isRead = false;
         LocalDateTime createdAt = LocalDateTime.now();
         LocalDateTime updatedAt = createdAt;
@@ -281,6 +286,10 @@ public class OrderService {
     }
 
 
+    public List<OrderEmployeeFoodDTO> getOrderEmployeeFoodById (Long orderId){
+        List<OrderEmployeeFoodDTO> orderEmployeeFoodDTOs = orderRepository.getOrderEmployeeFoodById(orderId);
+        return orderEmployeeFoodDTOs;
+    }
 
 
 

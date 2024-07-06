@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Dropdown } from 'flowbite-react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 export default function Notification() {
     const { currentUser } = useSelector((state) => state.user);
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showAll, setShowAll] = useState(false);
 
     useEffect(() => {
         // Fetch notifications initially
@@ -31,8 +33,9 @@ export default function Notification() {
                 setError(error);
                 setLoading(false);
             });
-            markAsRead(); 
-    }    
+        markAsRead();
+        console.log(notifications);
+    }
 
     const markAsRead = (id) => {
         axios.put(`http://localhost:8080/api/notifications/${id}/read`)
@@ -46,6 +49,26 @@ export default function Notification() {
                 console.error("Error marking notification as read", error);
             });
     };
+
+    // Filter notifications to show today's notifications first
+    const today = new Date();
+    const isToday = (date) => {
+        const notificationDate = new Date(date);
+        return (
+            notificationDate.getDate() === today.getDate() &&
+            notificationDate.getMonth() === today.getMonth() &&
+            notificationDate.getFullYear() === today.getFullYear()
+        );
+    };
+
+    const todayNotifications = notifications.filter((notification) => isToday(notification.createdAt));
+    const previousNotifications = notifications.filter((notification) => !isToday(notification.createdAt));
+
+    const sortedNotifications = [...todayNotifications, ...previousNotifications]
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, showAll ? notifications.length : 10);
+
+
 
     if (loading) {
         return <div>Loading...</div>;
@@ -79,17 +102,49 @@ export default function Notification() {
             }
         >
             {notifications.length > 0 ? (
-                notifications.map((notification, index) => (
-                    <Dropdown.Item key={index} onClick={() => markAsRead(notification.id)} className={!notification.read ? ' bg-green-100' : ''}>
-                        <div className='flex items-start'>
-                            <div>
-                                <p className='font-semibold text-left'>{notification.title}</p>
-                                <p className='text-sm text-gray-500'>{notification.message}</p>
-                            </div>
-                        </div>
-                    </Dropdown.Item>
-
-                ))
+                <div className={`overflow-y-auto`} style={{ maxHeight: showAll ? '700px' : '1000px' }}>
+                    {todayNotifications.length > 0 && (
+                        <>
+                            <div className="font-semibold text-left text-sm px-4 py-2 ">Today</div>
+                            {todayNotifications.map((notification, index) => (
+                                <Link to="/chef?tab=availableOrders" key={index}>
+                                    <Dropdown.Item
+                                        onClick={() => markAsRead(notification.id)}
+                                        className={!notification.read ? 'bg-green-100' : ''}
+                                    >
+                                        <div className='flex items-start'>
+                                            <div>
+                                                <p className='font-semibold text-left'>{notification.title}</p>
+                                                <p className='text-sm text-gray-500'>{notification.message}</p>
+                                            </div>
+                                        </div>
+                                    </Dropdown.Item>
+                                </Link>
+                            ))}
+                        </>
+                    )}
+                    {previousNotifications.length > 0 && (
+                        <>
+                            <div className="font-semibold text-left text-sm px-4 py-2 ">Previous</div>
+                            {previousNotifications.map((notification, index) => (
+                                <Link to="/chef?tab=availableOrders" key={index}>
+                                    <Dropdown.Item
+                                        onClick={() => markAsRead(notification.id)}
+                                        className={!notification.read ? 'bg-green-100' : ''}
+                                    >
+                                        <div className='flex items-start'>
+                                            <div>
+                                                <p className='font-semibold text-left'>{notification.title}</p>
+                                                <p className='text-sm text-gray-500'>{notification.message}</p>
+                                                <p className='text-xs text-gray-400'>{format(new Date(notification.createdAt), 'MMM d, yyyy')}</p>
+                                            </div>
+                                        </div>
+                                    </Dropdown.Item>
+                                </Link>
+                            ))}
+                        </>
+                    )}
+                </div>
             ) : (
                 <Dropdown.Item>
                     <div className='flex items-center'>
@@ -99,6 +154,15 @@ export default function Notification() {
                     </div>
                 </Dropdown.Item>
             )}
-        </Dropdown>
+            {notifications.length > 10 && (
+                <div className='flex justify-center'>
+                    <button onClick={() => setShowAll(!showAll)} className='font-semibold text-sm'>
+                        {showAll ? 'Show Less' : 'Read More'}
+                    </button>
+                </div>
+            )}
+
+
+        </Dropdown >
     );
 }
