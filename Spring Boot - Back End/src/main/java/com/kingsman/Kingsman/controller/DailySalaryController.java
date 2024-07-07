@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/salary")
 public class DailySalaryController {
@@ -22,6 +24,27 @@ public class DailySalaryController {
         try {
             DailySalary dailySalary = dailySalaryService.calculateDailySalary(employeeId, date);
             return new ResponseEntity<>(dailySalary, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/currentDateSalaries")
+    public ResponseEntity<List<DailySalary>> getAllEmployeesDailySalaryForCurrentDate() {
+        try {
+            List<DailySalary> dailySalaries = dailySalaryService.getAllEmployeesDailySalaryForCurrentDate();
+            return new ResponseEntity<>(dailySalaries, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // Endpoint to calculate and save all employees' daily salaries for all dates
+    @GetMapping("/calculateAll")
+    public ResponseEntity<Void> calculateAllEmployeesDailySalaryForAllDates() {
+        try {
+            dailySalaryService.calculateAndSaveAllEmployeesDailySalary();
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DailySalaryService {
@@ -26,12 +29,14 @@ public class DailySalaryService {
     private DailySalaryRepository dailySalaryRepository;
 
     public DailySalary calculateDailySalary(String employeeId, String date) {
-        DailySalary dailySalary = new DailySalary();
-        dailySalary.setEmpId(employeeId);
-        dailySalary.setDate(date);
-
-        // Convert dateString to LocalDate
         LocalDate dateObj = LocalDate.parse(date);
+
+        // Check if DailySalary record already exists for the employee on the specified date
+        Optional<DailySalary> existingDailySalary = dailySalaryRepository.findByEmpIdAndDate(employeeId, dateObj);
+        DailySalary dailySalary = existingDailySalary.orElseGet(DailySalary::new); // Create new if not found
+
+        dailySalary.setEmpId(employeeId);
+        dailySalary.setDate(dateObj);
 
         Attendance attendance = attendanceRepository.findByEmpIdAndDate(employeeId, dateObj);
         if (attendance == null) {
@@ -60,20 +65,48 @@ public class DailySalaryService {
         double totalHourPayment = dailySalary.getPayPerHours() * dailySalary.getWorkedHours();
         dailySalary.setTotalHourPayment((float) totalHourPayment);
 
+        // Set the pay per overtime hour regardless of overtime hours
+        dailySalary.setPayPerOvertimeHour(hourPayment.getPayPerOverTimeHour());
+
         if (overtimeHours > 0) {
-            dailySalary.setPayPerOvertimeHour(hourPayment.getPayPerOverTimeHour());
             double payPerOvertimeMinute = dailySalary.getPayPerOvertimeHour() / 60.0; // Calculate pay per overtime minute
             double totalOvertimePayment = payPerOvertimeMinute * overtimeHours * 60; // Multiply by overtime minutes
             dailySalary.setTotalOvertimePayment((float) totalOvertimePayment);
             dailySalary.setGrossPayment(dailySalary.getTotalHourPayment() + dailySalary.getTotalOvertimePayment());
         } else {
-            dailySalary.setPayPerOvertimeHour((float) 0); // Set to 0 if no overtime
             dailySalary.setTotalOvertimePayment((float) 0); // Set to 0 if no overtime
             dailySalary.setGrossPayment(dailySalary.getTotalHourPayment());
         }
 
         dailySalaryRepository.save(dailySalary);
         return dailySalary;
+    }
+
+    public void calculateAndSaveAllEmployeesDailySalary() {
+        List<LocalDate> distinctDates = attendanceRepository.findAll()
+                .stream()
+                .map(Attendance::getDate)
+                .distinct()
+                .collect(Collectors.toList());
+
+        for (LocalDate date : distinctDates) {
+            List<Attendance> attendances = attendanceRepository.findByDate(date);
+            for (Attendance attendance : attendances) {
+                String employeeId = attendance.getEmpId();
+                String dateString = date.toString();
+                try {
+                    calculateDailySalary(employeeId, dateString);
+                } catch (Exception e) {
+                    // Handle the exception as needed
+                    System.out.println("Error calculating salary for employee " + employeeId + " on " + dateString + ": " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    public List<DailySalary> getAllEmployeesDailySalaryForCurrentDate() {
+        LocalDate currentDate = LocalDate.now();
+        return dailySalaryRepository.findByDate(currentDate);
     }
 
     private double calculateWorkedHours(String inTime, String outTime) {
