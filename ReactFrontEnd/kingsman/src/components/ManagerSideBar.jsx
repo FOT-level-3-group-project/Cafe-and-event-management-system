@@ -58,6 +58,11 @@ export default function ManagerSideBar() {
                             Attendance
                         </Sidebar.Item>
                     </Link>
+                    <Link to='/manager?tab=salary'>
+                        <Sidebar.Item active={tab === 'salary'} icon={BsPersonFillCheck} as='div'>
+                            Salary
+                        </Sidebar.Item>
+                    </Link>
                     <Link to='/manager?tab=view-all-employees'>
                         <Sidebar.Item active={tab === 'view-all-employees'} icon={BsFillPeopleFill} as='div'>
                             Employees

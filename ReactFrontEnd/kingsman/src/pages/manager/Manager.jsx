@@ -18,6 +18,7 @@ import ManagerDash from './ManagerDash';
 import TableManage from './advanceSettings/TableManage';
 import UpdateOrder from './order/UpdateOrder';
 import UpdateOrderItems from './order/UpdateOrderItems';
+import EmpSalaries from './salary/EmpSalaries';
 
 
 
@@ -69,6 +70,9 @@ export default function Manager() {
 
             {/* Attendance */}
             {tab === 'attendance' && <AttendanceFrManager />}
+
+            {/* salary */}
+            {tab === 'salary' && <EmpSalaries />}
 
             {/* Dashboard */}
             {tab === 'dashboard' && <ManagerDash/>}
