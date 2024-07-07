@@ -43,12 +43,8 @@ public class PaymentService {
     }
 
     // Method to get payments for the current year
-//    public List<Payment> getPaymentsForCurrentYear() {
-//        // Implement logic to fetch payments for the current year from repository
-//        LocalDate startDate = LocalDate.now().withDayOfYear(1); // Start of current year
-//        LocalDate endDate = LocalDate.now().with(TemporalAdjusters.lastDayOfYear()); // End of current year
-//
-//        return paymentRepository.findByPaymentDateBetween(startDate, endDate);
-//    }
+    public List<Map<String, Object>> getTotalAmountsForCurrentYearByBillType() {
+        return paymentRepository.findTotalAmountsForCurrentYearByBillType();
+    }
 
 }
