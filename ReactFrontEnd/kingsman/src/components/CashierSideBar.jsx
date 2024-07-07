@@ -55,6 +55,11 @@ export default function CashierSideBar() {
                             Manage Orders
                         </Sidebar.Item>
                     </Link>
+                    <Link to = '/cashier?tab=billPayments'>
+                        <Sidebar.Item active={tab === 'billPayments'} icon={MdOutlineRestaurantMenu} as='div'>
+                            Bill Payments
+                        </Sidebar.Item>
+                    </Link>
                     <Link to='/cashier?tab=profile'>
                         <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"Cashier"} labelColor='dark' as='div'>
                             Profile

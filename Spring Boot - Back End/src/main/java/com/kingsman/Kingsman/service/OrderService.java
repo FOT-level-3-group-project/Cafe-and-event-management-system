@@ -266,9 +266,16 @@ public class OrderService {
         return orderEmployeeFoodDTOs;
     }
 
+    // Get Total After Discount For Current Month
+    public Double getTotalAfterDiscountForCurrentMonth() {
+        Double total = orderRepository.findTotalAfterDiscountForCurrentMonth();
+        System.out.println("Total after discount for current month: " + total); // Add this line for debugging
+        return total;
+    }
 
-
-
-
+    // Get Total After Discount For Current Year
+    public Double findTotalAfterDiscountForCurrentYear() {
+        return orderRepository.findTotalAfterDiscountForCurrentYear();
+    }
 
 }

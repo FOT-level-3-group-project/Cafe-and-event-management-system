@@ -6,7 +6,7 @@ const GenerateTicketPriceModal = ({ show, onClose, onTicketPriceChange }) => {
   const [electricityBill, setElectricityBill] = useState('');
   const [waterBill, setWaterBill] = useState('');
   const [inventory, setInventoryOutage] = useState('');
-  const [budget, setBudget] = useState('');
+  // const [budget, setBudget] = useState('');
   const [otherExpenses, setOtherExpenses] = useState('');
   const [ticketQuantity, setTicketQuantity] = useState('');
   const [ticketPrice, setTicketPrice] = useState('');
@@ -41,10 +41,10 @@ const GenerateTicketPriceModal = ({ show, onClose, onTicketPriceChange }) => {
       setErrorMessage('Please enter the estimated inventory outage');
       return;
     }
-    if (budget === '') {
-      setErrorMessage('Please enter the expected budget');
-      return;
-    }
+    // if (budget === '') {
+    //   setErrorMessage('Please enter the expected budget');
+    //   return;
+    // }
     if (ticketQuantity === '') {
       setErrorMessage('Please enter the ticket quantity');
       return;
@@ -57,7 +57,7 @@ const GenerateTicketPriceModal = ({ show, onClose, onTicketPriceChange }) => {
       parseFloat(electricityBill) + 
       parseFloat(waterBill)  + 
       parseFloat(inventory) + 
-      parseFloat(budget) +
+      // parseFloat(budget) +
       (otherExpenses !== '' ? parseFloat(otherExpenses) : 0); 
 
     const pricePerTicket = totalCost / parseFloat(ticketQuantity);
@@ -136,7 +136,7 @@ const GenerateTicketPriceModal = ({ show, onClose, onTicketPriceChange }) => {
               }}
             />
           </div>
-          <div>
+          {/* <div>
             <Label htmlFor="budget" value="Expected Budget (Rs.)*" />
             <TextInput
               id="budget"
@@ -148,8 +148,8 @@ const GenerateTicketPriceModal = ({ show, onClose, onTicketPriceChange }) => {
                     setBudget(newValue);
                   }
               }}
-            />
-          </div>
+            /> */}
+          {/* </div> */}
            <div>
             <Label htmlFor="otherExpenses" value="Other Expenses (Rs.)" />
             <TextInput
