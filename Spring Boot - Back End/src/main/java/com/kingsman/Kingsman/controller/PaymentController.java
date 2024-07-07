@@ -1,14 +1,11 @@
 package com.kingsman.Kingsman.controller;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.kingsman.Kingsman.model.Payment;
 import com.kingsman.Kingsman.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,9 +47,20 @@ public class PaymentController {
         return paymentService.getAllPayments();
     }
 
+    // Retrieve all payments for the current month
     @GetMapping("/current-month")
     public List<Map<String, Object>> getCurrentMonthPayments() {
         return paymentService.getTotalAmountsForCurrentMonthByBillType();
     }
+
+    // Retrieve all payments for the current year
+//    @GetMapping("/current-year")
+//    public ResponseEntity<List<Payment>> getCurrentYearPayments() {
+//        List<Payment> payments = paymentService.getPaymentsForCurrentYear();
+//        return ResponseEntity.ok(payments);
+//    }
+
+
+
 
 }
