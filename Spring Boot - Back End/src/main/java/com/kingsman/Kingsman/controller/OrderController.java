@@ -126,7 +126,17 @@ public class OrderController {
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
+    // get the total sales revenue based on the orders of the current month
+    @GetMapping("/monthly-sales-revenue")
+    public Double getMonthlySalesRevenue() {
+        return orderService.getTotalAfterDiscountForCurrentMonth();
+    }
 
+    // get the total sales revenue based on the orders of the current year
+    @GetMapping("/annaul-sales-revenue")
+    public Double getTotalAfterDiscountForCurrentYear() {
+        return orderService.findTotalAfterDiscountForCurrentYear();
+    }
 
 
 }

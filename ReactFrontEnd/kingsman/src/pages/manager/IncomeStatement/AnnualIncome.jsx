@@ -1,185 +1,275 @@
-import React from 'react';
-import { Table, Card, Button } from "flowbite-react";
+import React, { useState, useEffect } from 'react';
+import { Table, TableCell, Card, Button } from "flowbite-react";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import CafeandEvent from '/src/image/CafeandEvent.png';
 
 const AnnualIncome = () => {
+  const [expenses, setExpenses] = useState({
+    electricity: 0,
+    water: 0,
+    telephone: 0,
+    internet: 0,
+    eventBudget: 0,
+    employeeWages: 0,
+    inventoryExpenses: 0,
+    insurance: 0,
+    otherExpenses: 0,
+  });
+  const [billTypeAmounts, setBillTypeAmounts] = useState([]);
+  const [totalExpenses, setTotalExpenses] = useState(0);;
+  const [salesRevenue, setSalesRevenue] = useState(0);
+  const [eventRevenue, setEventRevenue] = useState(0);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [tax, setTax] = useState(0);
+  const [netProfit, setNetProfit] = useState(0);;
+  const currentYear = new Date().getFullYear();
+
+  useEffect(() => {
+    fetchAnnualExpenses(); // Fetch monthly expenses when component mounts
+    fetchBillTypeAmounts(); // Fetch bill type amounts when component mounts
+    fetchAnnualSalesRevenue(); // Fetch monthly sales revenue when component mounts
+    fetchEventRevenue(); // Fetch event revenue when component mounts
+  }, []);
+
+
+  useEffect(() => {
+    calculateTotalRevenue(); // Calculate total revenue 
+    calculateTotalExpenses(); // Calculate total expenses whenever billTypeAmounts changes
+    calculateTotalIncome(); // Calculate total income 
+    calculateTax(); // Calculate tax
+    calculateNetProfit(); // Calculate net profit
+  }, [billTypeAmounts, salesRevenue, eventRevenue, totalExpenses, totalRevenue, totalIncome, tax]);
+
+  // Fetch annual expenses from API
+  const fetchAnnualExpenses = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/payment/current-year'); // Fetch annual data from API
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+      const data = await response.json();
+      setExpenses(data); // Update state with fetched data
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+ 
+  // Fetch bill type amounts from the API
+  const fetchBillTypeAmounts = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/payment/current-year');
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+      const data = await response.json();
+      setBillTypeAmounts(data);
+    } catch (error) {
+      console.error('Error fetching bill type amounts:', error);
+    }
+  };
+
+  // Fetch annual sales revenue from the API
+   const fetchAnnualSalesRevenue = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/orders/annaul-sales-revenue');
+      if (!response.ok) {
+        throw new Error('Failed to fetch sales revenue');
+      }
+      const salesRevenue = await response.json();
+      // console.log('Monthly sales revenue data:', salesRevenue);
+      setSalesRevenue(salesRevenue);
+    } catch (error) {
+      console.error('Error fetching sales revenue:', error);
+    }
+  };
+
+  // Fetch event revenue from the API
+  const fetchEventRevenue = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/events/annual-total-revenue');
+      if (!response.ok) {
+        throw new Error('Failed to fetch event revenue');
+      }
+      const eventRevenue = await response.json();
+      // console.log('Event data:', eventRevenue); // Debugging statement
+      setEventRevenue(eventRevenue);
+    } catch (error) {
+      console.error('Error fetching event revenue:', error);
+    }
+  };
+
+
+ // Calculate total revenue
+  const calculateTotalRevenue = () => {
+    const totalRev = salesRevenue + eventRevenue;
+    setTotalRevenue(totalRev);
+  };
+
+  // Calculate total expenses
+  const calculateTotalExpenses = () => {
+    const totalEx = billTypeAmounts.reduce((accumulator, item) => {
+      return accumulator + item.totalAmount;
+    }, 0);
+    setTotalExpenses(totalEx);
+  };
+
+
+  // Calculate total income
+  const calculateTotalIncome = () => {
+  const totalIn = totalRevenue  - totalExpenses;
+  setTotalIncome(totalIn);
+};
+
+
+  // Calculate tax
+  const calculateTax = () => {
+    const taxAmount = totalIncome * 0.3; // 30% of total income
+    console.log('Tax amount:', taxAmount); // Debugging statement
+    setTax(taxAmount);
+  };
+
+
+  // Calculate net profit
+  const calculateNetProfit = () => {
+    const net = totalIncome - tax;
+    setNetProfit(net);
+  };
+
+
   const handleDownloadPDF = () => {
-    const inputElement = document.getElementById('annual-report');
+    const inputElement = document.getElementById('annual-report'); // Element to capture
 
-    // Configure html2canvas to capture content
-    html2canvas(inputElement, { scale: 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png', 1.0); // Use 1.0 quality for image data
-
+    html2canvas(inputElement).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png'); // Convert canvas to image data
       const pdf = new jsPDF('p', 'mm', 'a4'); // Create new PDF document (portrait mode, millimeters, A4 size)
 
       const imgWidth = 210; // A4 width in mm (landscape mode)
       const imgHeight = canvas.height * imgWidth / canvas.width; // Calculate image height based on aspect ratio
 
-      // Add image to PDF with higher DPI for better quality
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight); // Add image to PDF
 
       pdf.save('Annual Income Statement.pdf'); // Save PDF with filename
     });
   };
 
-
   return (
-    <div className="w-full pt-10"> 
+    <div className="w-full pt-10 ">
       <div className='flex'>
         <div className=" w-1/2 pl-5">
-          <h1 className=" text-3xl font-bold text-gray-900 dark:text-white">Annual Profit and Loss Statement</h1> <br/> 
+          <h1 className=" text-3xl font-bold text-gray-900 dark:text-white">Annual Profit and Loss Statement</h1> <br/>
         </div>
         <div className=" w-1/2 flex justify-end pr-5">
           <Button onClick={handleDownloadPDF} className=" hover:bg-green-700 text-white font-bold mb-5 rounded">Export</Button>
         </div>
-      </div> <hr></hr> <br/>
-      
+      </div>
+      <hr></hr> <br/>
       {/*   Container for cards arranged horizontally */}
       <div className="flex space-x-4 mb-4 justify-center">
         <Card className="max-w-xs flex-1 text-blue-500">
           <h5 className="text-l font-bold  dark:text-white">
             Total Income <br/>
-            Rs. x,xxx,xxx
+            Rs. {totalIncome.toLocaleString()}
           </h5>
-          <p className=" dark:text-gray-400 ">Prevoiuse Year:  Rs. x,xxx,xxx </p>
+          <p className=" dark:text-gray-400 ">
+            Previous Year:  Rs. x,xxx,xxx
+          </p>
         </Card>
         <Card className="max-w-xs flex-1 text-red-500">
           <h5 className="text-l font-bold  dark:text-white">
             Total Expenses <br/>
-            Rs. x,xxx,xxx
+            Rs. {totalExpenses.toLocaleString()}
           </h5>
-          <p className=" dark:text-gray-400"> Prevoiuse Year:  Rs. x,xxx,xxx </p>
+          <p className=" dark:text-gray-400">
+            Previous Year:  Rs. x,xxx,xxx
+          </p>
         </Card>
         <Card className="max-w-xs flex-1 text-green-500">
           <h5 className="text-l font-bold dark:text-white">
             Net Profit <br/>
-            Rs. x,xxx,xxx
+             Rs. {netProfit.toLocaleString()}
           </h5>
-          <p className=" dark:text-gray-400"> Prevoiuse Year:  Rs. x,xxx,xxx </p>
+          <p className=" dark:text-gray-400">
+            Previous Year:  Rs. x,xxx,xxx
+          </p>
         </Card>
       </div>
 
-    {/* Container for the table */}
+      {/* Container for the table */}
       <div id="annual-report" className="overflow-x-auto w-1/2 mx-auto p-5">
         <div className="inline-block border w-full">
           <div className='flex p-4'>
             <div className='w-1/2'>
-              <h1 className='font-bold'>Kingsman Cafe</h1>
+               <img src={CafeandEvent} alt="Kingsman Cafe Logo" className="h-12 w-auto" />
             </div>
             <div className='w-1/2'>
-              <h1 className='font-bold text-right text-black'>Annual Profit and Loss Statement</h1>
-              <h2 className='font-semibold text-right text-black'>For the year of 2024</h2>
+              <h1 className='font-bold text-right'>Annual Profit and Loss Statement</h1>
+              <h2 className='font-semibold text-right'>For the year {currentYear}</h2>
             </div>
           </div>
-         <Table hoverable className=''>
-         <Table.Body className='' >
-            <Table.Row className='' >
-              <Table.Cell className='bg-blue-400 text-black font-semibold' >REVENUES</Table.Cell>
-               <Table.Cell className='bg-blue-400 text-black font-semibold text-right' >Rs.</Table.Cell>
-                <Table.Cell className='bg-blue-400 text-black font-semibold text-right' >Rs.</Table.Cell>
-            </Table.Row>
-            <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell className=' '>Sales Revenue</Table.Cell>
-              <Table.Cell className='pr-2 text-right '>xxxxxx</Table.Cell>
-              <Table.Cell></Table.Cell>
-            </Table.Row>
-            <Table.Row className="bg-white text-black dark:bg-gray-800">
-              <Table.Cell>Event Revenue</Table.Cell>
-              <Table.Cell className='pr-2 text-right'>xxxxx</Table.Cell>
-              <Table.Cell></Table.Cell>
-            </Table.Row>
-             <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell>Other Revenue</Table.Cell>
-              <Table.Cell className='pr-2 text-right'>xxxx</Table.Cell>
-              <Table.Cell></Table.Cell>
-            </Table.Row>
-            <Table.Row className='border-t-2 text-blue-700 '>
-              <Table.Cell className="font-semibold "> TOTAL REVENUES</Table.Cell>
-              <Table.Cell></Table.Cell>
-              <Table.Cell className='pr-2 text-right font-semibold'>xxxxxx</Table.Cell>
-            </Table.Row>
-            <Table.Row >
-              <Table.Cell className='bg-blue-400 text-black font-semibold'>EXPENSES</Table.Cell>
-              <Table.Cell className='text-right bg-blue-400 text-black font-semibold' >Rs.</Table.Cell>
-                <Table.Cell className='text-right bg-blue-400 text-black font-semibold' >Rs.</Table.Cell>
-            </Table.Row>
-            <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell>Electricity Bill</Table.Cell>
-              <Table.Cell className='pr-2 text-right'>xxxxx</Table.Cell>
-              <Table.Cell></Table.Cell>
-            </Table.Row>
-            <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell>Water Bill</Table.Cell>
-              <Table.Cell className='pr-2 text-right'>xxxxx</Table.Cell>
-              <Table.Cell></Table.Cell>
-            </Table.Row>
-             <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell>Telephone Bill</Table.Cell>
-              <Table.Cell className='pr-2 text-right'>xxxx</Table.Cell>
-              <Table.Cell></Table.Cell>
-            </Table.Row>
-             <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell>Web Hosting</Table.Cell>
-              <Table.Cell className='pr-2 text-right'>xxxx</Table.Cell>
-              <Table.Cell></Table.Cell>
-            </Table.Row>
-             <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell className=' '>Entertainers' Payment</Table.Cell>
-              <Table.Cell className='pr-2 text-right'>xxxxx</Table.Cell>
-              <Table.Cell></Table.Cell>
-            </Table.Row>
-            <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell>Employee Wages</Table.Cell>
-              <Table.Cell className='pr-2 text-right '>xxxxxx</Table.Cell>
-              <Table.Cell></Table.Cell>
-            </Table.Row>
-            <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell>Kitchen Utilities</Table.Cell>
-              <Table.Cell className='pr-2 text-right'>xxxxxx</Table.Cell>
-              <Table.Cell></Table.Cell>
-            </Table.Row>
-            <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell>Inventory Expenses</Table.Cell>
-              <Table.Cell className='pr-2 text-right'>xxxxxx</Table.Cell>
-              <Table.Cell></Table.Cell>
-            </Table.Row>
-            <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell> Insurance </Table.Cell>
-              <Table.Cell className='pr-2 text-right'>xxxx</Table.Cell>
-              <Table.Cell></Table.Cell>
-            </Table.Row>
-            <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell>Other Expenses</Table.Cell>
-              <Table.Cell className='pr-2 text-right'>xxxx</Table.Cell>
-              <Table.Cell></Table.Cell>
-            </Table.Row>
-            <Table.Row className='border-t-2 border-b-2 font-semibold text-red-700'>
-              <Table.Cell className=""> TOTAL EXPENSES</Table.Cell>
-               <Table.Cell></Table.Cell>
-               <Table.Cell  className='pr-2 text-right '> xxxxxx </Table.Cell>
-            </Table.Row>
-            <Table.Row className='border-t-2 font-semibold text-green-700'>
-              <Table.Cell>TOTAL INCOME</Table.Cell>
-              <Table.Cell></Table.Cell>
-               <Table.Cell className="pr-2 text-right ">xxxxxx </Table.Cell>
-            </Table.Row>
-            <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell>Less: Taxes</Table.Cell>
-               <Table.Cell className='pr-2 text-right'> xxxx  </Table.Cell>
-               <Table.Cell></Table.Cell>
-            </Table.Row>
-             <Table.Row className='border-t-2 font-semibold text-green-700'>
-              <Table.Cell>PROFIT</Table.Cell>
-              <Table.Cell></Table.Cell>
-               <Table.Cell className="pr-2 text-right ">xxxxxx </Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        </Table>
+          <Table hoverable className=''>
+            <Table.Body className=''>
+              <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell className='bg-green-600 text-white font-semibold' >REVENUES</Table.Cell>
+                <Table.Cell className='bg-green-600 text-white font-semibold text-right' >Rs.</Table.Cell>
+                <Table.Cell className='bg-green-600 text-white font-semibold text-right' >Rs.</Table.Cell>
+              </Table.Row>
+              <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell>Sales Revenue</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{salesRevenue}</Table.Cell>
+                <Table.Cell></Table.Cell>
+              </Table.Row>
+              <Table.Row className="bg-white text-black dark:bg-gray-800">
+                <Table.Cell>Event Revenue</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{eventRevenue}</Table.Cell>
+                <Table.Cell></Table.Cell>
+              </Table.Row>
+              <Table.Row className='border-t-2 text-blue-700 '>
+                <Table.Cell className="font-semibold "> TOTAL REVENUES</Table.Cell>
+                <Table.Cell></Table.Cell>
+                <Table.Cell className='pr-2 text-right font-semibold'>{totalRevenue}</Table.Cell>
+              </Table.Row>
+              <Table.Row className=''>
+                <Table.Cell className='bg-green-600 text-white font-semibold'>EXPENSES</Table.Cell>
+                <Table.Cell className='bg-green-600 text-white font-semibold text-right' >Rs.</Table.Cell>
+                <Table.Cell className='bg-green-600 text-white font-semibold text-right' >Rs.</Table.Cell>
+              </Table.Row>
+              {billTypeAmounts.map((item, index) => (
+                <Table.Row key={index} className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
+                  <Table.Cell>{item.billType}</Table.Cell>
+                  <Table.Cell className='pr-2 text-right'>{item.totalAmount}</Table.Cell>
+                  <Table.Cell></Table.Cell>
+                </Table.Row>
+              ))}
+              <Table.Row className='border-t-2 border-b-2 font-semibold text-red-700'>
+                <Table.Cell className=""> TOTAL EXPENSES</Table.Cell>
+                <Table.Cell></Table.Cell>
+                <Table.Cell  className='pr-2 text-right '> {totalExpenses} </Table.Cell>
+              </Table.Row>
+              <Table.Row className='border-t-2 font-semibold text-green-700'>
+                <Table.Cell>TOTAL INCOME</Table.Cell>
+                <Table.Cell></Table.Cell>
+                <Table.Cell className="pr-2 text-right ">{totalIncome} </Table.Cell>
+              </Table.Row>
+              <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell>Less: Taxes</Table.Cell>
+                <Table.Cell className='pr-2 text-right'> {tax}  </Table.Cell>
+                <Table.Cell></Table.Cell>
+              </Table.Row>
+              <Table.Row className='border-t-2 font-semibold text-green-700'>
+                <Table.Cell className='bg-green-600 text-white'>NET PROFIT</Table.Cell>
+                <Table.Cell className='bg-green-600 text-white'></Table.Cell>
+                <Table.Cell className="pr-2 text-right bg-green-600 text-white">{netProfit} </Table.Cell>
+              </Table.Row>
+            </Table.Body>
+          </Table>
         </div>
       </div>
     </div>
   );
-};
+}
 
-export default AnnualIncome;
+export default  AnnualIncome;
+
