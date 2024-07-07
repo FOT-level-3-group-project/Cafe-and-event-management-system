@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface MonthlyIncomeStatementRepository extends JpaRepository<MonthlyIncomeStatement, Integer> {
-    Optional<MonthlyIncomeStatement> findByDate(Date date);
+
 }

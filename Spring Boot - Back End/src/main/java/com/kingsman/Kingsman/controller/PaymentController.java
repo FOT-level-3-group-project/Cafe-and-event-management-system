@@ -54,11 +54,10 @@ public class PaymentController {
     }
 
     // Retrieve all payments for the current year
-//    @GetMapping("/current-year")
-//    public ResponseEntity<List<Payment>> getCurrentYearPayments() {
-//        List<Payment> payments = paymentService.getPaymentsForCurrentYear();
-//        return ResponseEntity.ok(payments);
-//    }
+    @GetMapping("/current-year")
+    public List<Map<String, Object>> getCurrentYearPayments() {
+        return paymentService.getTotalAmountsForCurrentYearByBillType();
+    }
 
 
 

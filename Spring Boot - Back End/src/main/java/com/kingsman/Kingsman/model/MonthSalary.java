@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.time.YearMonth;
+import java.util.Date;
 
 @Entity
 public class MonthSalary {
@@ -13,7 +14,8 @@ public class MonthSalary {
     @GeneratedValue
     private Long id;
     private String empName;
-    private YearMonth month;
+//    private YearMonth month;
+    private Date month;
     private Float workedHours;
     private Float payPerHours;
     private Float totalHourPayment;
@@ -42,11 +44,19 @@ public class MonthSalary {
         this.empName = empName;
     }
 
-    public YearMonth getMonth() {
+//    public YearMonth getMonth() {
+//        return month;
+//    }
+//
+//    public void setMonth(YearMonth month) {
+//        this.month = month;
+//    }
+
+    public Date getMonth() {
         return month;
     }
 
-    public void setMonth(YearMonth month) {
+    public void setMonth(Date month) {
         this.month = month;
     }
 

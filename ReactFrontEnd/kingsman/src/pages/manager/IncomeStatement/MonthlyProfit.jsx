@@ -10,14 +10,15 @@ const MonthlyProfit = () => {
     water: 0,
     telephone: 0,
     internet: 0,
-    eventBudget: 0,
-    employeeWages: 0,
     inventoryExpenses: 0,
     insurance: 0,
     otherExpenses: 0,
   });
   const [billTypeAmounts, setBillTypeAmounts] = useState([]);
   const [totalExpenses, setTotalExpenses] = useState(0);;
+  const [totalMonthlySalary, setTotalMonthlySalary] = useState(0);
+  const [totalEventBudgetforMonth, setTotalEventBudgetforMonth] = useState(0);
+  // const [totalInventoryPurchasesForMonth, setTotalInventoryPurchasesForMonth] = useState(0);
   const [salesRevenue, setSalesRevenue] = useState(0);
   const [eventRevenue, setEventRevenue] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0);
@@ -28,10 +29,13 @@ const MonthlyProfit = () => {
   const currentYear = new Date().getFullYear();
 
   useEffect(() => {
-    fetchMonthlyExpenses(); // Fetch monthly expenses when component mounts
-    fetchBillTypeAmounts(); // Fetch bill type amounts when component mounts
-    fetchMonthlySalesRevenue(); // Fetch monthly sales revenue when component mounts
-    fetchEventRevenue(); // Fetch event revenue when component mounts
+    fetchMonthlyExpenses(); // Fetch monthly expenses 
+    fetchBillTypeAmounts(); // Fetch bill type amounts
+    fetchMonthlySalesRevenue(); // Fetch monthly sales revenue 
+    fetchEventRevenue(); // Fetch event revenue 
+    fetchMonthlySalary(); // Fetch monthly salary 
+    fetchTotalEventBudgeforMonth(); // Fetch total event budgets 
+    // fetchTotalInventoryPurchasesForMonth(); // Fetch total inventory purchases
   }, []);
 
   useEffect(() => {
@@ -40,7 +44,8 @@ const MonthlyProfit = () => {
     calculateTotalIncome(); // Calculate total income 
     calculateTax(); // Calculate tax
     calculateNetProfit(); // Calculate net profit
-  }, [billTypeAmounts, salesRevenue, eventRevenue, totalExpenses, totalRevenue, totalIncome, tax]);
+  }, [billTypeAmounts, salesRevenue, eventRevenue, totalExpenses, totalRevenue, totalIncome, tax, totalMonthlySalary, totalEventBudgetforMonth]);
+    // }, [billTypeAmounts, salesRevenue, eventRevenue, totalExpenses, totalRevenue, totalIncome, tax, totalMonthlySalary, totalEventBudgetforMonth, totalInventoryPurchasesForMonth]);
 
   // Fetch monthly expenses from the API
   const fetchMonthlyExpenses = async () => {
@@ -69,6 +74,49 @@ const MonthlyProfit = () => {
       console.error('Error fetching bill type amounts:', error);
     }
   };
+
+   // Fetch monthly salary from the API
+  const fetchMonthlySalary = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/salary/total-salary-for-current-month');
+      if (!response.ok) {
+        throw new Error('Failed to fetch monthly salary');
+      }
+      const totalSalary = await response.json();
+      setTotalMonthlySalary(totalSalary);
+    } catch (error) {
+      console.error('Error fetching monthly salary:', error);
+    }
+  };
+
+   // Fetch monthly event budget from the API
+  const fetchTotalEventBudgeforMonth = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/events/monthly-total-budget');
+      if (!response.ok) {
+        throw new Error('Failed to fetch monthly salary');
+      }
+      const totalBudget = await response.json();
+      setTotalEventBudgetforMonth(totalBudget);
+    } catch (error) {
+      console.error('Error fetching monthly salary:', error);
+    }
+  };
+
+  // Fetch total inventory purchases for the month from the API
+  // const fetchTotalInventoryPurchasesForMonth = async () => {
+  //   try {
+  //     const response = await fetch('http://localhost:8080/api/inventory/total-inventory-purchases-for-month');
+  //     if (!response.ok) {
+  //       throw new Error('Failed to fetch total inventory purchases');
+  //     }
+  //     const totalPurchases = await response.json();
+  //     setTotalInventoryPurchases(totalPurchases);
+  //   } catch (error) {
+  //     console.error('Error fetching total inventory purchases:', error);
+  //   }
+  // };
+
 
   // Fetch monthly sales revenue from the API
    const fetchMonthlySalesRevenue = async () => {
@@ -101,19 +149,51 @@ const MonthlyProfit = () => {
   };
 
 
+  //send data to database
+ const sendReportDataToBackend = () => {
+    const reportData = {
+      date: new Date().toISOString(),
+      netProfit: netProfit,
+      totalIncome: totalIncome,
+      totalExpenses: totalExpenses
+    };
+
+    fetch('http://localhost:8080/api/income/save-monthly', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(reportData)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to save annual report data');
+      }
+      console.log('Monthly report data sent to backend successfully');
+    })
+    .catch(error => {
+      console.error('Error saving annual report data:', error);
+    });
+};
+
+
    // Calculate total revenue
   const calculateTotalRevenue = () => {
     const totalRev = salesRevenue + eventRevenue;
     setTotalRevenue(totalRev);
   };
 
-  // Calculate total expenses
-  const calculateTotalExpenses = () => {
-    const totalEx = billTypeAmounts.reduce((accumulator, item) => {
-      return accumulator + item.totalAmount;
-    }, 0);
-    setTotalExpenses(totalEx);
-  };
+ // Calculate total expenses
+const calculateTotalExpenses = () => {
+  const totalEx = billTypeAmounts.reduce((accumulator, item) => {
+    return accumulator + item.totalAmount;
+  }, 0);
+
+  const totalExpenses = totalEx + totalMonthlySalary + totalEventBudgetforMonth;
+  // const totalExpenses = totalEx + totalMonthlySalary + totalEventBudgetforMonth + totalInventoryPurchasesForMonth;
+  setTotalExpenses(totalExpenses);
+};
+
 
 
   // Calculate total income
@@ -140,7 +220,7 @@ const MonthlyProfit = () => {
     setNetProfit(net);
   };
 
-  // Download PDF of the monthly profit and loss statement
+  // Download PDF of the monthly statement
   const handleDownloadPDF = () => {
     const inputElement = document.getElementById('monthly-report');
 
@@ -155,13 +235,15 @@ const MonthlyProfit = () => {
 
       pdf.save('Monthly Income Statement.pdf');
     });
+
+    sendReportDataToBackend(); // Send report data to the backend
   };
 
   return (
     <div className="w-full pt-10">
       <div className='flex'>
         <div className="w-1/2 pl-5">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Monthly Profit and Loss Statement</h1> <br/>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Monthly Income Statement</h1> <br/>
         </div>
         <div className="w-1/2 flex justify-end pr-5">
           <Button onClick={handleDownloadPDF} className="hover:bg-green-700 text-white font-bold mb-5 rounded">Export</Button>
@@ -198,10 +280,11 @@ const MonthlyProfit = () => {
                <img src={CafeandEvent} alt="Kingsman Cafe Logo" className="h-12 w-auto" />
             </div>
             <div className='w-1/2'>
-              <h1 className='font-bold text-right'>Monthly Profit and Loss Statement</h1>
+              <h1 className='font-bold text-right text-xl'>Monthly Income Statement</h1>
               <h2 className='font-semibold text-right'>For the month of {currentMonth} {currentYear}</h2>
             </div>
           </div>
+          
           <Table hoverable className=''>
             <Table.Body className=''>
               {/* Placeholder table rows for revenues and expenses */}
@@ -237,6 +320,22 @@ const MonthlyProfit = () => {
                   <Table.Cell></Table.Cell>
                 </Table.Row>
               ))}
+               <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell>Employee Wages</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{totalMonthlySalary}</Table.Cell>
+                <Table.Cell></Table.Cell>
+              </Table.Row>
+               <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell>Event Budget</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{totalEventBudgetforMonth}</Table.Cell>
+                <Table.Cell></Table.Cell>
+              </Table.Row>
+              <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell>Inventory Item Purchases</Table.Cell>
+                {/* <Table.Cell className='pr-2 text-right'>{totalInventoryPurchasesForMonth}</Table.Cell> */}
+                <Table.Cell className='pr-2 text-right'>0</Table.Cell>
+                <Table.Cell></Table.Cell>
+              </Table.Row>
               <Table.Row className='border-t-2 border-b-2 font-semibold text-red-700'>
                 <Table.Cell className=""> TOTAL EXPENSES</Table.Cell>
                 <Table.Cell></Table.Cell>
@@ -253,7 +352,7 @@ const MonthlyProfit = () => {
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className='border-t-2 font-semibold text-green-700'>
-                <Table.Cell className='bg-green-600 text-white font-semibold'>NET PROFIT</Table.Cell>
+                <Table.Cell className='bg-green-600 text-white font-semibold'>NET PROFIT / LOSS</Table.Cell>
                 <Table.Cell className='bg-green-600'></Table.Cell>
                 <Table.Cell className="pr-2 text-right bg-green-600 text-white">{netProfit} </Table.Cell>
               </Table.Row>

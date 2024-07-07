@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableCell, Card, Button } from "flowbite-react";
+import { Table, Card, Button } from "flowbite-react";
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import CafeandEvent from '/src/image/CafeandEvent.png';
@@ -10,14 +10,15 @@ const AnnualIncome = () => {
     water: 0,
     telephone: 0,
     internet: 0,
-    eventBudget: 0,
-    employeeWages: 0,
     inventoryExpenses: 0,
     insurance: 0,
     otherExpenses: 0,
   });
   const [billTypeAmounts, setBillTypeAmounts] = useState([]);
-  const [totalExpenses, setTotalExpenses] = useState(0);;
+  const [totalAnnualExpenses, setTotalAnnualExpenses] = useState(0);
+  const [totalAnnualSalary, setTotalAnnualSalary] = useState(0);
+  const [totalEventBudgetforYear, setTotalEventBudgetforYear] = useState(0);
+  const [totalInventoryPurchasesForYear, setTotalInventoryPurchasesForYear] = useState(0);
   const [salesRevenue, setSalesRevenue] = useState(0);
   const [eventRevenue, setEventRevenue] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0);
@@ -27,20 +28,23 @@ const AnnualIncome = () => {
   const currentYear = new Date().getFullYear();
 
   useEffect(() => {
-    fetchAnnualExpenses(); // Fetch monthly expenses when component mounts
-    fetchBillTypeAmounts(); // Fetch bill type amounts when component mounts
-    fetchAnnualSalesRevenue(); // Fetch monthly sales revenue when component mounts
-    fetchEventRevenue(); // Fetch event revenue when component mounts
+    fetchAnnualExpenses(); // Fetch monthly expenses 
+    fetchBillTypeAmounts(); // Fetch bill type amounts
+    fetchAnnualSalesRevenue(); // Fetch monthly sales revenue 
+    fetchEventRevenue(); // Fetch event revenue 
+    fetchAnnualSalary(); // Fetch annual salary 
+    fetchTotalEventBudgetforYear(); // Fetch total event budget for the year 
+    fetchTotalInventoryPurchasesForYear(); // Fetch total inventory purchases for the year
   }, []);
 
 
   useEffect(() => {
-    calculateTotalRevenue(); // Calculate total revenue 
-    calculateTotalExpenses(); // Calculate total expenses whenever billTypeAmounts changes
-    calculateTotalIncome(); // Calculate total income 
+    calculateTotalAnnualRevenue(); // Calculate total revenue 
+    calculateTotalAnnaulExpenses(); // Calculate total expenses whenever billTypeAmounts changes
+    calculateTotalAnnaulIncome(); // Calculate total income 
     calculateTax(); // Calculate tax
     calculateNetProfit(); // Calculate net profit
-  }, [billTypeAmounts, salesRevenue, eventRevenue, totalExpenses, totalRevenue, totalIncome, tax]);
+  }, [billTypeAmounts, salesRevenue, eventRevenue, totalAnnualExpenses, totalRevenue, totalIncome, tax]);
 
   // Fetch annual expenses from API
   const fetchAnnualExpenses = async () => {
@@ -70,6 +74,49 @@ const AnnualIncome = () => {
       console.error('Error fetching bill type amounts:', error);
     }
   };
+
+  // Fetch annual salary from the API
+  const fetchAnnualSalary = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/salary/annual-total-salary');
+      if (!response.ok) {
+        throw new Error('Failed to fetch annual salary');
+      }
+      const annualSalary = await response.json();
+      setTotalAnnualSalary(annualSalary);
+    } catch (error) {
+      console.error('Error fetching annual salary:', error);
+    }
+  };
+
+  // Fetch total event budget for the year from the API
+  const fetchTotalEventBudgetforYear = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/events/annual-total-budget');
+      if (!response.ok) {
+        throw new Error('Failed to fetch total event budget for the year');
+      }
+      const totalBudget = await response.json();
+      setTotalEventBudgetforYear(totalBudget);
+    } catch (error) {
+      console.error('Error fetching total event budget for the year:', error);
+    }
+  };
+
+  // Fetch total inventory purchases for the year from the API
+  const fetchTotalInventoryPurchasesForYear = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/inventory/annual-total-purchases');
+      if (!response.ok) {
+        throw new Error('Failed to fetch total inventory purchases for the year');
+      }
+      const totalPurchases = await response.json();
+      setTotalInventoryPurchasesForYear(totalPurchases);
+    } catch (error) {
+      console.error('Error fetching total inventory purchases for the year:', error);
+    }
+  };
+
 
   // Fetch annual sales revenue from the API
    const fetchAnnualSalesRevenue = async () => {
@@ -101,25 +148,55 @@ const AnnualIncome = () => {
     }
   };
 
+//send data to database
+ const sendReportDataToBackend = () => {
+  const reportData = {
+    year: currentYear,
+    netProfit: netProfit,
+    totalIncome: totalIncome,
+    totalExpenses: totalAnnualExpenses
+  };
+
+  fetch('http://localhost:8080/api/income/save-annual', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(reportData)
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to save annual report data');
+    }
+    console.log('Annual report data sent to backend successfully');
+  })
+  .catch(error => {
+    console.error('Error saving annual report data:', error);
+  });
+};
 
  // Calculate total revenue
-  const calculateTotalRevenue = () => {
+  const calculateTotalAnnualRevenue = () => {
     const totalRev = salesRevenue + eventRevenue;
     setTotalRevenue(totalRev);
   };
 
   // Calculate total expenses
-  const calculateTotalExpenses = () => {
+  const calculateTotalAnnaulExpenses = () => {
     const totalEx = billTypeAmounts.reduce((accumulator, item) => {
       return accumulator + item.totalAmount;
     }, 0);
-    setTotalExpenses(totalEx);
+    setTotalAnnualExpenses(totalEx);
+
+  const totalExpenses = totalEx + totalAnnualSalary + totalEventBudgetforYear;
+  // const totalExpenses = totalEx + totalAnnualSalary + totalEventBudgetforYear + totalInventoryPurchasesForYear;
+  setTotalAnnualExpenses(totalExpenses);
   };
 
 
   // Calculate total income
-  const calculateTotalIncome = () => {
-  const totalIn = totalRevenue  - totalExpenses;
+  const calculateTotalAnnaulIncome = () => {
+  const totalIn = totalRevenue  - totalAnnualExpenses;
   setTotalIncome(totalIn);
 };
 
@@ -140,6 +217,7 @@ const AnnualIncome = () => {
 
 
   const handleDownloadPDF = () => {
+   // Download PDF of the annual statement
     const inputElement = document.getElementById('annual-report'); // Element to capture
 
     html2canvas(inputElement).then((canvas) => {
@@ -151,8 +229,10 @@ const AnnualIncome = () => {
 
       pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight); // Add image to PDF
 
-      pdf.save('Annual Income Statement.pdf'); // Save PDF with filename
+      pdf.save('Annual Income Statement.pdf'); // Save PDF with filename    
     });
+
+    sendReportDataToBackend(); // Send report data to backend
   };
 
   return (
@@ -180,7 +260,7 @@ const AnnualIncome = () => {
         <Card className="max-w-xs flex-1 text-red-500">
           <h5 className="text-l font-bold  dark:text-white">
             Total Expenses <br/>
-            Rs. {totalExpenses.toLocaleString()}
+            Rs. {totalAnnualExpenses.toLocaleString()}
           </h5>
           <p className=" dark:text-gray-400">
             Previous Year:  Rs. x,xxx,xxx
@@ -209,6 +289,7 @@ const AnnualIncome = () => {
               <h2 className='font-semibold text-right'>For the year {currentYear}</h2>
             </div>
           </div>
+
           <Table hoverable className=''>
             <Table.Body className=''>
               <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
@@ -243,10 +324,26 @@ const AnnualIncome = () => {
                   <Table.Cell></Table.Cell>
                 </Table.Row>
               ))}
+              <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell>Employee Wages</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{totalAnnualSalary}</Table.Cell>
+                <Table.Cell></Table.Cell>
+              </Table.Row>
+               <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell>Event Budget</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{totalEventBudgetforYear}</Table.Cell>
+                <Table.Cell></Table.Cell>
+              </Table.Row>
+              <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell>Inventory Item Purchases</Table.Cell>
+                {/* <Table.Cell className='pr-2 text-right'>{totalInventoryPurchasesForYear}</Table.Cell> */}
+                <Table.Cell className='pr-2 text-right'>0</Table.Cell>
+                <Table.Cell></Table.Cell>
+              </Table.Row>
               <Table.Row className='border-t-2 border-b-2 font-semibold text-red-700'>
                 <Table.Cell className=""> TOTAL EXPENSES</Table.Cell>
                 <Table.Cell></Table.Cell>
-                <Table.Cell  className='pr-2 text-right '> {totalExpenses} </Table.Cell>
+                <Table.Cell  className='pr-2 text-right '> {totalAnnualExpenses} </Table.Cell>
               </Table.Row>
               <Table.Row className='border-t-2 font-semibold text-green-700'>
                 <Table.Cell>TOTAL INCOME</Table.Cell>
@@ -259,7 +356,7 @@ const AnnualIncome = () => {
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className='border-t-2 font-semibold text-green-700'>
-                <Table.Cell className='bg-green-600 text-white'>NET PROFIT</Table.Cell>
+                <Table.Cell className='bg-green-600 text-white'>NET PROFIT / LOSS</Table.Cell>
                 <Table.Cell className='bg-green-600 text-white'></Table.Cell>
                 <Table.Cell className="pr-2 text-right bg-green-600 text-white">{netProfit} </Table.Cell>
               </Table.Row>
