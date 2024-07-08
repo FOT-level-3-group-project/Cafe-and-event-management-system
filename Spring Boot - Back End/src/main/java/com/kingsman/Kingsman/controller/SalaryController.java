@@ -29,4 +29,14 @@ public class SalaryController {
     public List<MonthSalary> getThisMonthSalaries() {
         return monthSalaryService.getThisMonthSalaries();
     }
+
+    @GetMapping("/getTotalGrossPaymentForCurrentMonth")
+    public float getTotalGrossPaymentForCurrentMonth() {
+        return monthSalaryService.getTotalGrossPaymentForCurrentMonth();
+    }
+
+    @GetMapping("/getTotalGrossPaymentForCurrentYear")
+    public float getTotalGrossPaymentForCurrentYear() {
+        return monthSalaryService.getTotalGrossPaymentForCurrentYear();
+    }
 }

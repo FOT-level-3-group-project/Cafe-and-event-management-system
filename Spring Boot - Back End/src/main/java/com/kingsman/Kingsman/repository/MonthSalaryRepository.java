@@ -19,5 +19,7 @@ public interface MonthSalaryRepository extends JpaRepository<MonthSalary, Long> 
     Optional<MonthSalary> findByEmpNameAndMonth(String empName, String displayName);
 
 
+
     List<MonthSalary> findByMonth(String currentMonth);
+
 }

@@ -173,4 +173,40 @@ public class MonthSalaryService {
         String currentMonth = YearMonth.now().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
         return monthSalaryRepository.findByMonth(currentMonth);
     }
+
+    public float getTotalGrossPaymentForCurrentMonth() {
+        YearMonth currentMonth = YearMonth.now();
+        String monthName = currentMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+
+        List<MonthSalary> salaries = monthSalaryRepository.findByMonth(monthName);
+
+        float totalGrossPayment = 0f;
+        for (MonthSalary salary : salaries) {
+            totalGrossPayment += salary.getGrossPayment();
+        }
+
+        return totalGrossPayment;
+    }
+
+
+    public float getTotalGrossPaymentForCurrentYear() {
+        int currentYear = YearMonth.now().getYear();
+
+        float totalGrossPayment = 0f;
+
+        // Iterate through each month of the current year
+        for (int month = 1; month <= 12; month++) {
+            YearMonth yearMonth = YearMonth.of(currentYear, month);
+            String monthName = yearMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+
+            List<MonthSalary> salaries = monthSalaryRepository.findByMonth(monthName);
+
+            // Sum up the gross payments for the current month
+            for (MonthSalary salary : salaries) {
+                totalGrossPayment += salary.getGrossPayment();
+            }
+        }
+
+        return totalGrossPayment;
+    }
 }

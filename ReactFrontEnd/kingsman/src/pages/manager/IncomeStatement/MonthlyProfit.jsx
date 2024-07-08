@@ -86,7 +86,7 @@ const MonthlyProfit = () => {
    // Fetch monthly salary from the API
   const fetchMonthlySalary = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/salary/total-salary-for-current-month');
+      const response = await fetch('http://localhost:8080/api/salary/getTotalGrossPaymentForCurrentMonth');
       if (!response.ok) {
         throw new Error('Failed to fetch monthly salary');
       }
@@ -244,22 +244,28 @@ const calculateTotalExpenses = () => {
     setNetProfit(net);
   };
 
-  // Download PDF of the monthly statement
+ 
   const handleDownloadPDF = () => {
-    const inputElement = document.getElementById('monthly-report');
+    // Download PDF of the annual statement
+  const inputElement = document.getElementById('monthly-report'); // Element to capture
 
-    html2canvas(inputElement).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
+  inputElement.style.width = '800px'; // Set a fixed width
+  inputElement.style.height = 'auto'; // Set auto height to maintain aspect ratio
 
-      const imgWidth = 210;
-      const imgHeight = canvas.height * imgWidth / canvas.width;
+  html2canvas(inputElement, {
+    scale: 3, // Increase scale to improve quality (default is 1)
+    useCORS: true // Ensures cross-origin images are handled properly
+  }).then((canvas) => {
+    const imgData = canvas.toDataURL('image/png'); // Convert canvas to image data
+    const pdf = new jsPDF('p', 'mm', 'a4'); // Create new PDF document (portrait mode, millimeters, A4 size)
 
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+    const imgWidth = 210; // A4 width in mm
+    const imgHeight = canvas.height * imgWidth / canvas.width; // Calculate image height based on aspect ratio
 
-      pdf.save('Monthly Income Statement.pdf');
-    });
+    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight); // Add image to PDF
 
+    pdf.save('Monthly Income Statement.pdf'); // Save PDF with filename
+  });
     sendReportDataToBackend(); // Send report data to the backend
   };
 
@@ -280,28 +286,28 @@ const calculateTotalExpenses = () => {
         <Card className="max-w-xs flex-1 text-blue-500">
           <h5 className="text-l font-bold dark:text-white">
             Total Income <br />
-            Rs. {totalIncome.toLocaleString()}
+            Rs. {totalIncome.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
           </h5>
           <p className='dark:text-gray-400'>
-              Previous Month: Rs. ${previousMonthTotalIncome}
+              Previous Month: Rs. {previousMonthTotalIncome.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
           </p>
         </Card>
         <Card className="max-w-xs flex-1 text-red-500">
           <h5 className="text-l font-bold dark:text-white">
             Total Expenses <br />
-            Rs. {totalExpenses.toLocaleString()}
+            Rs. {totalExpenses.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
           </h5>
           <p className='dark:text-gray-400'>
-              Previous Month: Rs. ${previousMonthTotalExpenses}
+              Previous Month: Rs. {previousMonthTotalExpenses.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
           </p>
         </Card>
         <Card className="max-w-xs flex-1 text-green-500">
           <h5 className="text-l font-bold dark:text-white">
             Net Profit <br />
-            Rs. {netProfit.toLocaleString()}
+            Rs. {netProfit.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
           </h5>
           <p className='dark:text-gray-400'>
-              Previous Month: Rs. ${previousMonthNetProfit}
+              Previous Month: Rs. {previousMonthNetProfit.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
           </p>
         </Card>
       </div>
@@ -328,18 +334,18 @@ const calculateTotalExpenses = () => {
               </Table.Row>
               <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Sales Revenue</Table.Cell>
-                <Table.Cell className='pr-2 text-right'>{salesRevenue}</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{salesRevenue.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className="bg-white text-black dark:bg-gray-800">
                 <Table.Cell>Event Revenue</Table.Cell>
-                <Table.Cell className='pr-2 text-right'>{eventRevenue}</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{eventRevenue.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className='border-t-2 text-blue-700 '>
                 <Table.Cell className="font-semibold "> TOTAL REVENUES</Table.Cell>
                 <Table.Cell></Table.Cell>
-                <Table.Cell className='pr-2 text-right font-semibold'>{totalRevenue}</Table.Cell>
+                <Table.Cell className='pr-2 text-right font-semibold'>{totalRevenue.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
               </Table.Row>
               <Table.Row className=''>
                 <Table.Cell className='bg-green-600 text-white font-semibold'>EXPENSES</Table.Cell>
@@ -349,18 +355,18 @@ const calculateTotalExpenses = () => {
               {billTypeAmounts.map((item, index) => (
                 <Table.Row key={index} className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                   <Table.Cell>{item.billType}</Table.Cell>
-                  <Table.Cell className='pr-2 text-right'>{item.totalAmount}</Table.Cell>
+                  <Table.Cell className='pr-2 text-right'>{item.totalAmount.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
                   <Table.Cell></Table.Cell>
                 </Table.Row>
               ))}
                <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Employee Wages</Table.Cell>
-                <Table.Cell className='pr-2 text-right'>{totalMonthlySalary}</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{totalMonthlySalary.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
                <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Event Budget</Table.Cell>
-                <Table.Cell className='pr-2 text-right'>{totalEventBudgetforMonth}</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{totalEventBudgetforMonth.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
@@ -372,22 +378,22 @@ const calculateTotalExpenses = () => {
               <Table.Row className='border-t-2 border-b-2 font-semibold text-red-700'>
                 <Table.Cell className=""> TOTAL EXPENSES</Table.Cell>
                 <Table.Cell></Table.Cell>
-                <Table.Cell  className='pr-2 text-right '> {totalExpenses} </Table.Cell>
+                <Table.Cell  className='pr-2 text-right '> {totalExpenses.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')} </Table.Cell>
               </Table.Row>
               <Table.Row className='border-t-2 font-semibold text-green-700'>
                 <Table.Cell>TOTAL INCOME</Table.Cell>
                 <Table.Cell></Table.Cell>
-                <Table.Cell className="pr-2 text-right ">{totalIncome} </Table.Cell>
+                <Table.Cell className="pr-2 text-right ">{totalIncome.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')} </Table.Cell>
               </Table.Row>
               <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Less: Taxes</Table.Cell>
-                <Table.Cell className='pr-2 text-right'> {tax}  </Table.Cell>
+                <Table.Cell className='pr-2 text-right'> {tax.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}  </Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className='border-t-2 font-semibold text-green-700'>
                 <Table.Cell className='bg-green-600 text-white font-semibold'>NET PROFIT / LOSS</Table.Cell>
                 <Table.Cell className='bg-green-600'></Table.Cell>
-                <Table.Cell className="pr-2 text-right bg-green-600 text-white">{netProfit} </Table.Cell>
+                <Table.Cell className="pr-2 text-right bg-green-600 text-white">{netProfit.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')} </Table.Cell>
               </Table.Row>
             </Table.Body>
           </Table>

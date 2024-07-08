@@ -19,11 +19,35 @@ public class IncomeStatementService {
     private AnnualIncomeStatementRepository annualIncomeStatementRepository;
 
     public MonthlyIncomeStatement saveMonthlyIncomeStatement(MonthlyIncomeStatement statement) {
-        return monthlyIncomeStatementRepository.save(statement);
+        Optional<MonthlyIncomeStatement> existingStatement = monthlyIncomeStatementRepository.findByDate(statement.getDate());
+
+        if (existingStatement.isPresent()) {
+            MonthlyIncomeStatement currentStatement = existingStatement.get();
+            currentStatement.setNetProfit(statement.getNetProfit());
+            currentStatement.setTotalIncome(statement.getTotalIncome());
+            currentStatement.setTotalExpenses(statement.getTotalExpenses());
+            return monthlyIncomeStatementRepository.save(currentStatement);
+        } else {
+            return monthlyIncomeStatementRepository.save(statement);
+        }
     }
 
     public AnnualIncomeStatement saveAnnualIncomeStatement(AnnualIncomeStatement statement) {
-        return annualIncomeStatementRepository.save(statement);
+        int year = statement.getYear();
+
+        Optional<AnnualIncomeStatement> existingStatement = annualIncomeStatementRepository.findByYear(year);
+
+        if (existingStatement.isPresent()) {
+            // Update existing record
+            AnnualIncomeStatement currentStatement = existingStatement.get();
+            currentStatement.setNetProfit(statement.getNetProfit());
+            currentStatement.setTotalIncome(statement.getTotalIncome());
+            currentStatement.setTotalExpenses(statement.getTotalExpenses());
+            return annualIncomeStatementRepository.save(currentStatement);
+        } else {
+            // Save new record
+            return annualIncomeStatementRepository.save(statement);
+        }
     }
 
 
