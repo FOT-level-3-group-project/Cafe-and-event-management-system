@@ -1,8 +1,10 @@
 package com.kingsman.Kingsman.controller;
 
+import com.kingsman.Kingsman.exception.DuplicatePaymentException;
 import com.kingsman.Kingsman.model.Payment;
 import com.kingsman.Kingsman.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,22 +20,32 @@ public class PaymentController {
 
     // Endpoint to add a new payment
     @PostMapping("/addPayment")
-    public Payment addPayment(@RequestBody Payment payment) {
-        return paymentService.addPayment(payment);
+    public ResponseEntity<?> addPayment(@RequestBody Payment payment) {
+        try {
+            Payment addedPayment = paymentService.addPayment(payment);
+            return ResponseEntity.ok(addedPayment);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     // Endpoint to update an existing payment
-    @PutMapping("/{paymentId}")
-    public Payment updatePayment(@PathVariable int paymentId, @RequestBody Payment updatedPayment) {
+    @PutMapping("/updatePayment/{paymentId}")
+    public ResponseEntity<Payment> updatePayment(@PathVariable int paymentId, @RequestBody Payment updatedPayment) {
+        Payment payment = paymentService.getPayment(paymentId);
+        if (payment == null) {
+            return ResponseEntity.notFound().build();
+        }
         updatedPayment.setPayID(paymentId); // Ensure the ID is set correctly
-        return paymentService.updatePayment(updatedPayment);
+        Payment updated = paymentService.updatePayment(updatedPayment);
+        return ResponseEntity.ok(updated);
     }
 
-    // Endpoint to delete a payment by ID
-    @DeleteMapping("/{paymentId}")
-    public void deletePayment(@PathVariable int paymentId) {
-        paymentService.deletePayment(paymentId);
-    }
+//    // Endpoint to delete a payment by ID
+//    @DeleteMapping("/{paymentId}")
+//    public void deletePayment(@PathVariable int paymentId) {
+//        paymentService.deletePayment(paymentId);
+//    }
 
     // Endpoint to retrieve a payment by ID
     @GetMapping("/{paymentId}")
@@ -58,8 +70,4 @@ public class PaymentController {
     public List<Map<String, Object>> getCurrentYearPayments() {
         return paymentService.getTotalAmountsForCurrentYearByBillType();
     }
-
-
-
-
 }
