@@ -110,7 +110,8 @@ public class InventoryService {
         LocalDateTime createdAt = LocalDateTime.now();
         LocalDateTime updatedAt = createdAt;
         String forWho = "manager";
-        Notification notification = new Notification(title, message, isRead, createdAt, updatedAt, forWho);
+        String forWhoUser = "";
+        Notification notification = new Notification(title, message, isRead, createdAt, updatedAt, forWho, forWhoUser);
         notificationService.createNotification(notification);
     }
 

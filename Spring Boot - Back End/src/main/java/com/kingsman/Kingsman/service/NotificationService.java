@@ -2,9 +2,13 @@ package com.kingsman.Kingsman.service;
 
 import com.kingsman.Kingsman.model.Notification;
 import com.kingsman.Kingsman.repository.NotificationRepository;
+import org.jetbrains.annotations.Async;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,5 +55,13 @@ public class NotificationService {
 
     public Notification saveNotification(Notification notification) {
         return notificationRepository.save(notification);
+    }
+
+
+    @Scheduled(cron = "0 0 0 * * ?") // Runs every day at midnight  //delete the notifications after the 2 days
+    public void deleteOldNotifications(){
+        LocalDateTime cutoffDate = LocalDateTime.now().minus(2, ChronoUnit.DAYS);
+        List<Notification> oldNotifications = notificationRepository.findByCreatedAtBefore(cutoffDate);
+        notificationRepository.deleteAll(oldNotifications);
     }
 }
