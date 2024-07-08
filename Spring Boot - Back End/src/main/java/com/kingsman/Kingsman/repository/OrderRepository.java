@@ -74,5 +74,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             + "    (o.orderId) = :orderId")
     List<OrderEmployeeFoodDTO> getOrderEmployeeFoodById(@Param("orderId") Long orderId);
 
+    //  Find Total After Discount For Current Month
+    @Query("SELECT SUM(o.totalAfterDiscount) FROM Order o WHERE MONTH(o.orderDateTime) = MONTH(CURRENT_DATE) AND YEAR(o.orderDateTime) = YEAR(CURRENT_DATE)")
+    Double findTotalAfterDiscountForCurrentMonth();
+
+    //  Find Total After Discount For Current Year
+    @Query("SELECT SUM(o.totalAfterDiscount) FROM Order o WHERE YEAR(o.orderDateTime) = YEAR(CURRENT_DATE)")
+    Double findTotalAfterDiscountForCurrentYear();
 
 }

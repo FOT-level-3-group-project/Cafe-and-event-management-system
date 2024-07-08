@@ -345,7 +345,9 @@ export default function UpdateOrder() {
                 <div className="mx-auto justify-center md:flex md:space-x-6 xl:px-0">
                     <div className="rounded-lg md:w-3/5">
                         <div>
-                            <h1 className="mb-2 text-left text-xl font-bold dark:text-white">Order - <span className=" text-green-500 font-extrabold">#{OrderResponse.orderId}</span></h1>
+                            <h1 className="mb-2 text-left text-xl font-bold dark:text-white">Order - <span className=" text-green-500 font-extrabold">#{OrderResponse.orderId}</span>  &nbsp; |  &nbsp; 
+                                By {OrderResponse.employeeFirstName} {OrderResponse.employeeLastName}
+                            </h1>
                             <div>
                                 <div className="max-w-full mb-2">
                                         <div className="relative">

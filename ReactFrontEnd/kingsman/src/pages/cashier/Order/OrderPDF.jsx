@@ -1,4 +1,5 @@
 import React from 'react';
+import {  useSelector } from 'react-redux'
 import { PDFDownloadLink, Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import logoImage from './logo/cafe-logo.png';
 
@@ -112,9 +113,15 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         marginTop:5,
     },
+    billData:{
+        marginTop:5,
+    },
 });
 
 const OrderPDF = ({ order }) => {
+
+    const { currentUser } = useSelector((state) => state.user);
+
 
     // Function to format date and time
     const formatDateTime = (dateTimeString) => {
@@ -129,7 +136,8 @@ const OrderPDF = ({ order }) => {
         const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes} ${amOrPm}`;
         return formattedDateTime;
     }; 
-    
+
+    const currentDateTime = formatDateTime(new Date());
 
     return (
         <PDFDownloadLink
@@ -144,6 +152,11 @@ const OrderPDF = ({ order }) => {
                                 <Text>Polwathumodara,Mirissa</Text>
                                 <Text>contact@kingsman.lk</Text>
                                 <Text>+94 777998768, +94 772888452</Text>
+
+                                <View style={styles.billData}>
+                                    <Text>Printed By : {currentUser.first_name} {currentUser.last_name}</Text>
+                                    <Text>Date and Time : {currentDateTime}</Text>
+                                </View>
                             </View>
                         </View>
 
@@ -238,7 +251,10 @@ const OrderPDF = ({ order }) => {
 
                         <View>
                             <Text style={styles.EndText}>Thank You and Come Again.</Text>
-                         </View>
+                        </View>
+                        <View>
+                            <Text style={styles.EndText}>****</Text>
+                        </View>
                         
                     </Page>
                 </Document>

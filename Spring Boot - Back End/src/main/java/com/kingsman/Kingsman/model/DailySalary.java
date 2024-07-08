@@ -4,15 +4,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
+import java.time.LocalDate;
+
 @Entity
 public class DailySalary {
 
     @Id
     @GeneratedValue
     private Long id;
-    private String EmpId;
+    private String empId;
     private String EmpName;
-    private String date;
+    private LocalDate date;
     private Float workedHours;
     private Float payPerHours;
     private Float totalHourPayment;
@@ -21,6 +23,7 @@ public class DailySalary {
     private Float totalOvertimePayment;
     private Float grossPayment;
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -30,11 +33,11 @@ public class DailySalary {
     }
 
     public String getEmpId() {
-        return EmpId;
+        return empId;
     }
 
     public void setEmpId(String empId) {
-        EmpId = empId;
+        this.empId = empId;
     }
 
     public String getEmpName() {
@@ -45,11 +48,11 @@ public class DailySalary {
         EmpName = empName;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

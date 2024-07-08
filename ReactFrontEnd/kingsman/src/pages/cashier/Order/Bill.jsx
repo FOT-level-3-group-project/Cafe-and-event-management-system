@@ -11,6 +11,7 @@ export default function Bill() {
         const [customerData, setCustomerData] = useState({});
         const [orderItems, setOrderItems] = useState([]);
         const [tableNumber, setTableNumber] = useState(0);
+        const [note, setNote] = useState('');
         const [subtotal, setSubtotal] = useState(0);
         const [totalAfterDiscount, setTotalAfterDiscount] = useState(0);
         const [discountPercentage, setDiscountPercentage] = useState(0);
@@ -26,7 +27,7 @@ export default function Bill() {
                 .then(response => {
                     if (response.status === 200){
                         setOrderResponse(response.data);
-                        const { orderItems, tableNumber, subTotal, discountPercentage, totalAfterDiscount, customer } = response.data;
+                        const { orderItems, tableNumber, specialNote, subTotal, discountPercentage, totalAfterDiscount, customer } = response.data;
                         const convertedOrderItems = orderItems.map(item => ({
                             orderItemId: item.orderItemId,
                             foodId: item.foodItemId,
@@ -37,6 +38,7 @@ export default function Bill() {
                         }));
                         setOrderItems(convertedOrderItems);
                         setTableNumber(tableNumber);
+                        setNote(specialNote);
                         setSubtotal(subTotal);
                         setDiscountPercentage(discountPercentage);
                         setTotalAfterDiscount(totalAfterDiscount);
@@ -194,7 +196,7 @@ export default function Bill() {
                                     <h4 className="font-bold">Bill Details</h4>
                                     <hr className="my-1" />
                                     <br/>
-                                    <div className="overflow-x-auto m-0">
+                                    <div className={`overflow-x-auto m-0  ${customerData && Object.keys(customerData).length > 0 ? 'w-full' : 'w-1/2'}`}>
                                         <table className="table-auto w-full">
                                             <tbody className="text-sm">
                                                 <tr>
@@ -206,6 +208,17 @@ export default function Bill() {
                                                     </td>
                                                     <td className="p-1 whitespace-nowrap">
                                                         <div className="text-left">#{OrderResponse.orderId}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="p-1 whitespace-nowrap">
+                                                        <div className="flex items-center font-bold text-gray-800 dark:text-gray-50">
+                                                            <span><i className="ri-account-pin-circle-fill"></i></span> &nbsp;
+                                                            <div className="text-right">By :</div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="p-1 whitespace-nowrap">
+                                                        <div className="text-left">{OrderResponse.employeeFirstName} {OrderResponse.employeeLastName}</div>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -259,6 +272,19 @@ export default function Bill() {
                                                                 "No Table Assigned"
                                                             )}
 
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="p-1 whitespace-nowrap">
+                                                        <div className="flex items-center font-bold">
+                                                            <span><i className="ri-sticky-note-add-fill text-gray-800 dark:text-gray-50"></i></span> &nbsp;
+                                                            <div className="text-right">Note :</div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="p-1 whitespace-nowrap">
+                                                        <div className="text-left">
+                                                            {note}
                                                         </div>
                                                     </td>
                                                 </tr>

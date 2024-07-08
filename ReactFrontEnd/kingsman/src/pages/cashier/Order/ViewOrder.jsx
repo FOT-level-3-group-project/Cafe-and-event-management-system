@@ -6,25 +6,19 @@ import OrderPDF from './OrderPDF';
 
 
 export const ViewOrder = () => {
-    const [orderPDFVisible, setOrderPDFVisible] = useState(false);
 
-    const handleGeneratePDF = () => {
-        setOrderPDFVisible(true);
-    };
+        const [showPDF, setShowPDF] = useState(false); // State to control the visibility of the PDF component
 
-    const [showPDF, setShowPDF] = useState(false); // State to control the visibility of the PDF component
-
-    const handleTogglePDF = () => {
-        setShowPDF(!showPDF); // Toggle the visibility of the PDF component
-    };
+        const handleTogglePDF = () => {
+            setShowPDF(!showPDF); // Toggle the visibility of the PDF component
+        };
 
         const [OrderResponse, setOrderResponse] = useState({});
-
         const [customerData, setCustomerData] = useState({});
-        
 
         const [orderItems, setOrderItems] = useState([]);
         const [tableNumber, setTableNumber] = useState(0);
+        const [note, setNote] = useState('');
 
         const [subtotal, setSubtotal] = useState(0);
         const [totalAfterDiscount, setTotalAfterDiscount] = useState(0);
@@ -38,7 +32,7 @@ export const ViewOrder = () => {
                 .then(response => {
                     if (response.status === 200){
                         setOrderResponse(response.data);
-                        const { orderItems, tableNumber, subTotal, discountPercentage, totalAfterDiscount, customer } = response.data;
+                        const { orderItems, tableNumber, specialNote, subTotal, discountPercentage, totalAfterDiscount, customer } = response.data;
                         const convertedOrderItems = orderItems.map(item => ({
                             orderItemId: item.orderItemId,
                             foodId: item.foodItemId,
@@ -49,6 +43,7 @@ export const ViewOrder = () => {
                         }));
                         setOrderItems(convertedOrderItems);
                         setTableNumber(tableNumber);
+                        setNote(specialNote);
                         setSubtotal(subTotal);
                         setDiscountPercentage(discountPercentage);
                         setTotalAfterDiscount(totalAfterDiscount);
@@ -119,6 +114,8 @@ export const ViewOrder = () => {
                                 </span>
                                 &nbsp;
                                 |  &nbsp; {convertDate(OrderResponse.orderDateTime)}
+                                &nbsp; |  &nbsp; 
+                                By {OrderResponse.employeeFirstName} {OrderResponse.employeeLastName}
                         </h1>
 
                         <div className="p-6 rounded-lg border bg-white mb-3 shadow-md md:mt-0 text-sm dark:bg-gray-600 dark: border-none">
@@ -180,12 +177,15 @@ export const ViewOrder = () => {
                         </div>
 
 
-                        <div className=" py-2 flex flex-col justify-between rounded-lg border bg-white mb-6 shadow-md md:mt-0 dark:bg-gray-600 dark:border-none min-h-[calc(100vh-24rem)] h-auto">
+                        <div className=" py-2 flex flex-col justify-between rounded-lg border bg-white mb-6 shadow-md md:mt-0 dark:bg-gray-600 dark:border-none min-h-[calc(100vh-21rem)] h-auto">
 
-                            <div className="overflow-x-auto overflow-scroll max-h-[calc(100vh-34rem)] h-auto px-6 py-2">
+                            <div className="overflow-x-auto overflow-scroll max-h-[calc(100vh-39rem)] h-auto px-6 py-2">
                                 <table className="w-full table-auto">
                                     <thead className="bg-gray-50 text-xs font-semibold uppercase text-gray-400 dark:bg-gray-700">
                                         <tr>
+                                            <th className="px-2 py-1">
+                                                <div className="text-left font-semibold"> #</div>
+                                            </th>
                                             <th className="px-2 py-1">
                                                 <div className="text-left font-semibold"> Name</div>
                                             </th>
@@ -206,8 +206,11 @@ export const ViewOrder = () => {
                                                 <td colSpan="5" className="text-center text-gray-400 py-4">No items were found. Please Select from the Menu</td>
                                             </tr>
                                         ) : (
-                                            orderItems.map(item => (
+                                            orderItems.map((item, index) => (
                                                 <tr key={item.foodId}>
+                                                    <td className="px-2 py-1">
+                                                        <div className="font-medium capitalize text-gray-800 dark:text-gray-50">{index+1}</div>
+                                                    </td>
                                                     <td className="px-2 py-1">
                                                         <div className="font-medium capitalize text-gray-800 dark:text-gray-50">{item.foodName}</div>
                                                     </td>
@@ -260,13 +263,33 @@ export const ViewOrder = () => {
                                         <p className="mb-1 text-lg font-bold">LKR {totalAfterDiscount.toFixed(2)}</p>
                                     </div>
                                 </div>
-                                <hr className="mt-2 mb-3"/>
-                                <div className="flex items-center mt- my-2">
-                                    <p className="text-lg">Table - </p>
-                                    <div>
-                                        <p className="mx-1 text-lg">{tableNumber}</p>
+
+                                <div className="flex w-full justify-evenly my-2">
+                                    <div className="w-1/2 mr-1">
+                                        <label htmlFor="table"  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Table :</label>
+                                        <input
+                                            id="table"
+                                            type="text"
+                                            readOnly
+                                            value={tableNumber && tableNumber.value != 0 ? tableNumber : "Table Not Assigned"}
+                                            className="block  p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        />
                                     </div>
-                                    
+                                    <div className="w-1/2 ml-1">
+                                          <label
+                                                htmlFor="note"
+                                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                            >
+                                                Note :
+                                            </label>
+                                            <textarea
+                                                id="note"
+                                                rows={1}
+                                                className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                readOnly
+                                                value={note}
+                                            />
+                                    </div>
                                 </div>
 
                                 {showPDF &&
@@ -277,19 +300,19 @@ export const ViewOrder = () => {
 
                                 <div>
                                     <div className='flex items-center justify-between w-full overflow-hidden'>
-                                        <a href="/cashier?tab=orders" className="flex-grow flex items-center justify-center px-3 py-2 bg-cyan-500 text-white font-semibold rounded hover:bg-cyan-600 mx-1">
+                                        <a href="/cashier?tab=orders" className="flex-grow flex items-center justify-center px-3 py-2 bg-cyan-500 text-white font-semibold rounded hover:bg-cyan-600 mr-2">
                                             <i className="ri-arrow-left-s-line"></i>
                                             <span className="ml-1">Back</span>
                                         </a>
 
                                         {!showPDF &&
-                                            <button onClick={handleTogglePDF} className='flex-grow flex items-center justify-center px-3 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 mx-1'>
-                                                {showPDF ? '' : 'Generate PDF'} 
+                                            <button onClick={handleTogglePDF} className='flex-grow flex items-center justify-center px-3 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 -1'>
+                                                Generate PDF
                                             </button>
                                         }
                     
                                         {OrderResponse.orderStatus === "Ready"   && (
-                                            <a href={`/cashier?tab=bill&order=${OrderResponse.orderId}`} className="flex-grow flex items-center justify-center px-3 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600 mx-1">
+                                            <a href={`/cashier?tab=bill&order=${OrderResponse.orderId}`} className="flex-grow flex items-center justify-center px-3 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600 ml-2">
                                                 <span className="mr-1">Process Order</span>
                                                 <i className="ri-arrow-right-s-line"></i>
                                             </a>

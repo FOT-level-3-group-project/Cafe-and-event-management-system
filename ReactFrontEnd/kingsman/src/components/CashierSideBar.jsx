@@ -34,11 +34,12 @@ export default function CashierSideBar() {
         <Sidebar className='w-full md:w-56'>
             <Sidebar.Items>
                 <Sidebar.ItemGroup>
-                    <Link to='/cashier?tab=dashboard'>
+                    <Link to='/cashier?tab=TodayAttendancePieChart'>
                         <Sidebar.Item active={tab === 'dashboard'} icon={FaChartPie} as='div'>
                             Dashboard
                         </Sidebar.Item>
                     </Link>
+                    
                     <Sidebar.Collapse label='Attendance' icon={HiUser}>
                         <Link to='/cashier?tab=addAttendance'>
                             <Sidebar.Item active={tab === 'addAttendance'} icon={HiUser} as='div'> Add Attendance </Sidebar.Item>
@@ -52,6 +53,11 @@ export default function CashierSideBar() {
                     <Link to='/cashier?tab=orders'>
                         <Sidebar.Item active={tab === 'orders'} icon={MdOutlineRestaurantMenu} as='div'>
                             Manage Orders
+                        </Sidebar.Item>
+                    </Link>
+                    <Link to = '/cashier?tab=billPayments'>
+                        <Sidebar.Item active={tab === 'billPayments'} icon={MdOutlineRestaurantMenu} as='div'>
+                            Bill Payments
                         </Sidebar.Item>
                     </Link>
                     <Link to='/cashier?tab=profile'>

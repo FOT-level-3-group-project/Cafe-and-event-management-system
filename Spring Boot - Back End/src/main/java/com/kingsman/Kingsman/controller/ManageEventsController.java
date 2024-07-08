@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -57,4 +59,15 @@ public class ManageEventsController {
             return new ResponseEntity<>("Failed to update event: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/monthly-total-revenue")
+    public ResponseEntity<Double> getTotalRevenueForCurrentMonth() {
+        try {
+            double totalRevenue = manageEventsService.getTotalRevenueForCurrentMonth();
+            return new ResponseEntity<>(totalRevenue, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
