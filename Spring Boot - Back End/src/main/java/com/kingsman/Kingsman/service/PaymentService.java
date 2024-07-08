@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PaymentService {
@@ -46,15 +47,22 @@ public class PaymentService {
         return paymentRepository.findAll();
     }
 
-
     //     Method to get total amounts for current month by bill type
     public List<Map<String, Object>> getTotalAmountsForCurrentMonthByBillType() {
         return paymentRepository.findTotalAmountsForCurrentMonthByBillType();
     }
 
-
     // Method to get payments for the current year
     public List<Map<String, Object>> getTotalAmountsForCurrentYearByBillType() {
         return paymentRepository.findTotalAmountsForCurrentYearByBillType();
+    }
+
+    // get all unique bill types
+    public List<String> getAllBillTypes() {
+        List<Payment> payments = paymentRepository.findAll();
+        return payments.stream()
+                .map(Payment::getBillType)
+                .distinct()
+                .collect(Collectors.toList());
     }
 }
