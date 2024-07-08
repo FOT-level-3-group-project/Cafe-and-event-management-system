@@ -12,5 +12,8 @@ public interface MonthSalaryRepository extends JpaRepository<MonthSalary, Long> 
 
     Optional<MonthSalary> findByEmpNameAndMonth(String empName, YearMonth currentMonth);
 
-    List<MonthSalary> findByMonth(YearMonth currentMonth);
+
+    List<MonthSalary> findByMonth(String currentMonth);
+
+    Optional<MonthSalary> findByEmpNameAndMonth(String empName, String displayName);
 }

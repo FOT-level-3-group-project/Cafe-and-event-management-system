@@ -19,6 +19,7 @@ import TableManage from './advanceSettings/TableManage';
 import UpdateOrder from './order/UpdateOrder';
 import UpdateOrderItems from './order/UpdateOrderItems';
 import EmpSalaries from './salary/EmpSalaries';
+import Bonuses from './salary/Bonuses';
 
 
 
@@ -73,6 +74,8 @@ export default function Manager() {
 
             {/* salary */}
             {tab === 'salary' && <EmpSalaries />}
+            {tab === 'earnings' && <Bonuses />}
+
 
             {/* Dashboard */}
             {tab === 'dashboard' && <ManagerDash/>}

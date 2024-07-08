@@ -9,7 +9,7 @@ import { logOutSuccess } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 import { BsFillPeopleFill } from "react-icons/bs";
 import { MdEvent } from "react-icons/md";
-import { FaMoneyBillTrendUp } from "react-icons/fa6";
+import { FaMoneyBillTrendUp,FaMoneyBill,FaMoneyBillTransfer } from "react-icons/fa6";
 import { MdRestaurantMenu } from "react-icons/md";
 import { FaChartPie } from "react-icons/fa";
 import { MdOutlineTableBar } from "react-icons/md";
@@ -58,11 +58,21 @@ export default function ManagerSideBar() {
                             Attendance
                         </Sidebar.Item>
                     </Link>
-                    <Link to='/manager?tab=salary'>
-                        <Sidebar.Item active={tab === 'salary'} icon={BsPersonFillCheck} as='div'>
-                            Salary
-                        </Sidebar.Item>
-                    </Link>
+                     
+
+                    <Sidebar.Collapse label='Payroll ' icon={FaMoneyBillTrendUp}>
+                        <Link to='/manager?tab=salary'>
+                            <Sidebar.Item active={tab === 'monthly-salary'} icon={FaMoneyBill} as='div'> Monthly Salary </Sidebar.Item>
+                        </Link>
+                        <Link to='/manager?tab=earnings'>
+                            <Sidebar.Item active={tab === 'earnings'} icon={FaMoneyBillTransfer} as='div'>Advance </Sidebar.Item>
+                        </Link>
+
+                    </Sidebar.Collapse>    
+
+
+
+                    
                     <Link to='/manager?tab=view-all-employees'>
                         <Sidebar.Item active={tab === 'view-all-employees'} icon={BsFillPeopleFill} as='div'>
                             Employees
