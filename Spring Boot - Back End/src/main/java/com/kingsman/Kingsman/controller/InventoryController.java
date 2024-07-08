@@ -81,4 +81,17 @@ public class InventoryController {
         return ResponseEntity.ok(inventoryItemUsageLogs);
     }
 
+    // Get total price for current month
+    @GetMapping("/total-price/month")
+    public ResponseEntity<Float> getTotalPriceForCurrentMonth() {
+        Float totalPrice = inventoryService.getTotalPriceForCurrentMonth();
+        return ResponseEntity.ok(totalPrice);
+    }
+
+    // Get total price for current year
+    @GetMapping("/total-price/year")
+    public ResponseEntity<Float> getTotalPriceForCurrentYear() {
+        Float totalPrice = inventoryService.getTotalPriceForCurrentYear();
+        return ResponseEntity.ok(totalPrice);
+    }
 }
