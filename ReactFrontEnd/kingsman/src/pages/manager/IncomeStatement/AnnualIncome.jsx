@@ -10,7 +10,6 @@ const AnnualIncome = () => {
     water: 0,
     telephone: 0,
     internet: 0,
-    inventoryExpenses: 0,
     insurance: 0,
     otherExpenses: 0,
   });
@@ -47,11 +46,11 @@ const AnnualIncome = () => {
 
   useEffect(() => {
     calculateTotalAnnualRevenue(); // Calculate total revenue 
-    calculateTotalAnnaulExpenses(); // Calculate total expenses whenever billTypeAmounts changes
+    calculateTotalAnnaulExpenses(); // Calculate total expenses
     calculateTotalAnnaulIncome(); // Calculate total income 
     calculateTax(); // Calculate tax
     calculateNetProfit(); // Calculate net profit
-  }, [billTypeAmounts, salesRevenue, eventRevenue, totalAnnualExpenses, totalRevenue, totalIncome, tax]);
+  }, [billTypeAmounts, salesRevenue, eventRevenue, totalAnnualExpenses, totalRevenue, totalIncome, tax,totalAnnualSalary, totalEventBudgetforYear, totalInventoryPurchasesForYear]);
 
   // Fetch annual expenses from API
   const fetchAnnualExpenses = async () => {
@@ -113,7 +112,7 @@ const AnnualIncome = () => {
   // Fetch total inventory purchases for the year from the API
   const fetchTotalInventoryPurchasesForYear = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/inventory/annual-total-purchases');
+      const response = await fetch('http://localhost:8080/api/inventory/total-price/year');
       if (!response.ok) {
         throw new Error('Failed to fetch total inventory purchases for the year');
       }
@@ -210,10 +209,7 @@ const AnnualIncome = () => {
     const totalEx = billTypeAmounts.reduce((accumulator, item) => {
       return accumulator + item.totalAmount;
     }, 0);
-    setTotalAnnualExpenses(totalEx);
-
-  const totalExpenses = totalEx + totalAnnualSalary + totalEventBudgetforYear;
-  // const totalExpenses = totalEx + totalAnnualSalary + totalEventBudgetforYear + totalInventoryPurchasesForYear;
+  const totalExpenses = totalEx + totalAnnualSalary + totalEventBudgetforYear + totalInventoryPurchasesForYear;
   setTotalAnnualExpenses(totalExpenses);
   };
 
@@ -265,6 +261,18 @@ const AnnualIncome = () => {
     sendReportDataToBackend(); // Send report data to backend
   };
 
+
+  const formatCurrency = (value) => {
+  // Format the number
+  const formattedValue = new Intl.NumberFormat('en-LK', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(value);
+  // Replace comma with space
+  return formattedValue.replace(/,/g, ' ');
+};
+
+
   return (
     <div className="w-full pt-10 ">
       <div className='flex'>
@@ -281,28 +289,28 @@ const AnnualIncome = () => {
         <Card className="max-w-xs flex-1 text-blue-500">
           <h5 className="text-l font-bold  dark:text-white">
             Total Income <br/>
-            Rs. {totalIncome.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
+            Rs. {formatCurrency(totalIncome)}
           </h5>
           <p className=" dark:text-gray-400 ">
-            Previous Year:  Rs. {previousYearTotalIncome.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
+            Previous Year:  Rs. {formatCurrency(previousYearTotalIncome)}
           </p>
         </Card>
         <Card className="max-w-xs flex-1 text-red-500">
           <h5 className="text-l font-bold  dark:text-white">
             Total Expenses <br/>
-            Rs. {totalAnnualExpenses.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
+            Rs. {formatCurrency(totalAnnualExpenses)}
           </h5>
           <p className=" dark:text-gray-400">
-            Previous Year:  Rs. {previousYearTotalExpenses.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
+            Previous Year:  Rs. {formatCurrency(previousYearTotalExpenses)}
           </p>
         </Card>
         <Card className="max-w-xs flex-1 text-green-500">
           <h5 className="text-l font-bold dark:text-white">
             Net Profit <br/>
-             Rs. {netProfit.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
+             Rs. {formatCurrency(netProfit)}
           </h5>
           <p className=" dark:text-gray-400">
-            Previous Year:  Rs. {previousYearNetProfit.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
+            Previous Year:  Rs. {formatCurrency(previousYearNetProfit)}
           </p>
         </Card>
       </div>
@@ -329,18 +337,18 @@ const AnnualIncome = () => {
               </Table.Row>
               <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Sales Revenue</Table.Cell>
-                <Table.Cell className='pr-2 text-right'>{salesRevenue.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{formatCurrency(salesRevenue)}</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className="bg-white text-black dark:bg-gray-800">
                 <Table.Cell>Event Revenue</Table.Cell>
-                <Table.Cell className='pr-2 text-right'>{eventRevenue.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{formatCurrency(eventRevenue)}</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className='border-t-2 text-blue-700 '>
                 <Table.Cell className="font-semibold "> TOTAL REVENUES</Table.Cell>
                 <Table.Cell></Table.Cell>
-                <Table.Cell className='pr-2 text-right font-semibold'>{totalRevenue.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
+                <Table.Cell className='pr-2 text-right font-semibold'>{formatCurrency(totalRevenue)}</Table.Cell>
               </Table.Row>
               <Table.Row className=''>
                 <Table.Cell className='bg-green-600 text-white font-semibold'>EXPENSES</Table.Cell>
@@ -350,45 +358,44 @@ const AnnualIncome = () => {
               {billTypeAmounts.map((item, index) => (
                 <Table.Row key={index} className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                   <Table.Cell>{item.billType}</Table.Cell>
-                  <Table.Cell className='pr-2 text-right'>{item.totalAmount.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
+                  <Table.Cell className='pr-2 text-right'>{formatCurrency(item.totalAmount)}</Table.Cell>
                   <Table.Cell></Table.Cell>
                 </Table.Row>
               ))}
               <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Employee Wages</Table.Cell>
-                <Table.Cell className='pr-2 text-right'>{totalAnnualSalary.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{formatCurrency(totalAnnualSalary)}</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
                <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Event Budget</Table.Cell>
-                <Table.Cell className='pr-2 text-right'>{totalEventBudgetforYear.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{formatCurrency(totalEventBudgetforYear)}</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Inventory Item Purchases</Table.Cell>
-                {/* <Table.Cell className='pr-2 text-right'>{totalInventoryPurchasesForYear.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell> */}
-                <Table.Cell className='pr-2 text-right'>0</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{formatCurrency(totalInventoryPurchasesForYear)}</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className='border-t-2 border-b-2 font-semibold text-red-700'>
                 <Table.Cell className=""> TOTAL EXPENSES</Table.Cell>
                 <Table.Cell></Table.Cell>
-                <Table.Cell  className='pr-2 text-right '> {totalAnnualExpenses.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')} </Table.Cell>
+                <Table.Cell  className='pr-2 text-right '> {formatCurrency(totalAnnualExpenses)} </Table.Cell>
               </Table.Row>
               <Table.Row className='border-t-2 font-semibold text-green-700'>
                 <Table.Cell>TOTAL INCOME</Table.Cell>
                 <Table.Cell></Table.Cell>
-                <Table.Cell className="pr-2 text-right ">{totalIncome.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')} </Table.Cell>
+                <Table.Cell className="pr-2 text-right ">{formatCurrency(totalIncome)} </Table.Cell>
               </Table.Row>
               <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Less: Taxes</Table.Cell>
-                <Table.Cell className='pr-2 text-right'> {tax}  </Table.Cell>
+                <Table.Cell className='pr-2 text-right'> {formatCurrency(tax)}  </Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className='border-t-2 font-semibold text-green-700'>
                 <Table.Cell className='bg-green-600 text-white'>NET PROFIT / LOSS</Table.Cell>
                 <Table.Cell className='bg-green-600 text-white'></Table.Cell>
-                <Table.Cell className="pr-2 text-right bg-green-600 text-white">{netProfit.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')} </Table.Cell>
+                <Table.Cell className="pr-2 text-right bg-green-600 text-white">{formatCurrency(netProfit)} </Table.Cell>
               </Table.Row>
             </Table.Body>
           </Table>
