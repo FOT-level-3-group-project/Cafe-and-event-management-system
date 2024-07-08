@@ -15,10 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -136,6 +133,13 @@ public class OrderController {
     @GetMapping("/annaul-sales-revenue")
     public Double getTotalAfterDiscountForCurrentYear() {
         return orderService.findTotalAfterDiscountForCurrentYear();
+    }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<Map<String, Object>> getOrderStatisticsByEmployee(
+            @RequestParam Long employeeId) {
+        Map<String, Object> statistics = orderService.getOrderStatisticsByEmployee(employeeId);
+        return ResponseEntity.ok(statistics);
     }
 
 
