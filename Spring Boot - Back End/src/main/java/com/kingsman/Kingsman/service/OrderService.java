@@ -332,10 +332,10 @@ public class OrderService {
         return orderRepository.findTotalAfterDiscountForCurrentYear();
     }
 
-    // Get daily order counts for the last 14 days for a specific employee with status "Ready"
+    // Get daily order counts for the last 30 days for a specific employee with status "Ready"
     public Map<LocalDate, Long> getDailyOrderCountsForLast14DaysByEmployee(Long employeeId) {
         LocalDate today = LocalDate.now();
-        LocalDate startDate = today.minusDays(13); // Get the start date for the last 14 days
+        LocalDate startDate = today.minusDays(29); // Get the start date for the last 30 days
 
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = today.plusDays(1).atStartOfDay(); // End of the day for today
