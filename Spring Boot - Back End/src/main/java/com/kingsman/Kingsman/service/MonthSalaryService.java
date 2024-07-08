@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -111,13 +113,13 @@ public class MonthSalaryService {
                     float grossPayment = totalHourPayment + totalOvertimePayment + bonus - deduction;
 
                     // Check if MonthSalary record already exists for this employee and current month
-                    Optional<MonthSalary> existingMonthSalary = monthSalaryRepository.findByEmpNameAndMonth(empName, currentMonth);
+                    Optional<MonthSalary> existingMonthSalary = monthSalaryRepository.findByEmpNameAndMonth(empName, currentMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH));
 
                     if (existingMonthSalary.isPresent()) {
                         // Update existing record with new values
                         MonthSalary monthSalary = existingMonthSalary.get();
                         monthSalary.setWorkedHours(totalWorkedHours);
-                        monthSalary.setPayPerHour(payPerHours); // Assign the retrieved payPerHours
+                        monthSalary.setPayPerHours(payPerHours); // Assign the retrieved payPerHours
                         monthSalary.setTotalHourPayment(totalHourPayment);
                         monthSalary.setOTHours(totalOTHours);
                         monthSalary.setPayPerOvertimeHour(payPerOvertimeHour); // Assign the retrieved payPerOvertimeHour
@@ -128,15 +130,15 @@ public class MonthSalaryService {
                         monthSalary.setDeduction(deduction);
                         monthSalary.setGrossPayment(grossPayment);
 
-                        logger.info("Updating monthly salary for employee: " + empName + ". PayPerHours: " + monthSalary.getPayPerHour());
+                        logger.info("Updating monthly salary for employee: " + empName + ". PayPerHours: " + monthSalary.getPayPerHours());
                         monthSalaryRepository.save(monthSalary);
                     } else {
                         // Create new record and save it
                         MonthSalary monthSalary = new MonthSalary();
                         monthSalary.setEmpName(empName);
-                        monthSalary.setMonth(currentMonth);
+                        monthSalary.setMonth(currentMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH)); // Set month as month name
                         monthSalary.setWorkedHours(totalWorkedHours);
-                        monthSalary.setPayPerHour(payPerHours); // Assign the retrieved payPerHours
+                        monthSalary.setPayPerHours(payPerHours); // Assign the retrieved payPerHours
                         monthSalary.setTotalHourPayment(totalHourPayment);
                         monthSalary.setOTHours(totalOTHours);
                         monthSalary.setPayPerOvertimeHour(payPerOvertimeHour); // Assign the retrieved payPerOvertimeHour
@@ -147,7 +149,7 @@ public class MonthSalaryService {
                         monthSalary.setDeduction(deduction);
                         monthSalary.setGrossPayment(grossPayment);
 
-                        logger.info("Saving monthly salary for employee: " + empName + ". PayPerHours: " + monthSalary.getPayPerHour());
+                        logger.info("Saving monthly salary for employee: " + empName + ". PayPerHours: " + monthSalary.getPayPerHours());
                         monthSalaryRepository.save(monthSalary);
                     }
                 }
@@ -166,7 +168,7 @@ public class MonthSalaryService {
     }
 
     public List<MonthSalary> getThisMonthSalaries() {
-        YearMonth currentMonth = YearMonth.now();
+        String currentMonth = YearMonth.now().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
         return monthSalaryRepository.findByMonth(currentMonth);
     }
 }

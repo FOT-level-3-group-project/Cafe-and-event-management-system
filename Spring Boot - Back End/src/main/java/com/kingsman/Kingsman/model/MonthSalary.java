@@ -5,15 +5,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-import java.time.YearMonth;
-
 @Entity
 public class MonthSalary {
     @Id
     @GeneratedValue
     private Long id;
     private String empName;
-    private YearMonth month;
+    private String month; // Changed from YearMonth to String
     private Float workedHours;
     private Float payPerHours;
     private Float totalHourPayment;
@@ -42,11 +40,11 @@ public class MonthSalary {
         this.empName = empName;
     }
 
-    public YearMonth getMonth() {
+    public String getMonth() {
         return month;
     }
 
-    public void setMonth(YearMonth month) {
+    public void setMonth(String month) {
         this.month = month;
     }
 
@@ -58,12 +56,12 @@ public class MonthSalary {
         this.workedHours = workedHours;
     }
 
-    public Float getPayPerHour() {
+    public Float getPayPerHours() {
         return payPerHours;
     }
 
-    public void setPayPerHour(Float payPerHour) {
-        this.payPerHours = payPerHour;
+    public void setPayPerHours(Float payPerHours) {
+        this.payPerHours = payPerHours;
     }
 
     public Float getTotalHourPayment() {

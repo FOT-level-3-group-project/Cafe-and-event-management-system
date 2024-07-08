@@ -1,7 +1,7 @@
 package com.kingsman.Kingsman.controller;
 
-import com.kingsman.Kingsman.service.MonthSalaryService;
 import com.kingsman.Kingsman.model.MonthSalary;
+import com.kingsman.Kingsman.service.MonthSalaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
