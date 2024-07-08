@@ -93,8 +93,9 @@ public class OrderService {
         LocalDateTime createdAt = LocalDateTime.now();
         LocalDateTime updatedAt = createdAt;
         String forWho = "chef";
+        String forWhoUser ="";
 
-        Notification notification = new Notification(title, message, isRead, createdAt, updatedAt, forWho);
+        Notification notification = new Notification(title, message, isRead, createdAt, updatedAt, forWho, forWhoUser);
         notificationService.createNotification(notification);
     }
 
@@ -280,9 +281,32 @@ public class OrderService {
         if (existingOrderOptional.isPresent()){
             Order existingOrder = existingOrderOptional.get();
             existingOrder.setOrderStatus(orderStatus);
+
             orderRepository.save(existingOrder);
+            if(orderStatus.equals("Ready")){
+                crateOrderReadyWaiterNotification(existingOrder);
+            }
         }
         return true;
+    }
+
+    public void crateOrderReadyWaiterNotification(Order order){
+        String title = "Order Ready";
+        String foodName = getOrderEmployeeFoodById(order.getOrderId()).stream()
+                .map(OrderEmployeeFoodDTO::getFoodName) // Extracting the foodName
+                .collect(Collectors.joining(", ")); // Joining them with a comma
+
+        String forWhoUser = order.getEmployee() != null ? order.getEmployee().getUsername() : "Unknown";;
+
+        String message = forWhoUser+ ", Order is ready ID: " + order.getOrderId() + ", Table Number : " + order.getTableNumber() + ", Food Name : " + foodName;
+        boolean isRead = false;
+        LocalDateTime createdAt = LocalDateTime.now();
+        LocalDateTime updatedAt = createdAt;
+        String forWho = "waiter";
+
+
+        Notification notification = new Notification(title, message, isRead, createdAt, updatedAt, forWho , forWhoUser);
+        notificationService.createNotification(notification);
     }
 
     public List<OrderEmployeeFoodDTO> getOrderEmployeeFoodByOrderStatus(String orderStatus) {

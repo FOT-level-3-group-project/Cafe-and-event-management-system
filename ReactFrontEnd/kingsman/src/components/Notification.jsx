@@ -61,8 +61,11 @@ export default function Notification() {
         );
     };
 
-    const todayNotifications = notifications.filter((notification) => isToday(notification.createdAt));
-    const previousNotifications = notifications.filter((notification) => !isToday(notification.createdAt));
+    // Filter notifications for the current user's username
+    const userNotifications = notifications.filter(notification => (notification.forWhoUser === currentUser.username) || (notification.forWhoUser === "") || (notification.forWhoUser === null));
+
+    const todayNotifications = userNotifications.filter((notification) => isToday(notification.createdAt));
+    const previousNotifications = userNotifications.filter((notification) => !isToday(notification.createdAt));
 
 
     const getLinkForPosition = (title) => {
@@ -77,7 +80,7 @@ export default function Notification() {
             return '/feedback';
         }
         if (currentUser.position === 'waiter') {
-            return '/waiter?tab=orders';
+            return '/waiter?tab=manage-orders';
         }
         if (currentUser.position === 'cashier') {
             return '/cashier?tab=orders';
@@ -97,7 +100,7 @@ export default function Notification() {
     }
 
     // Filter to show only unread notifications
-    const unreadNotifications = notifications.filter(notification => !notification.read);
+    const unreadNotifications = userNotifications.filter(notification => !notification.read );
 
     console.log('unreadNotifications:', unreadNotifications);
     return (
@@ -119,12 +122,13 @@ export default function Notification() {
                 </div>
             }
         >
-            {notifications.length > 0 ? (
+            {userNotifications.length > 0 ? (
                 <div className={`overflow-y-auto`} style={{ maxHeight: showAll ? '700px' : '1000px' }}>
                     {todayNotifications.length > 0 && (
                         <>
                             <div className="text-left text-sm px-4 py-2 ">Today</div>
                             {todayNotifications
+                                
                                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                                 .map((notification, index) => (
                                     <React.Fragment key={index}>
