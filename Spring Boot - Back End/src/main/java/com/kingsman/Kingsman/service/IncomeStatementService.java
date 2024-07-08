@@ -7,8 +7,7 @@ import com.kingsman.Kingsman.repository.MonthlyIncomeStatementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.util.Calendar;
 import java.util.Optional;
 
 @Service
@@ -19,10 +18,6 @@ public class IncomeStatementService {
     @Autowired
     private AnnualIncomeStatementRepository annualIncomeStatementRepository;
 
-    public Optional<MonthlyIncomeStatement> getPreviousMonthStatement(Date date) {
-        return monthlyIncomeStatementRepository.findByDate((java.sql.Date) date);
-    }
-
     public MonthlyIncomeStatement saveMonthlyIncomeStatement(MonthlyIncomeStatement statement) {
         return monthlyIncomeStatementRepository.save(statement);
     }
@@ -31,11 +26,17 @@ public class IncomeStatementService {
         return annualIncomeStatementRepository.save(statement);
     }
 
-    public List<MonthlyIncomeStatement> getAllMonthlyIncomeStatements() {
-        return monthlyIncomeStatementRepository.findAll();
+
+    public Optional<AnnualIncomeStatement> getAnnualIncomeStatementByYear(int year) {
+        return annualIncomeStatementRepository.findByYear(year);
     }
 
-    public List<AnnualIncomeStatement> getAllAnnualIncomeStatements() {
-        return annualIncomeStatementRepository.findAll();
+    public Optional<MonthlyIncomeStatement> getPreviousMonthIncomeStatement() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, -1);
+        int prevMonth = cal.get(Calendar.MONTH) + 1; // Calendar.MONTH is 0-based, so add 1
+        int prevYear = cal.get(Calendar.YEAR);
+
+        return monthlyIncomeStatementRepository.findPreviousMonthStatement(prevMonth, prevYear);
     }
 }
