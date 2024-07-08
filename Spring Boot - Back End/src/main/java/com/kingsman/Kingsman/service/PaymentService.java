@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,6 +16,16 @@ public class PaymentService {
     private PaymentRepository paymentRepository;
 
     public Payment addPayment(Payment payment) {
+        // Check if a payment with the same billType exists for the current month
+        LocalDate payDate = payment.getPayDate();
+        int month = payDate.getMonthValue();
+        int year = payDate.getYear();
+
+        Optional<Payment> existingPayment = paymentRepository.findByBillTypeAndMonthYear(payment.getBillType(), month, year);
+        if (existingPayment.isPresent()) {
+            throw new IllegalArgumentException("Payment already exists for this bill type in the current month");
+        }
+
         return paymentRepository.save(payment);
     }
 
@@ -46,5 +55,7 @@ public class PaymentService {
     public List<Map<String, Object>> getTotalAmountsForCurrentYearByBillType() {
         return paymentRepository.findTotalAmountsForCurrentYearByBillType();
     }
+
+
 
 }
