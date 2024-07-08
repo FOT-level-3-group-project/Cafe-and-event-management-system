@@ -15,6 +15,7 @@ public interface MonthlyIncomeStatementRepository extends JpaRepository<MonthlyI
     @Query("SELECT m FROM MonthlyIncomeStatement m WHERE FUNCTION('MONTH', m.date) = :prevMonth AND FUNCTION('YEAR', m.date) = :prevYear")
     Optional<MonthlyIncomeStatement> findPreviousMonthStatement(@Param("prevMonth") int prevMonth, @Param("prevYear") int prevYear);
 
+    // find the monthly income statement by date
     Optional<MonthlyIncomeStatement> findByDate(Date date);
 }
 

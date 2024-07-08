@@ -8,8 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -19,12 +17,14 @@ public class IncomeStatementController {
     @Autowired
     private IncomeStatementService incomeStatementService;
 
+    // save monthly income statement data to the DB
     @PostMapping("/save-monthly")
     public ResponseEntity<MonthlyIncomeStatement> saveMonthlyIncomeStatement(@RequestBody MonthlyIncomeStatement statement) {
         MonthlyIncomeStatement savedStatement = incomeStatementService.saveMonthlyIncomeStatement(statement);
         return new ResponseEntity<>(savedStatement, HttpStatus.CREATED);
     }
 
+    // save annaul income statement data to the db
     @PostMapping("/save-annual")
     public ResponseEntity<AnnualIncomeStatement> saveAnnualIncomeStatement(@RequestBody AnnualIncomeStatement statement) {
         try {
@@ -41,12 +41,14 @@ public class IncomeStatementController {
         }
     }
 
+    // get previous year data
     @GetMapping("/previous-year/{year}")
     public ResponseEntity<AnnualIncomeStatement> getAnnualIncomeStatementByYear(@PathVariable int year) {
-        Optional<AnnualIncomeStatement> statement = incomeStatementService.getAnnualIncomeStatementByYear(year);
+        Optional<AnnualIncomeStatement> statement = incomeStatementService.getPreviousAnnualIncomeStatementByYear(year);
         return statement.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    // get previous month data
     @GetMapping("/previous-month/{month}")
     public ResponseEntity<MonthlyIncomeStatement> getPreviousMonthIncomeStatement() {
         Optional<MonthlyIncomeStatement> statement = incomeStatementService.getPreviousMonthIncomeStatement();
