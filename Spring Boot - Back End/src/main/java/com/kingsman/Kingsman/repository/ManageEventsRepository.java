@@ -11,7 +11,10 @@ import java.util.Optional;
 
 @Repository
 public interface ManageEventsRepository extends JpaRepository<Event, String> {
+    // Find event by eventID
     Optional<Event> findEventByEventID(String eventID);
+
+    // delete event by eventID
     void deleteByEventID(String eventID);
 
     //Find Total revenue of events for current month
@@ -20,7 +23,6 @@ public interface ManageEventsRepository extends JpaRepository<Event, String> {
     // Find Total revenue of events for current year
     @Query("SELECT SUM(e.ticketQuantity * e.ticketPrice) FROM Event e WHERE YEAR(e.eventDate) = YEAR(CURRENT_DATE)")
     Double findTotalEventRevenueForCurrentYear();
-
 
     //  Find Total budget of events for current month
     @Query("SELECT SUM(o.budget) FROM Event o WHERE MONTH(o.eventDate) = MONTH(CURRENT_DATE)")

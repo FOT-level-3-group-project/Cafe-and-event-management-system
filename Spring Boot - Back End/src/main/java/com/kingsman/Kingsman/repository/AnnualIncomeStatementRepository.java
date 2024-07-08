@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface AnnualIncomeStatementRepository extends JpaRepository<AnnualIncomeStatement, Integer> {
+    // Query to find the annual income statement by year
     @Query("SELECT a FROM AnnualIncomeStatement a WHERE a.year = :year")
     Optional<AnnualIncomeStatement> findByYear(@Param("year") int year);
 }

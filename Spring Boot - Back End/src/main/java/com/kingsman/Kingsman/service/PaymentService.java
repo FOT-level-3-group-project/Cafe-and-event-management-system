@@ -33,9 +33,9 @@ public class PaymentService {
         return paymentRepository.save(payment);
     }
 
-    public void deletePayment(int paymentId) {
-        paymentRepository.deleteById(paymentId);
-    }
+//    public void deletePayment(int paymentId) {
+//        paymentRepository.deleteById(paymentId);
+//    }
 
     public Payment getPayment(int paymentId) {
         Optional<Payment> payment = paymentRepository.findById(paymentId);
@@ -46,16 +46,15 @@ public class PaymentService {
         return paymentRepository.findAll();
     }
 
+
     //     Method to get total amounts for current month by bill type
     public List<Map<String, Object>> getTotalAmountsForCurrentMonthByBillType() {
         return paymentRepository.findTotalAmountsForCurrentMonthByBillType();
     }
 
+
     // Method to get payments for the current year
     public List<Map<String, Object>> getTotalAmountsForCurrentYearByBillType() {
         return paymentRepository.findTotalAmountsForCurrentYearByBillType();
     }
-
-
-
 }
