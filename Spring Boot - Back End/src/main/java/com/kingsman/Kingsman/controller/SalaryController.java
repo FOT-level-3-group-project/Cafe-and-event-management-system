@@ -29,4 +29,16 @@ public class SalaryController {
     public List<MonthSalary> getThisMonthSalaries() {
         return monthSalaryService.getThisMonthSalaries();
     }
+
+    // Endpoint to get total gross payment for the current month
+    @GetMapping("/total-salary-for-current-month")
+    public Float getTotalGrossPaymentForCurrentMonth() {
+        return monthSalaryService.getTotalGrossPaymentForCurrentMonth();
+    }
+
+    // Endpoint to get total gross payment for the current year
+    @GetMapping("/annual-total-salary")
+    public Float getTotalGrossPaymentForCurrentYear() {
+        return monthSalaryService.getTotalGrossPaymentForCurrentYear();
+    }
 }
