@@ -70,4 +70,10 @@ public class PaymentController {
     public List<Map<String, Object>> getCurrentYearPayments() {
         return paymentService.getTotalAmountsForCurrentYearByBillType();
     }
+
+    @GetMapping("/getAllBillTypes")
+    public ResponseEntity<List<String>> getAllBillTypes() {
+        List<String> billTypes = paymentService.getAllBillTypes();
+        return ResponseEntity.ok(billTypes);
+    }
 }
