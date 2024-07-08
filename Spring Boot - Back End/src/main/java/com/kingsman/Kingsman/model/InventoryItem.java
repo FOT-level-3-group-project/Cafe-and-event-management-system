@@ -15,8 +15,9 @@ public class InventoryItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String itemName;
-    private Long quantity;
+    private float quantity;
     private String unit;
+    private float totalPrice;
     private String vendorId;
     @Column(name = "dateAndTime")
     private LocalDateTime dateTime;

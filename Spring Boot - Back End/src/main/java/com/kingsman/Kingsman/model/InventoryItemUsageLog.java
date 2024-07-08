@@ -22,7 +22,7 @@ public class InventoryItemUsageLog {
     private String itemName;
 
     @Column(name = "decreased_quantity")
-    private Long decreasedQuantity;
+    private float decreasedQuantity;
 
     private String unit;
 

@@ -63,7 +63,7 @@ public class InventoryController {
 
     }
     @PutMapping("/use/{itemId}/{quantity}") //decrease and update the inventory and store update status in another table
-    public ResponseEntity<String> useInventoryItem(@PathVariable long itemId, @PathVariable int quantity){
+    public ResponseEntity<String> useInventoryItem(@PathVariable long itemId, @PathVariable float quantity){
         boolean success = inventoryService.useInventoryItem(itemId,quantity);
         if (success){
             return ResponseEntity.ok("item used successfully");
