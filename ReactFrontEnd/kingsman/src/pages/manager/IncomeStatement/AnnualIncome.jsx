@@ -85,7 +85,7 @@ const AnnualIncome = () => {
   // Fetch annual salary from the API
   const fetchAnnualSalary = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/salary/annual-total-salary');
+      const response = await fetch('http://localhost:8080/api/salary/getTotalGrossPaymentForCurrentYear');
       if (!response.ok) {
         throw new Error('Failed to fetch annual salary');
       }
@@ -242,19 +242,25 @@ const AnnualIncome = () => {
 
   const handleDownloadPDF = () => {
    // Download PDF of the annual statement
-    const inputElement = document.getElementById('annual-report'); // Element to capture
+  const inputElement = document.getElementById('annual-report'); // Element to capture
 
-    html2canvas(inputElement).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png'); // Convert canvas to image data
-      const pdf = new jsPDF('p', 'mm', 'a4'); // Create new PDF document (portrait mode, millimeters, A4 size)
+  inputElement.style.width = '800px'; // Set a fixed width
+  inputElement.style.height = 'auto'; // Set auto height to maintain aspect ratio
 
-      const imgWidth = 210; // A4 width in mm (landscape mode)
-      const imgHeight = canvas.height * imgWidth / canvas.width; // Calculate image height based on aspect ratio
+  html2canvas(inputElement, {
+    scale: 3, // Increase scale to improve quality (default is 1)
+    useCORS: true // Ensures cross-origin images are handled properly
+  }).then((canvas) => {
+    const imgData = canvas.toDataURL('image/png'); // Convert canvas to image data
+    const pdf = new jsPDF('p', 'mm', 'a4'); // Create new PDF document (portrait mode, millimeters, A4 size)
 
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight); // Add image to PDF
+    const imgWidth = 210; // A4 width in mm
+    const imgHeight = canvas.height * imgWidth / canvas.width; // Calculate image height based on aspect ratio
 
-      pdf.save('Annual Income Statement.pdf'); // Save PDF with filename    
-    });
+    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight); // Add image to PDF
+
+    pdf.save('Annual Income Statement.pdf'); // Save PDF with filename
+  });
 
     sendReportDataToBackend(); // Send report data to backend
   };
@@ -275,28 +281,28 @@ const AnnualIncome = () => {
         <Card className="max-w-xs flex-1 text-blue-500">
           <h5 className="text-l font-bold  dark:text-white">
             Total Income <br/>
-            Rs. {totalIncome.toLocaleString()}
+            Rs. {totalIncome.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
           </h5>
           <p className=" dark:text-gray-400 ">
-            Previous Year:  Rs. ${previousYearTotalIncome}
+            Previous Year:  Rs. {previousYearTotalIncome.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
           </p>
         </Card>
         <Card className="max-w-xs flex-1 text-red-500">
           <h5 className="text-l font-bold  dark:text-white">
             Total Expenses <br/>
-            Rs. {totalAnnualExpenses.toLocaleString()}
+            Rs. {totalAnnualExpenses.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
           </h5>
           <p className=" dark:text-gray-400">
-            Previous Year:  Rs. ${previousYearTotalExpenses}
+            Previous Year:  Rs. {previousYearTotalExpenses.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
           </p>
         </Card>
         <Card className="max-w-xs flex-1 text-green-500">
           <h5 className="text-l font-bold dark:text-white">
             Net Profit <br/>
-             Rs. {netProfit.toLocaleString()}
+             Rs. {netProfit.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
           </h5>
           <p className=" dark:text-gray-400">
-            Previous Year:  Rs. ${previousYearNetProfit}
+            Previous Year:  Rs. {previousYearNetProfit.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
           </p>
         </Card>
       </div>
@@ -309,7 +315,7 @@ const AnnualIncome = () => {
                <img src={CafeandEvent} alt="Kingsman Cafe Logo" className="h-12 w-auto" />
             </div>
             <div className='w-1/2'>
-              <h1 className='font-bold text-right'>Annual Profit and Loss Statement</h1>
+              <h1 className='font-bold text-right text-xl'>Annual Profit and Loss Statement</h1>
               <h2 className='font-semibold text-right'>For the year {currentYear}</h2>
             </div>
           </div>
@@ -323,18 +329,18 @@ const AnnualIncome = () => {
               </Table.Row>
               <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Sales Revenue</Table.Cell>
-                <Table.Cell className='pr-2 text-right'>{salesRevenue}</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{salesRevenue.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className="bg-white text-black dark:bg-gray-800">
                 <Table.Cell>Event Revenue</Table.Cell>
-                <Table.Cell className='pr-2 text-right'>{eventRevenue}</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{eventRevenue.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className='border-t-2 text-blue-700 '>
                 <Table.Cell className="font-semibold "> TOTAL REVENUES</Table.Cell>
                 <Table.Cell></Table.Cell>
-                <Table.Cell className='pr-2 text-right font-semibold'>{totalRevenue}</Table.Cell>
+                <Table.Cell className='pr-2 text-right font-semibold'>{totalRevenue.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
               </Table.Row>
               <Table.Row className=''>
                 <Table.Cell className='bg-green-600 text-white font-semibold'>EXPENSES</Table.Cell>
@@ -344,35 +350,35 @@ const AnnualIncome = () => {
               {billTypeAmounts.map((item, index) => (
                 <Table.Row key={index} className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                   <Table.Cell>{item.billType}</Table.Cell>
-                  <Table.Cell className='pr-2 text-right'>{item.totalAmount}</Table.Cell>
+                  <Table.Cell className='pr-2 text-right'>{item.totalAmount.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
                   <Table.Cell></Table.Cell>
                 </Table.Row>
               ))}
               <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Employee Wages</Table.Cell>
-                <Table.Cell className='pr-2 text-right'>{totalAnnualSalary}</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{totalAnnualSalary.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
                <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Event Budget</Table.Cell>
-                <Table.Cell className='pr-2 text-right'>{totalEventBudgetforYear}</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{totalEventBudgetforYear.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Inventory Item Purchases</Table.Cell>
-                {/* <Table.Cell className='pr-2 text-right'>{totalInventoryPurchasesForYear}</Table.Cell> */}
+                {/* <Table.Cell className='pr-2 text-right'>{totalInventoryPurchasesForYear.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell> */}
                 <Table.Cell className='pr-2 text-right'>0</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className='border-t-2 border-b-2 font-semibold text-red-700'>
                 <Table.Cell className=""> TOTAL EXPENSES</Table.Cell>
                 <Table.Cell></Table.Cell>
-                <Table.Cell  className='pr-2 text-right '> {totalAnnualExpenses} </Table.Cell>
+                <Table.Cell  className='pr-2 text-right '> {totalAnnualExpenses.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')} </Table.Cell>
               </Table.Row>
               <Table.Row className='border-t-2 font-semibold text-green-700'>
                 <Table.Cell>TOTAL INCOME</Table.Cell>
                 <Table.Cell></Table.Cell>
-                <Table.Cell className="pr-2 text-right ">{totalIncome} </Table.Cell>
+                <Table.Cell className="pr-2 text-right ">{totalIncome.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')} </Table.Cell>
               </Table.Row>
               <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Less: Taxes</Table.Cell>
@@ -382,7 +388,7 @@ const AnnualIncome = () => {
               <Table.Row className='border-t-2 font-semibold text-green-700'>
                 <Table.Cell className='bg-green-600 text-white'>NET PROFIT / LOSS</Table.Cell>
                 <Table.Cell className='bg-green-600 text-white'></Table.Cell>
-                <Table.Cell className="pr-2 text-right bg-green-600 text-white">{netProfit} </Table.Cell>
+                <Table.Cell className="pr-2 text-right bg-green-600 text-white">{netProfit.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')} </Table.Cell>
               </Table.Row>
             </Table.Body>
           </Table>
