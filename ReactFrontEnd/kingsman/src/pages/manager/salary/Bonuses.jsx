@@ -114,17 +114,21 @@ function Bonuses() {
       </div>
 
       {/* Render DeductionsTable, HourlyPayTable, and BonusesTable components */}
-      <div className="flex-1 ml-8 mr-10 mt-8">
+      <div className='flex flex-row'>
+      <div className="flex-1 ml-8 mr-5 mt-8 mb-6">
         <DeductionsTable />
+        
       </div>
+      <div className="flex-1 ml-2 mr-10 mt-8">
+      <BonusesTable />
+      </div>
+      </div>
+        
 
-      <div className="flex-1 ml-8 mr-10 mt-8">
-        <HourlyPayTable />
-      </div>
+      
 
-      <div className="flex-1 ml-8 mr-10 mt-8">
-        <BonusesTable />
-      </div>
+      
+       
 
       {/* Modals for adding bonus, deduction, and hourly pay */}
       

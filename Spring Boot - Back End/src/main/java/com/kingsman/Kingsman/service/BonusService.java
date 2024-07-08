@@ -5,6 +5,7 @@ import com.kingsman.Kingsman.repository.BonusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,5 +24,9 @@ public class BonusService {
 
     public void deleteBonus(Long id) {
         bonusRepository.deleteById(id);
+    }
+
+    public List<Bonus> getAllBonuses() {
+        return bonusRepository.findAll();
     }
 }

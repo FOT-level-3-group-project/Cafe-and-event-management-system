@@ -20,6 +20,7 @@ import UpdateOrder from './order/UpdateOrder';
 import UpdateOrderItems from './order/UpdateOrderItems';
 import EmpSalaries from './salary/EmpSalaries';
 import Bonuses from './salary/Bonuses';
+import PayPerHour from './salary/PayPerHour';
 
 
 
@@ -75,6 +76,7 @@ export default function Manager() {
             {/* salary */}
             {tab === 'salary' && <EmpSalaries />}
             {tab === 'earnings' && <Bonuses />}
+            {tab === 'hourpayments' && <PayPerHour />}
 
 
             {/* Dashboard */}

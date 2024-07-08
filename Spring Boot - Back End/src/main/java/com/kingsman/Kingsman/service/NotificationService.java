@@ -18,8 +18,9 @@ public class NotificationService {
         return notificationRepository.findAll();
     }
 
-    public Optional<Notification> getNotificationById(Long id) {
-        return notificationRepository.findById(id);
+    public Notification getNotificationById(Long id) {
+        Optional<Notification> notification = notificationRepository.findById(id);
+        return notification.orElse(null); // or throw an exception if preferred
     }
 
     public List<Notification> getNotificationsByForWho(String forWho) {
@@ -46,5 +47,9 @@ public class NotificationService {
 
     public void deleteNotification(Long id) {
         notificationRepository.deleteById(id);
+    }
+
+    public Notification saveNotification(Notification notification) {
+        return notificationRepository.save(notification);
     }
 }

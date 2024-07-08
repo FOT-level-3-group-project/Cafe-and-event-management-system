@@ -65,7 +65,10 @@ export default function ManagerSideBar() {
                             <Sidebar.Item active={tab === 'monthly-salary'} icon={FaMoneyBill} as='div'> Monthly Salary </Sidebar.Item>
                         </Link>
                         <Link to='/manager?tab=earnings'>
-                            <Sidebar.Item active={tab === 'earnings'} icon={FaMoneyBillTransfer} as='div'>Advance </Sidebar.Item>
+                            <Sidebar.Item active={tab === 'earnings'} icon={FaMoneyBillTransfer} as='div'>B & D </Sidebar.Item>
+                        </Link>
+                        <Link to='/manager?tab=hourpayments'>
+                            <Sidebar.Item active={tab === 'hour-payments'} icon={FaMoneyBillTransfer} as='div'>Hour Payment </Sidebar.Item>
                         </Link>
 
                     </Sidebar.Collapse>    
