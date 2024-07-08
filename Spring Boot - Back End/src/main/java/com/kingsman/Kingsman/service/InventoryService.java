@@ -66,12 +66,12 @@ public class InventoryService {
         }
     }
 
-    public boolean useInventoryItem(long itemId, int quantity) {
+    public boolean useInventoryItem(long itemId, float quantity) {
         Optional<InventoryItem> existingItemOptional = inventoryRepository.findById(itemId); //find the existing item in repo using Id
         if(existingItemOptional.isPresent()){
             InventoryItem existingItem = existingItemOptional.get();
 
-            Long currentQuantity = existingItem.getQuantity();//get quantity in existing item
+            float currentQuantity = existingItem.getQuantity();//get quantity in existing item
             if (currentQuantity >= quantity){
                 existingItem.setQuantity(currentQuantity-quantity); //decrease quantity
 
@@ -83,7 +83,7 @@ public class InventoryService {
                 InventoryItemUsageLog inventoryItemUsageLog = new InventoryItemUsageLog();
                 inventoryItemUsageLog.setItemId(existingItem.getId());
                 inventoryItemUsageLog.setItemName(existingItem.getItemName());
-                inventoryItemUsageLog.setDecreasedQuantity((long) quantity);
+                inventoryItemUsageLog.setDecreasedQuantity((float) quantity);
                 inventoryItemUsageLog.setUsageDateTime(LocalDateTime.now());
                 inventoryItemUsageLog.setUnit(existingItem.getUnit());
 
@@ -110,7 +110,8 @@ public class InventoryService {
         LocalDateTime createdAt = LocalDateTime.now();
         LocalDateTime updatedAt = createdAt;
         String forWho = "manager";
-        Notification notification = new Notification(title, message, isRead, createdAt, updatedAt, forWho);
+        String forWhoUser = "";
+        Notification notification = new Notification(title, message, isRead, createdAt, updatedAt, forWho, forWhoUser);
         notificationService.createNotification(notification);
     }
 

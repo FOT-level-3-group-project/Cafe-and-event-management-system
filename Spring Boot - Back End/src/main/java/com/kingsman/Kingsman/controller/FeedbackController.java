@@ -52,8 +52,9 @@ public class FeedbackController {
         LocalDateTime createdAt = LocalDateTime.now();
         LocalDateTime updatedAt = createdAt;
         String forWho = "manager";
+        String forWhoUser = "";
 
-        Notification notification = new Notification(title, message, isRead, createdAt, updatedAt, forWho);
+        Notification notification = new Notification(title, message, isRead, createdAt, updatedAt, forWho, forWhoUser);
         notificationService.createNotification(notification);
     }
 
