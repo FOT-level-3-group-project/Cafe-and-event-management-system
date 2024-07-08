@@ -114,11 +114,12 @@ function EmpSalaries() {
           <Table.Head>
             <Table.HeadCell>Emp Name</Table.HeadCell>
             <Table.HeadCell>Pay per Hour</Table.HeadCell>
-            <Table.HeadCell>Worked Hours</Table.HeadCell>
+            <Table.HeadCell>Worked Normal Hours</Table.HeadCell>
             <Table.HeadCell className="text-red-600">Total Payment for WH</Table.HeadCell>
             <Table.HeadCell>Pay per OT Hour</Table.HeadCell>
             <Table.HeadCell>OT Hours</Table.HeadCell>
             <Table.HeadCell className="text-red-600">Total Payment for OT</Table.HeadCell>
+            <Table.HeadCell className="text-red-600">Total Payment without B&D</Table.HeadCell>
             {showExtraColumns && (
               <>
                 <Table.HeadCell className="text-red-600">Bonus Type</Table.HeadCell>
@@ -134,12 +135,13 @@ function EmpSalaries() {
             {currentItems.map((salary) => (
               <Table.Row key={salary.id} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>{salary.empName}</Table.Cell>
-                <Table.Cell>{salary.payPerHour}</Table.Cell>
+                <Table.Cell>{salary.payPerHours}</Table.Cell>
                 <Table.Cell>{salary.workedHours}</Table.Cell>
                 <Table.Cell>{salary.totalHourPayment}</Table.Cell>
                 <Table.Cell>{salary.payPerOvertimeHour}</Table.Cell>
                 <Table.Cell>{salary.othours}</Table.Cell>
                 <Table.Cell>{salary.totalOvertimePayment}</Table.Cell>
+                <Table.Cell>{salary.paymentWithoutAdditional}</Table.Cell>
                 {showExtraColumns && (
                   <>
                     <Table.Cell>{salary.bonusType}</Table.Cell>
