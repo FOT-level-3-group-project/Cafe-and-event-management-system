@@ -29,7 +29,25 @@ public class ManageEventsService {
         return manageEventsRepository.findEventByEventID(eventID).orElse(null);
     }
 
+    public String updateEventByEventID(String eventID, Event event) {
+        Event existingEvent = manageEventsRepository.findEventByEventID(eventID).orElse(null);
+        if (existingEvent == null) {
+            throw new IllegalArgumentException("Event with ID " + eventID + " does not exist");
+        }
+        existingEvent.setEventDate(event.getEventDate());
+        existingEvent.setEventName(event.getEventName());
+        existingEvent.setStartTime(event.getStartTime());
+        existingEvent.setDuration(event.getDuration());
+        existingEvent.setBudget(event.getBudget());
+        existingEvent.setTicketPrice(event.getTicketPrice());
+        existingEvent.setEntertainer(event.getEntertainer());
+        existingEvent.setTicketQuantity(event.getTicketQuantity());
+        existingEvent.setDescription(event.getDescription());
+        manageEventsRepository.save(existingEvent);
+        return eventID;
+    }
 
+    // Find Total revenue of events for current month
     @Transactional
     public double getTotalRevenueForCurrentMonth() {
         LocalDate currentDate = LocalDate.now();
@@ -49,21 +67,19 @@ public class ManageEventsService {
         return totalRevenue;
     }
 
-    public String updateEventByEventID(String eventID, Event event) {
-        Event existingEvent = manageEventsRepository.findEventByEventID(eventID).orElse(null);
-        if (existingEvent == null) {
-            throw new IllegalArgumentException("Event with ID " + eventID + " does not exist");
-        }
-        existingEvent.setEventDate(event.getEventDate());
-        existingEvent.setEventName(event.getEventName());
-        existingEvent.setStartTime(event.getStartTime());
-        existingEvent.setDuration(event.getDuration());
-        existingEvent.setBudget(event.getBudget());
-        existingEvent.setTicketPrice(event.getTicketPrice());
-        existingEvent.setEntertainer(event.getEntertainer());
-        existingEvent.setTicketQuantity(event.getTicketQuantity());
-        existingEvent.setDescription(event.getDescription());
-        manageEventsRepository.save(existingEvent);
-        return eventID;
+    // Find Total revenue of events for current year
+    @Transactional
+    public double getTotalRevenueForCurrentYear() {
+        return manageEventsRepository.findTotalEventRevenueForCurrentYear();
+    }
+
+    // Find Total budget of events for current month
+    public double getTotalEventBudgetForCurrentMonth() {
+        return manageEventsRepository.findTotalEventBudgetForCurrentMonth();
+    }
+
+    // Find Total budget of events for current year
+    public double getTotalEventBudgetForCurrentYear() {
+        return manageEventsRepository.findTotalEventBudgetForCurrentYear();
     }
 }

@@ -5,6 +5,7 @@ import com.kingsman.Kingsman.repository.DeductionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,5 +38,9 @@ public class DeductionService {
 
     public void deleteDeduction(Long id) {
         deductionRepository.deleteById(id);
+    }
+
+    public List<Deduction> getAllDeductions() {
+        return deductionRepository.findAll();
     }
 }
