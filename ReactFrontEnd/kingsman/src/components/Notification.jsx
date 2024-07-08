@@ -15,8 +15,8 @@ export default function Notification() {
         // Fetch notifications initially
         fetchNotifications();
 
-        // Set up interval to fetch notifications every 3 seconds
-        const interval = setInterval(fetchNotifications, 3000);
+        // Set up interval to fetch notifications every 5 seconds
+        const interval = setInterval(fetchNotifications, 5000);
 
         // Clean up interval on component unmount
         return () => clearInterval(interval);
