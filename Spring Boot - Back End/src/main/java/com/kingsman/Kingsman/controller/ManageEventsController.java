@@ -18,8 +18,6 @@ import java.util.List;
 public class ManageEventsController {
     @Autowired
     private ManageEventsService manageEventsService;
-    @Autowired
-    private ManageEventsRepository manageEventsRepository;
 
     @GetMapping("/view-events")
     public List<Event> getAllEvents() {
@@ -99,5 +97,17 @@ public class ManageEventsController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    // Get the next event after the current date
+    @GetMapping("/next-event")
+    public ResponseEntity<Event> getNextEvent() {
+        try {
+            Event nextEvent = manageEventsService.getNextEvent();
+            return new ResponseEntity<>(nextEvent, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }
