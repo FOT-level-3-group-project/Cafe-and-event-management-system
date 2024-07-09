@@ -8,6 +8,7 @@ import com.kingsman.Kingsman.exception.ResourceNotFoundException;
 import com.kingsman.Kingsman.model.*;
 import com.kingsman.Kingsman.repository.OrderItemRepository;
 import com.kingsman.Kingsman.repository.OrderRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,8 @@ public class OrderService {
     @Autowired
     private FoodItemService foodItemService;
 
+    @Autowired
+    private NotificationService notificationService;
     private final OrderRepository orderRepository;
 
     private final OrderItemRepository orderItemRepository;
@@ -71,7 +74,29 @@ public class OrderService {
         List<OrderItem> orderItems = createOrderItems(orderDTO.getOrderItems(), order);
         order.setOrderItems(orderItems);
         Order savedOrder = orderRepository.save(order);
+
+        //crate notification for chef
+        createNotificationForChef(savedOrder);
+
         return convertToDTO(savedOrder);
+    }
+
+    //create the notification when place the order
+    private void createNotificationForChef(@NotNull Order order) {
+        String title = "New Order";
+        String foodName = getOrderEmployeeFoodById(order.getOrderId()).stream()
+                .map(OrderEmployeeFoodDTO::getFoodName) // Extracting the foodName
+                .collect(Collectors.joining(", ")); // Joining them with a comma
+
+        String message = "Order ID: " + order.getOrderId() + ", Table Number : " + order.getTableNumber() + ", Food Name : " + foodName;
+        boolean isRead = false;
+        LocalDateTime createdAt = LocalDateTime.now();
+        LocalDateTime updatedAt = createdAt;
+        String forWho = "chef";
+        String forWhoUser ="";
+
+        Notification notification = new Notification(title, message, isRead, createdAt, updatedAt, forWho, forWhoUser);
+        notificationService.createNotification(notification);
     }
 
     public OrderDTO updateOrder(Long orderId, OrderDTO orderDTO) {
@@ -256,9 +281,32 @@ public class OrderService {
         if (existingOrderOptional.isPresent()){
             Order existingOrder = existingOrderOptional.get();
             existingOrder.setOrderStatus(orderStatus);
+
             orderRepository.save(existingOrder);
+            if(orderStatus.equals("Ready")){
+                crateOrderReadyWaiterNotification(existingOrder);
+            }
         }
         return true;
+    }
+
+    public void crateOrderReadyWaiterNotification(Order order){
+        String title = "Order Ready";
+        String foodName = getOrderEmployeeFoodById(order.getOrderId()).stream()
+                .map(OrderEmployeeFoodDTO::getFoodName) // Extracting the foodName
+                .collect(Collectors.joining(", ")); // Joining them with a comma
+
+        String forWhoUser = order.getEmployee() != null ? order.getEmployee().getUsername() : "Unknown";;
+
+        String message = forWhoUser+ ", Order is ready ID: " + order.getOrderId() + ", Table Number : " + order.getTableNumber() + ", Food Name : " + foodName;
+        boolean isRead = false;
+        LocalDateTime createdAt = LocalDateTime.now();
+        LocalDateTime updatedAt = createdAt;
+        String forWho = "waiter";
+
+
+        Notification notification = new Notification(title, message, isRead, createdAt, updatedAt, forWho , forWhoUser);
+        notificationService.createNotification(notification);
     }
 
     public List<OrderEmployeeFoodDTO> getOrderEmployeeFoodByOrderStatus(String orderStatus) {
@@ -269,13 +317,71 @@ public class OrderService {
     // Get Total After Discount For Current Month
     public Double getTotalAfterDiscountForCurrentMonth() {
         Double total = orderRepository.findTotalAfterDiscountForCurrentMonth();
-        System.out.println("Total after discount for current month: " + total); // Add this line for debugging
-        return total;
+        System.out.println("Total after discount for current month: " + total); // Debugging
+        return total != null ? total : 0.0; // Handle null case gracefully if no orders exist
     }
+
+    public List<OrderEmployeeFoodDTO> getOrderEmployeeFoodById (Long orderId){
+        List<OrderEmployeeFoodDTO> orderEmployeeFoodDTOs = orderRepository.getOrderEmployeeFoodById(orderId);
+        return orderEmployeeFoodDTOs;
+    }
+
 
     // Get Total After Discount For Current Year
     public Double findTotalAfterDiscountForCurrentYear() {
         return orderRepository.findTotalAfterDiscountForCurrentYear();
     }
+
+    // Get daily order counts for the last 30 days for a specific employee with status "Ready"
+    public Map<LocalDate, Long> getDailyOrderCountsForLast14DaysByEmployee(Long employeeId) {
+        LocalDate today = LocalDate.now();
+        LocalDate startDate = today.minusDays(29); // Get the start date for the last 30 days
+
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = today.plusDays(1).atStartOfDay(); // End of the day for today
+
+        // Fetch orders from the repository by employeeId and status "Ready"
+        List<Order> orders = orderRepository.findOrdersByCreatedDateBetweenAndEmployeeIdAndOrderStatus(startDateTime, endDateTime, employeeId, "Ready");
+
+        // Convert SQL Date to LocalDate and count orders for each day
+        return orders.stream()
+                .map(order -> order.getCreatedDate().toLocalDate())
+                .collect(Collectors.groupingBy(date -> date, Collectors.counting()));
+    }
+
+    // Get total order count for the current month for a specific employee with status "Ready"
+    public long getOrderCountThisMonthByEmployee(Long employeeId) {
+        LocalDate today = LocalDate.now();
+        LocalDate startDate = today.withDayOfMonth(1);
+        LocalDate endDate = today.withDayOfMonth(today.lengthOfMonth());
+
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay(); // End of the day for the last day of the month
+
+        return orderRepository.findOrdersByCreatedDateBetweenAndEmployeeIdAndOrderStatus(startDateTime, endDateTime, employeeId, "Ready").size();
+    }
+
+    // Get order count for the previous month for a specific employee with status "Ready"
+    public long getOrderCountPreviousMonthByEmployee(Long employeeId) {
+        LocalDate today = LocalDate.now();
+        LocalDate startDate = today.minusMonths(1).withDayOfMonth(1);
+        LocalDate endDate = today.withDayOfMonth(1).minusDays(1);
+
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay(); // End of the day for the last day of the previous month
+
+        return orderRepository.findOrdersByCreatedDateBetweenAndEmployeeIdAndOrderStatus(startDateTime, endDateTime, employeeId, "Ready").size();
+    }
+
+    // Get daily order counts for the last 14 days and additional statistics for a specific employee with status "Ready"
+    public Map<String, Object> getOrderStatisticsByEmployee(Long employeeId) {
+        Map<String, Object> statistics = new HashMap<>();
+        statistics.put("dailyOrderCounts", getDailyOrderCountsForLast14DaysByEmployee(employeeId));
+        statistics.put("orderCountThisMonth", getOrderCountThisMonthByEmployee(employeeId));
+        statistics.put("orderCountPreviousMonth", getOrderCountPreviousMonthByEmployee(employeeId));
+
+        return statistics;
+    }
+
 
 }

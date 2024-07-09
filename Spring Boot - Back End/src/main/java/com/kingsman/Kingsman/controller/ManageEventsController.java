@@ -70,4 +70,34 @@ public class ManageEventsController {
         }
     }
 
+    @GetMapping("/annual-total-revenue")
+    public ResponseEntity<Double> getTotalRevenueForCurrentYear() {
+        try {
+            double totalRevenue = manageEventsService.getTotalRevenueForCurrentYear();
+            return new ResponseEntity<>(totalRevenue, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/monthly-total-budget")
+    public ResponseEntity<Double> getTotalEventBudgetForCurrentMonth() {
+        try {
+            double totalBudget = manageEventsService.getTotalEventBudgetForCurrentMonth();
+            return new ResponseEntity<>(totalBudget, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/annual-total-budget")
+    public ResponseEntity<Double> getTotalEventBudgetForCurrentYear() {
+        try {
+            double totalBudget = manageEventsService.getTotalEventBudgetForCurrentYear();
+            return new ResponseEntity<>(totalBudget, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

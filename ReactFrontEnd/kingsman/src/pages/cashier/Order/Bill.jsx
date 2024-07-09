@@ -80,68 +80,70 @@ export default function Bill() {
         
         
         const updateOrder = async () => {
-            if (orderItems.length < 1) {
-                return setResponseErrors("At least one item must be ordered.");
-            }
-            if (paymentMethod === '') {
-                return setResponseErrors("Please select a payment method.");
-            }  
-            if (paymentMethod === 'cash' && (isNaN(parseFloat(cashAmount)) || parseFloat(cashAmount) < totalAfterDiscount)) {
-                return setResponseErrors("Cash amount must be a valid number and equal to or greater than the total amount.");
-            }          
-
-            const convertedOrderItems = orderItems.map(item => {
-                const { foodId, ...rest } = item;
-                return { foodItemId: foodId, ...rest };
-            });
-        
-            // Generate JSON object with order details
-            const orderJSON = {
-                orderId: OrderResponse.orderId,
-                customerId: customerData.cusId || "",
-                orderDateTime:OrderResponse.orderDateTime,
-                orderStatus: 'Completed',
-                tableNumber: tableNumber,
-                subTotal: subtotal,
-                discountValue: subtotal * (discountPercentage / 100),
-                discountPercentage: discountPercentage,
-                totalAfterDiscount: totalAfterDiscount,
-                paymentMethod: paymentMethod,
-                paymentStatus: true,
-                employeeId: currentUser.id,
-                orderItems: convertedOrderItems
-            };
-            console.log(orderItems);
-        
-            axios.put(`http://localhost:8080/api/orders/${OrderResponse.orderId}`, orderJSON, {
-                headers: {
-                    "Content-Type": "application/json"
+            try {
+                if (orderItems.length < 1) {
+                    return setResponseErrors("At least one item must be ordered.");
                 }
-            })
-            .then(response => {
+                if (paymentMethod === '') {
+                    return setResponseErrors("Please select a payment method.");
+                }  
+                if (paymentMethod === 'cash' && (isNaN(parseFloat(cashAmount)) || parseFloat(cashAmount) < totalAfterDiscount)) {
+                    return setResponseErrors("Cash amount must be a valid number and equal to or greater than the total amount.");
+                }          
+        
+                const convertedOrderItems = orderItems.map(item => {
+                    const { foodId, ...rest } = item;
+                    return { foodItemId: foodId, ...rest };
+                });
+        
+                const orderJSON = {
+                    orderId: OrderResponse.orderId,
+                    customerId: customerData.cusId || "",
+                    orderDateTime: OrderResponse.orderDateTime,
+                    orderStatus: 'Completed',
+                    tableNumber: tableNumber,
+                    subTotal: subtotal,
+                    discountValue: subtotal * (discountPercentage / 100),
+                    discountPercentage: discountPercentage,
+                    totalAfterDiscount: totalAfterDiscount,
+                    paymentMethod: paymentMethod,
+                    paymentStatus: true,
+                    employeeId: currentUser.id,
+                    orderItems: convertedOrderItems
+                };
+        
+                const response = await axios.put(`http://localhost:8080/api/orders/${OrderResponse.orderId}`, orderJSON, {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+        
                 if (response.status === 200) {
-                    // Successful
+                    if (tableNumber > 0) {
+                        const tableResponse = await axios.put(`http://localhost:8080/api/table/${tableNumber}/availability?availability=true`);
+                        if (tableResponse.status !== 200) {
+                            toast.error("Failed to update table availability.", { duration: 6000 });
+                        }
+                    }
+        
                     toast.success('Order Completed.');
                     setCustomerData({});
                     handleClearFields();
                     setOrderItems([]);
                     setResponseErrors("");
                     setTableNumber(0);
-                    window.location.href = "/cashier?tab=orders" ;
+                    window.location.href = "/cashier?tab=orders";
                 } else {
-                    // Unexpected response
                     console.error('Unexpected response status:', response);
-                    toast.error(
-                        "Something has error. \n Please Contact System Support.",
-                        { duration: 6000 }
-                    );
+                    toast.error("Something went wrong. \n Please contact system support.", { duration: 6000 });
                 }
-            })
-            .catch(error => {
-                setResponseErrors(error);
+            } catch (error) {
+                setResponseErrors("Something went wrong. \n Please contact system support.");
                 console.error("Error:", error);
-            });
+                toast.error("Something went wrong. \n Please contact system support.", { duration: 6000 });
+            }
         };
+        
           
         const convertDate = (dateString) => {
             const date = new Date(dateString);

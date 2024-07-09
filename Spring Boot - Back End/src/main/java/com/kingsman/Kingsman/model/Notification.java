@@ -21,6 +21,8 @@ public class Notification {
 
     private String forWho;
 
+    private String forWhoUser;
+
     @Column(name = "is_read")
     private boolean isRead;
 
@@ -31,11 +33,12 @@ public class Notification {
     public Notification() {
     }
 
-    public Notification(String title, String message, boolean isRead, LocalDateTime createdAt, LocalDateTime updatedAt, String forWho) {
+    public Notification(String title, String message, boolean isRead, LocalDateTime createdAt, LocalDateTime updatedAt, String forWho,String forWhoUser) {
         this.title = title;
         this.message = message;
         this.isRead = isRead;
         this.forWho = forWho;
+        this.forWhoUser = forWhoUser;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

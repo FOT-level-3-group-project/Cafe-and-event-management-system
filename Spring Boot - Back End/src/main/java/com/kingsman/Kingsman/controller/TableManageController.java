@@ -48,5 +48,11 @@ public class TableManageController {
         return ResponseEntity.ok("Table availability updated successfully");
     }
 
+    @GetMapping("/available") // Get available tables
+    ResponseEntity<List<TableManage>> getAvailableTables() {
+        List<TableManage> availableTables = tableManageService.getAvailableTables();
+        return ResponseEntity.ok(availableTables);
+    }
+
 
 }

@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PaymentService {
@@ -17,6 +17,16 @@ public class PaymentService {
     private PaymentRepository paymentRepository;
 
     public Payment addPayment(Payment payment) {
+        // Check if a payment with the same billType exists for the current month
+        LocalDate payDate = payment.getPayDate();
+        int month = payDate.getMonthValue();
+        int year = payDate.getYear();
+
+        Optional<Payment> existingPayment = paymentRepository.findByBillTypeAndMonthYear(payment.getBillType(), month, year);
+        if (existingPayment.isPresent()) {
+            throw new IllegalArgumentException("Payment already exists for this bill type in the current month");
+        }
+
         return paymentRepository.save(payment);
     }
 
@@ -24,9 +34,9 @@ public class PaymentService {
         return paymentRepository.save(payment);
     }
 
-    public void deletePayment(int paymentId) {
-        paymentRepository.deleteById(paymentId);
-    }
+//    public void deletePayment(int paymentId) {
+//        paymentRepository.deleteById(paymentId);
+//    }
 
     public Payment getPayment(int paymentId) {
         Optional<Payment> payment = paymentRepository.findById(paymentId);
@@ -37,18 +47,22 @@ public class PaymentService {
         return paymentRepository.findAll();
     }
 
-//     Method to get total amounts for current month by bill type
+    //     Method to get total amounts for current month by bill type
     public List<Map<String, Object>> getTotalAmountsForCurrentMonthByBillType() {
         return paymentRepository.findTotalAmountsForCurrentMonthByBillType();
     }
 
     // Method to get payments for the current year
-//    public List<Payment> getPaymentsForCurrentYear() {
-//        // Implement logic to fetch payments for the current year from repository
-//        LocalDate startDate = LocalDate.now().withDayOfYear(1); // Start of current year
-//        LocalDate endDate = LocalDate.now().with(TemporalAdjusters.lastDayOfYear()); // End of current year
-//
-//        return paymentRepository.findByPaymentDateBetween(startDate, endDate);
-//    }
+    public List<Map<String, Object>> getTotalAmountsForCurrentYearByBillType() {
+        return paymentRepository.findTotalAmountsForCurrentYearByBillType();
+    }
 
+    // get all unique bill types
+    public List<String> getAllBillTypes() {
+        List<Payment> payments = paymentRepository.findAll();
+        return payments.stream()
+                .map(Payment::getBillType)
+                .distinct()
+                .collect(Collectors.toList());
+    }
 }

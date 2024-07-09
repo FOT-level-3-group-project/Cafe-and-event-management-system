@@ -63,7 +63,7 @@ public class InventoryController {
 
     }
     @PutMapping("/use/{itemId}/{quantity}") //decrease and update the inventory and store update status in another table
-    public ResponseEntity<String> useInventoryItem(@PathVariable long itemId, @PathVariable int quantity){
+    public ResponseEntity<String> useInventoryItem(@PathVariable long itemId, @PathVariable float quantity){
         boolean success = inventoryService.useInventoryItem(itemId,quantity);
         if (success){
             return ResponseEntity.ok("item used successfully");
@@ -81,4 +81,17 @@ public class InventoryController {
         return ResponseEntity.ok(inventoryItemUsageLogs);
     }
 
+    // Get total price for current month
+    @GetMapping("/total-price/month")
+    public ResponseEntity<Float> getTotalPriceForCurrentMonth() {
+        Float totalPrice = inventoryService.getTotalPriceForCurrentMonth();
+        return ResponseEntity.ok(totalPrice);
+    }
+
+    // Get total price for current year
+    @GetMapping("/total-price/year")
+    public ResponseEntity<Float> getTotalPriceForCurrentYear() {
+        Float totalPrice = inventoryService.getTotalPriceForCurrentYear();
+        return ResponseEntity.ok(totalPrice);
+    }
 }

@@ -9,6 +9,8 @@ function AddInventoryItem({ onSubmit, onCancel }) {
     const [openModal, setOpenModal] = useState(true);
     const [itemName, setItemName] = useState('');
     const [quantity, setQuantity] = useState('');
+    const [price, setPrice] = useState('');
+    const [totalPrice, setTotalPrice] = useState('');
     const [selectedUnit, setSelectedUnit] = useState('');
     const [vendorId, setVendorId] = useState('');
     const [isaddSuccessModel, setAddSuccessModel] = useState(false);
@@ -23,20 +25,27 @@ function AddInventoryItem({ onSubmit, onCancel }) {
 
         // Clear the timeout when the component unmounts
         return () => clearTimeout(timeout);
-        }
-    , [fillAllFieldsAlert, isaddSuccessModel]);
+    }
+        , [fillAllFieldsAlert, isaddSuccessModel]);
 
+    useEffect(() => {
+
+        setTotalPrice(quantity * price)
+
+    }, [quantity, price]);
 
 
     const handleAddItem = async () => {
 
+
         // Validate input fields before adding the item
-        if (itemName && quantity && vendorId && selectedUnit) {
+        if (itemName && quantity && vendorId && selectedUnit && totalPrice) {
             const newItem = {
                 itemName,
                 quantity,
                 vendorId,
                 unit: selectedUnit,
+                totalPrice
             };
             try {
                 const response = await axios.post('http://localhost:8080/api/inventory/add', newItem);
@@ -52,6 +61,7 @@ function AddInventoryItem({ onSubmit, onCancel }) {
                     setItemName('');
                     setQuantity('');
                     setVendorId('');
+                    setPrice('');
 
 
 
@@ -120,6 +130,17 @@ function AddInventoryItem({ onSubmit, onCancel }) {
                         </div>
                         <div>
                             <div className="mb-2 block">
+                                <Label htmlFor="price" value={"Rs. (Per Unit)"} />
+                            </div>
+                            <TextInput
+                                id="price"
+                                value={price}
+                                onChange={(e) => setPrice(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <div className="mb-2 block">
                                 <Label htmlFor="vendorName" value="Vendor Name" />
                             </div>
                             <TextInput
@@ -132,7 +153,7 @@ function AddInventoryItem({ onSubmit, onCancel }) {
                         {/* Fill all fields alert */}
                         {fillAllFieldsAlert && (
                             <Alert color="failure" icon={HiInformationCircle}>
-                                <span className="font-medium">Please fill all fields!</span> 
+                                <span className="font-medium">Please fill all fields!</span>
                             </Alert>
                         )}
 
