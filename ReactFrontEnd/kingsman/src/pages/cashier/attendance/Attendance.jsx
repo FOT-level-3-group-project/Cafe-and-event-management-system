@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Table } from "flowbite-react";
-import { Button, Modal } from "flowbite-react";
+import { Table, Button, Modal, Alert, Pagination } from "flowbite-react";
 import { FcAlarmClock } from "react-icons/fc"; // Importing FcAlarmClock icon
-import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { HiOutlineExclamationCircle, HiInformationCircle } from "react-icons/hi";
 import axios from 'axios';
-import { Alert, Pagination } from "flowbite-react";
-import { HiInformationCircle } from "react-icons/hi";
 
 function Attendance() {
   const [attendance, setAttendance] = useState([]);
@@ -27,7 +24,8 @@ function Attendance() {
   const fetchEmployeeData = () => {
     axios.get('http://localhost:8080/employeeIdsAndPositions')
       .then(response => {
-        setAttendance(response.data.map(employee => ({
+        const filteredData = response.data.filter(employee => employee[2] !== "manager");
+        setAttendance(filteredData.map(employee => ({
           empId: employee[0],
           empName: employee[1],
           position: employee[2],
@@ -87,7 +85,7 @@ function Attendance() {
           if (error.response && error.response.status === 400) {
             // Set error message state
             setErrorMessage(error.response.data);
-            // Clear error message after 1 second
+            // Clear error message after 1.5 seconds
             setTimeout(() => {
               setErrorMessage("");
             }, 1500);
@@ -117,7 +115,7 @@ function Attendance() {
           if (error.response && error.response.status === 400) {
             // Set error message state
             setErrorMessage(error.response.data);
-            // Clear error message after 1 second
+            // Clear error message after 1.8 seconds
             setTimeout(() => {
               setErrorMessage("");
             }, 1800);
@@ -135,12 +133,12 @@ function Attendance() {
 
       {/* Table container */}
       <div>
-              {/* Error Alert */}
-      {errorMessage && (
-        <Alert color="failure" icon={HiInformationCircle}>
-          <span className="font-medium">Error!</span> {errorMessage}
-        </Alert>
-      )}
+        {/* Error Alert */}
+        {errorMessage && (
+          <Alert color="failure" icon={HiInformationCircle}>
+            <span className="font-medium">Error!</span> {errorMessage}
+          </Alert>
+        )}
         <Table hoverable className="my-4 shadow">
           <Table.Head>
             <Table.HeadCell>#</Table.HeadCell>
@@ -177,7 +175,6 @@ function Attendance() {
                 </Table.Cell>
                 <Table.Cell>
                   <Button color="success" pill onClick={() => handleTakeTime(employee.empId, employee.empName, employee.position, false)}>Mark Out</Button>
-                  {/* pill disabled={!employee.inTime} */}
                 </Table.Cell>
               </Table.Row>
             ))}
@@ -194,8 +191,6 @@ function Attendance() {
           showIcons
         />
       </div>
-
-
 
       {/* Confirmation Modal */}
       <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>

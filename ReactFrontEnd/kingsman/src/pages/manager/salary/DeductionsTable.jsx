@@ -80,12 +80,12 @@ function DeductionsTable({ fetchDeductions }) {
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-4">Deductions</h2>
+      <h2 className="text-xl font-bold mb-4 mt-7">Deductions</h2>
       <Table hoverable className='drop-shadow-lg'>
         <Table.Head>
           <Table.HeadCell>Employee Name</Table.HeadCell>
           <Table.HeadCell>Deduction Type</Table.HeadCell>
-          <Table.HeadCell>Deduction (Rs.)</Table.HeadCell>
+          <Table.HeadCell>Deduction (R<span style={{ textTransform: 'lowercase' }}>s</span>)</Table.HeadCell>
           <Table.HeadCell>Action</Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">

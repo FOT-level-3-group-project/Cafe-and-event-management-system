@@ -173,7 +173,10 @@ public class MonthSalaryService {
         String currentMonth = YearMonth.now().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
         return monthSalaryRepository.findByMonth(currentMonth);
     }
-
+ 
+    public List<MonthSalary> getMonthSalaries(String month) {
+        return monthSalaryRepository.findByMonth(month);
+ 
     public float getTotalGrossPaymentForCurrentMonth() {
         YearMonth currentMonth = YearMonth.now();
         String monthName = currentMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
@@ -208,5 +211,6 @@ public class MonthSalaryService {
         }
 
         return totalGrossPayment;
+ 
     }
 }

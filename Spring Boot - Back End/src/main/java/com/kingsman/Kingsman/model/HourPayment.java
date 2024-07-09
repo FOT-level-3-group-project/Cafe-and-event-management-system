@@ -1,5 +1,6 @@
 package com.kingsman.Kingsman.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -10,6 +11,7 @@ public class HourPayment {
     @GeneratedValue
     @Id
     private Long id;
+    @Column(unique = true) // Ensure position is unique
     private String position;
     private Float payPerHour;
     private Float payPerOverTimeHour;
