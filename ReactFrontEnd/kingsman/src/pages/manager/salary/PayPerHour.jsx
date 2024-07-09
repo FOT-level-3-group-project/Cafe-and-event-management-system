@@ -12,18 +12,30 @@ function PayPerHour() {
 
   useEffect(() => {
     // Fetch positions from backend
-    axios.get('http://localhost:8080/employeeDetails')
+    axios.get('http://localhost:8080/employeeIdsAndPositions')
       .then(response => {
-        const positionsFromBackend = response.data.map(item => ({
-          id: item[0], // Assuming first item is ID, adjust accordingly
-          position: item[2] // Position is the third item in your backend response
+        // Filter out positions with 'manager'
+        const filteredPositions = response.data.filter(item => item[2] !== 'manager');
+  
+        // Create a set to store unique positions
+        const uniquePositions = new Set();
+        filteredPositions.forEach(item => {
+          uniquePositions.add(item[2]); // Add position to set
+        });
+  
+        // Convert set to array for state update
+        const positionsFromBackend = Array.from(uniquePositions).map(position => ({
+          id: filteredPositions.find(item => item[2] === position)[0], // Find corresponding ID
+          position: position
         }));
+  
         setPositions(positionsFromBackend);
       })
       .catch(error => {
         console.error('Error fetching positions:', error);
       });
   }, []); // Empty dependency array ensures this runs once on component mount
+  
 
   const handleOpenHourlyModal = () => {
     setHourlyModalOpen(true);
