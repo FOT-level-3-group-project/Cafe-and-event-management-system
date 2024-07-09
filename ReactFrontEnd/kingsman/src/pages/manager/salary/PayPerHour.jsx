@@ -1,49 +1,25 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Modal, Label, TextInput } from "flowbite-react";
-import { FaEdit, FaTrash } from 'react-icons/fa';
-import DeductionsTable from './DeductionsTable';
-import HourlyPayTable from './HourlyPayTable';
-import BonusesTable from './BonusesTable';
+ 
+ import HourlyPayTable from './HourlyPayTable';
+ 
 
 function PayPerHour() {
-  const [bonusModalOpen, setBonusModalOpen] = useState(false);
-  const [deductionModalOpen, setDeductionModalOpen] = useState(false);
+ 
   const [hourlyModalOpen, setHourlyModalOpen] = useState(false);
-  const [employeeName, setEmployeeName] = useState('');
-  const [bonusType, setBonusType] = useState('');
-  const [bonusAmount, setBonusAmount] = useState(0);
-  const [deductionType, setDeductionType] = useState('');
-  const [deductionAmount, setDeductionAmount] = useState(0);
+  
   const [hourlyPay, setHourlyPay] = useState(0);
   const [otPay, setOTPay] = useState(0);
   const [position, setPosition] = useState('');
 
-  const handleOpenBonusModal = () => {
-    setBonusModalOpen(true);
-  };
-
-  const handleOpenDeductionModal = () => {
-    setDeductionModalOpen(true);
-  };
+  
 
   const handleOpenHourlyModal = () => {
     setHourlyModalOpen(true);
   };
 
-  const closeBonusModal = () => {
-    setBonusModalOpen(false);
-    setEmployeeName('');
-    setBonusType('');
-    setBonusAmount(0);
-  };
-
-  const closeDeductionModal = () => {
-    setDeductionModalOpen(false);
-    setEmployeeName('');
-    setDeductionType('');
-    setDeductionAmount(0);
-  };
+  
 
   const closeHourlyModal = () => {
     setHourlyModalOpen(false);
@@ -52,40 +28,13 @@ function PayPerHour() {
     setPosition('');
   };
 
-  const handleAddBonus = () => {
-    const bonusData = {
-      empName: employeeName,
-      bonusType: bonusType,
-      bonus: bonusAmount.toString()
-    };
+  
 
-    axios.post('http://localhost:8080/api/bonus', bonusData)
-      .then(response => {
-        console.log('Bonus added successfully:', response.data);
-        closeBonusModal();
-      })
-      .catch(error => {
-        console.error('Error adding bonus:', error);
-      });
-  };
+ 
 
-  const handleAddDeduction = () => {
-    const deductionData = {
-      empName: employeeName,
-      deductionType: deductionType,
-      deduction: deductionAmount.toString()
-    };
+  
 
-    axios.post('http://localhost:8080/api/deduction', deductionData)
-      .then(response => {
-        console.log('Deduction added successfully:', response.data);
-        closeDeductionModal();
-      })
-      .catch(error => {
-        console.error('Error adding deduction:', error);
-      });
-  };
-
+ 
   const handleAddHourlyPay = () => {
     const hourlyPayData = {
       position: position,
