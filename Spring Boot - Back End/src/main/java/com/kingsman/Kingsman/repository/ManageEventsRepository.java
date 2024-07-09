@@ -32,4 +32,7 @@ public interface ManageEventsRepository extends JpaRepository<Event, String> {
     // Find Total budget of events for current year
     @Query("SELECT SUM(o.budget) FROM Event o WHERE YEAR(o.eventDate) = YEAR(CURRENT_DATE)")
     Double findTotalEventBudgetForCurrentYear();
+
+    // Find the next event after the current date
+    Optional<Event> findFirstByEventDateAfterOrderByEventDateAsc(LocalDate currentDate);
 }

@@ -71,4 +71,11 @@ public class ManageEventsService {
         Double totalBudget = manageEventsRepository.findTotalEventBudgetForCurrentYear();
         return totalBudget != null ? totalBudget : 0.0;
     }
+
+    // Find the next event after the current date
+    public Event getNextEvent() {
+        LocalDate currentDate = LocalDate.now();
+        return manageEventsRepository.findFirstByEventDateAfterOrderByEventDateAsc(currentDate).orElse(null);
+    }
+
 }
