@@ -176,6 +176,7 @@ public class MonthSalaryService {
  
     public List<MonthSalary> getMonthSalaries(String month) {
         return monthSalaryRepository.findByMonth(month);
+    }
  
     public float getTotalGrossPaymentForCurrentMonth() {
         YearMonth currentMonth = YearMonth.now();
