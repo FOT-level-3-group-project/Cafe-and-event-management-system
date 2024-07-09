@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -41,8 +40,9 @@ public class ManageEventsService {
         existingEvent.setBudget(event.getBudget());
         existingEvent.setTicketPrice(event.getTicketPrice());
         existingEvent.setEntertainer(event.getEntertainer());
-        existingEvent.setTicketQuantity(event.getTicketQuantity());
+        existingEvent.setSoldTicketQuantity(event.getSoldTicketQuantity());
         existingEvent.setDescription(event.getDescription());
+        existingEvent.setEventStatus(event.getEventStatus());
         manageEventsRepository.save(existingEvent);
         return eventID;
     }
@@ -50,27 +50,15 @@ public class ManageEventsService {
     // Find Total revenue of events for current month
     @Transactional
     public double getTotalRevenueForCurrentMonth() {
-        LocalDate currentDate = LocalDate.now();
-        LocalDate startOfMonth = currentDate.withDayOfMonth(1);
-        LocalDate endOfMonth = currentDate.withDayOfMonth(currentDate.lengthOfMonth());
-
-        List<Event> events = manageEventsRepository.findEventsByEventDateBetween(startOfMonth, endOfMonth);
-        double totalRevenue = 0.0;
-
-        for (Event event : events) {
-            double revenue = event.getTicketPrice() * event.getTicketQuantity();
-            System.out.println("Event " + event.getEventID() + " revenue: " + revenue);
-            totalRevenue += revenue;
-        }
-
-        System.out.println("Total revenue for current month: " + totalRevenue);
-        return totalRevenue;
+        Double totalRevenue = manageEventsRepository.findTotalRevenueForCurrentMonth();
+        return totalRevenue != null ? totalRevenue : 0.0;
     }
 
     // Find Total revenue of events for current year
     @Transactional
     public double getTotalRevenueForCurrentYear() {
-        return manageEventsRepository.findTotalEventRevenueForCurrentYear();
+        Double totalRevenue = manageEventsRepository.findTotalRevenueForCurrentYear();
+        return totalRevenue != null ? totalRevenue : 0.0;
     }
 
     // Find Total budget of events for current month
@@ -80,6 +68,14 @@ public class ManageEventsService {
 
     // Find Total budget of events for current year
     public double getTotalEventBudgetForCurrentYear() {
-        return manageEventsRepository.findTotalEventBudgetForCurrentYear();
+        Double totalBudget = manageEventsRepository.findTotalEventBudgetForCurrentYear();
+        return totalBudget != null ? totalBudget : 0.0;
     }
+
+    // Find the next event after the current date
+    public Event getNextEvent() {
+        LocalDate currentDate = LocalDate.now();
+        return manageEventsRepository.findFirstByEventDateAfterOrderByEventDateAsc(currentDate).orElse(null);
+    }
+
 }

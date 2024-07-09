@@ -11,22 +11,28 @@ import java.util.Optional;
 
 @Repository
 public interface ManageEventsRepository extends JpaRepository<Event, String> {
+    // Find event by eventID
     Optional<Event> findEventByEventID(String eventID);
+
+    // delete event by eventID
     void deleteByEventID(String eventID);
 
-    //Find Total revenue of events for current month
-    List<Event> findEventsByEventDateBetween(LocalDate startOfMonth, LocalDate endOfMonth);;
+    // Find all events for current month
+    @Query("SELECT SUM(e.ticketPrice * e.soldTicketQuantity) FROM Event e WHERE MONTH(e.eventDate) = MONTH(CURRENT_DATE) AND YEAR(e.eventDate) = YEAR(CURRENT_DATE)")
+    Double findTotalRevenueForCurrentMonth();
 
     // Find Total revenue of events for current year
-    @Query("SELECT SUM(e.ticketQuantity * e.ticketPrice) FROM Event e WHERE YEAR(e.eventDate) = YEAR(CURRENT_DATE)")
-    Double findTotalEventRevenueForCurrentYear();
-
+    @Query("SELECT SUM(e.ticketPrice * e.soldTicketQuantity) FROM Event e WHERE YEAR(e.eventDate) = YEAR(CURRENT_DATE)")
+    Double findTotalRevenueForCurrentYear();
 
     //  Find Total budget of events for current month
-    @Query("SELECT SUM(o.budget) FROM Event o WHERE MONTH(o.eventDate) = MONTH(CURRENT_DATE)")
+    @Query("SELECT SUM(o.budget) FROM Event o WHERE MONTH(o.eventDate) = MONTH(CURRENT_DATE) AND YEAR(o.eventDate) = YEAR(CURRENT_DATE)")
     Double findTotalEventBudgetForCurrentMonth();
 
     // Find Total budget of events for current year
-    @Query("SELECT SUM(e.budget) FROM Event e WHERE YEAR(e.eventDate) = YEAR(CURRENT_DATE)")
+    @Query("SELECT SUM(o.budget) FROM Event o WHERE YEAR(o.eventDate) = YEAR(CURRENT_DATE)")
     Double findTotalEventBudgetForCurrentYear();
+
+    // Find the next event after the current date
+    Optional<Event> findFirstByEventDateAfterOrderByEventDateAsc(LocalDate currentDate);
 }

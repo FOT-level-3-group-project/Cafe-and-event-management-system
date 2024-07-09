@@ -13,20 +13,37 @@ const BillPayments = () => {
     const [currentPaymentId, setCurrentPaymentId] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
 
+    // filter by bill type
+    const [selectedBillType, setSelectedBillType] = useState('');
+    const [selectedMonth, setSelectedMonth] = useState('');
+    const [billType, setBillType] = useState([]);
 
-    useEffect(() => {
-        ViewAllPayments();
+      useEffect(() => {
+        viewAllPayments();
+        fetchBillTypes();
     }, []);
 
 
-    const ViewAllPayments = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/api/payment/getAllPayments');
-            setPayments(response.data);
+        const viewAllPayments = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/payment/getAllPayments');
+                setPayments(response.data);
+            } catch (error) {
+                console.error('Error fetching payment data:', error);
+            }
+        };
+
+        const fetchBillTypes = async () => {
+            try {
+            // const response = await axios.get('http://localhost:8080/api/payment/getAllBillTypes');
+            // const existingBillTypes = response.data;
+            const additionalBillTypes = ['Water Bill', 'Electricity Bill', 'Telephone Bill', 'Internet Bill', 'Insurance', 'Other Expenses'];
+            setBillType([...existingBillTypes, ...additionalBillTypes]);
         } catch (error) {
-            console.error('Error fetching payment data:', error);
+            console.error('Error fetching bill types:', error);
         }
-    };
+        };
+  
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -49,7 +66,7 @@ const BillPayments = () => {
             } else {
                 await axios.post('http://localhost:8080/api/payment/addPayment', newPaymentData);
             }
-            ViewAllPayments(); // Refresh payments after adding/updating payment
+            await viewAllPayments(); // Refresh payments after adding/updating payment
             setNewPaymentData({ payDate: '', billType: '', amount: '' }); // Clear form fields
             setEditMode(false); // Reset edit mode
             setCurrentPaymentId(null); // Reset current payment ID
@@ -76,7 +93,6 @@ const BillPayments = () => {
     const handleCancelAdd = () => {
         setNewPaymentData({ payDate: '', billType: '', amount: '' });
         setErrorMessage('');
-        
     };
 
     const handleCancelEdit = () => {
@@ -86,25 +102,72 @@ const BillPayments = () => {
         setErrorMessage('');
     };
 
-    const billTypes = [
-        'Electricity Bill',
-        'Water Bill',
-        'Telephone Bill',
-        'Internet Bill',
-        'Insurance',
-        'Other Expenses'
-    ];
+ // filter by bill type or month
+     const handleFilterChange = (e) => {
+        const { name, value } = e.target;
+        if (name === 'filterBillType') {
+            setSelectedBillType(value);
+        } else if (name === 'filterMonth') {
+            setSelectedMonth(value);
+        }
+    };
 
+    const filteredPayments = payments.filter(payment => {
+        const paymentDate = new Date(payment.payDate);
+        const paymentMonth = paymentDate.getMonth() + 1; // getMonth() is zero-based
+        const isBillTypeMatch = selectedBillType ? payment.billType === selectedBillType : true;
+        const isMonthMatch = selectedMonth ? paymentMonth === parseInt(selectedMonth, 10) : true;
+        return isBillTypeMatch && isMonthMatch;
+    });
+
+
+    
     return (
         <div className="flex flex-col w-full bg-gray-200">
+            {/* topic and filters */}
             <div className="flex items-center m-4 justify-between border-b bg-white dark:bg-gray-500 p-3 shadow-md rounded-md">
-                <h1 className="text-2xl font-bold mb-3">Bill Payments </h1>
-            </div>
+                <h1 className="text-2xl font-bold mb-2">Bill Payments </h1>
 
-            <div className="w-full flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-                {/* Left Side: Search Bar and Payment Details Table */}
+                {/* filter by bill type*/}
+                <div className='flex justify-between'>
+                    <div className='mr-6'>
+                        <label htmlFor="filterBillType" className="mr-2 font-semibold">Filter by Bill Type</label>
+                        <select
+                            id="filterBillType"
+                            name = "filterBillType"
+                            value={selectedBillType}
+                            onChange={handleFilterChange}
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        >
+                            <option value="">All</option>
+                            {billType.map((type, index) => (
+                                <option key={index} value={type}>{type}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* filter by month */}
+                    <div>
+                        <label htmlFor="filterMonth" className="mr-2 font-semibold">Filter by Month</label>
+                        <select
+                            id="filterMonth"
+                            name="filterMonth"
+                            value={selectedMonth}
+                            onChange={handleFilterChange}
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        >
+                            <option value="">All</option>
+                            {[...Array(12)].map((_, i) => (
+                                <option key={i} value={i + 1}>{new Date(0, i).toLocaleString('default', { month: 'long' })}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+            </div>           
+
+            {/* Left Side: Payment Details Table */}
+            <div className="w-full flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 p-3 rounded-md">
                 <div className="w-full md:w-1/2">
-                    {/* Payment Details Table */}
                     <div className="relative overflow-x-auto shadow-md bg-white rounded-md">
                         <Table hoverable>
                             <Table.Head>
@@ -114,7 +177,7 @@ const BillPayments = () => {
                                 <Table.HeadCell className="bg-green-100"> Actions </Table.HeadCell>
                             </Table.Head>
                             <Table.Body className="divide-y">
-                                {payments.map((payment, index) => (
+                                {filteredPayments.map((payment, index) => (
                                     <Table.Row
                                         key={payment.payID}
                                         className={
@@ -176,7 +239,7 @@ const BillPayments = () => {
                                         disabled={editMode} // Disable in edit mode
                                     >
                                         <option value="">Select Bill Type</option>
-                                        {billTypes.map((type, index) => (
+                                        {billType.map((type, index) => (
                                             <option key={index} value={type}>{type}</option>
                                         ))}
                                     </select>
@@ -201,7 +264,7 @@ const BillPayments = () => {
                                 >
                                     {editMode ? 'Update Payment' : 'Add Payment'}
                                 </button>
-                                 {editMode && (
+                                {editMode && (
                                     <button
                                         type="button"
                                         onClick={handleCancelEdit}

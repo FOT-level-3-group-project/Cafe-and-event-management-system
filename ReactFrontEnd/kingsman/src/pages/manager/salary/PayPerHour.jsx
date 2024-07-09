@@ -1,94 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Modal, Label, TextInput } from "flowbite-react";
-import { FaEdit, FaTrash } from 'react-icons/fa';
-import DeductionsTable from './DeductionsTable';
-import HourlyPayTable from './HourlyPayTable';
-import BonusesTable from './BonusesTable';
+import { Button, Modal, Label, TextInput, Select } from "flowbite-react";
+import HourlyPayTable from './HourlyPayTable'; // Import HourlyPayTable component
 
 function PayPerHour() {
-  const [bonusModalOpen, setBonusModalOpen] = useState(false);
-  const [deductionModalOpen, setDeductionModalOpen] = useState(false);
   const [hourlyModalOpen, setHourlyModalOpen] = useState(false);
-  const [employeeName, setEmployeeName] = useState('');
-  const [bonusType, setBonusType] = useState('');
-  const [bonusAmount, setBonusAmount] = useState(0);
-  const [deductionType, setDeductionType] = useState('');
-  const [deductionAmount, setDeductionAmount] = useState(0);
   const [hourlyPay, setHourlyPay] = useState(0);
   const [otPay, setOTPay] = useState(0);
-  const [position, setPosition] = useState('');
+  const [positions, setPositions] = useState([]); // State to hold positions
+  const [selectedPosition, setSelectedPosition] = useState(''); // State for selected position
 
-  const handleOpenBonusModal = () => {
-    setBonusModalOpen(true);
-  };
-
-  const handleOpenDeductionModal = () => {
-    setDeductionModalOpen(true);
-  };
+  useEffect(() => {
+    // Fetch positions from backend
+    axios.get('http://localhost:8080/employeeIdsAndPositions')
+      .then(response => {
+        // Filter out positions with 'manager'
+        const filteredPositions = response.data.filter(item => item[2] !== 'manager');
+  
+        // Create a set to store unique positions
+        const uniquePositions = new Set();
+        filteredPositions.forEach(item => {
+          uniquePositions.add(item[2]); // Add position to set
+        });
+  
+        // Convert set to array for state update
+        const positionsFromBackend = Array.from(uniquePositions).map(position => ({
+          id: filteredPositions.find(item => item[2] === position)[0], // Find corresponding ID
+          position: position
+        }));
+  
+        setPositions(positionsFromBackend);
+      })
+      .catch(error => {
+        console.error('Error fetching positions:', error);
+      });
+  }, []); // Empty dependency array ensures this runs once on component mount
+  
 
   const handleOpenHourlyModal = () => {
     setHourlyModalOpen(true);
-  };
-
-  const closeBonusModal = () => {
-    setBonusModalOpen(false);
-    setEmployeeName('');
-    setBonusType('');
-    setBonusAmount(0);
-  };
-
-  const closeDeductionModal = () => {
-    setDeductionModalOpen(false);
-    setEmployeeName('');
-    setDeductionType('');
-    setDeductionAmount(0);
   };
 
   const closeHourlyModal = () => {
     setHourlyModalOpen(false);
     setHourlyPay(0);
     setOTPay(0);
-    setPosition('');
-  };
-
-  const handleAddBonus = () => {
-    const bonusData = {
-      empName: employeeName,
-      bonusType: bonusType,
-      bonus: bonusAmount.toString()
-    };
-
-    axios.post('http://localhost:8080/api/bonus', bonusData)
-      .then(response => {
-        console.log('Bonus added successfully:', response.data);
-        closeBonusModal();
-      })
-      .catch(error => {
-        console.error('Error adding bonus:', error);
-      });
-  };
-
-  const handleAddDeduction = () => {
-    const deductionData = {
-      empName: employeeName,
-      deductionType: deductionType,
-      deduction: deductionAmount.toString()
-    };
-
-    axios.post('http://localhost:8080/api/deduction', deductionData)
-      .then(response => {
-        console.log('Deduction added successfully:', response.data);
-        closeDeductionModal();
-      })
-      .catch(error => {
-        console.error('Error adding deduction:', error);
-      });
+    setSelectedPosition('');
   };
 
   const handleAddHourlyPay = () => {
     const hourlyPayData = {
-      position: position,
+      position: selectedPosition,
       payPerHour: parseFloat(hourlyPay),
       payPerOverTimeHour: parseFloat(otPay)
     };
@@ -97,32 +59,43 @@ function PayPerHour() {
       .then(response => {
         console.log('Hourly pay added successfully:', response.data);
         closeHourlyModal();
+        // Trigger refresh of HourlyPayTable component
+        // You can force a refresh by toggling a state variable
+        setRefreshHourlyTable(prev => !prev);
       })
       .catch(error => {
         console.error('Error adding hourly pay:', error);
       });
   };
 
+  const incrementHourlyPay = () => {
+    setHourlyPay(prev => prev + 10); // Increment by 10 (you can change the increment value)
+  };
+
+  const incrementOTPay = () => {
+    setOTPay(prev => prev + 10); // Increment by 10 (you can change the increment value)
+  };
+
+  // State to force refresh of HourlyPayTable
+  const [refreshHourlyTable, setRefreshHourlyTable] = useState(false);
+
   return (
     <div className='bg-gray-200 h-screen'>
       <div className='h-20 border bg-slate-800'>
         <div className='flex flex-wrap justify-center gap-10 mt-5'>
-          
           <Button gradientDuoTone="cyanToBlue" onClick={handleOpenHourlyModal}>Pay Per Hour</Button>
         </div>
       </div>
 
-      {/* Render DeductionsTable, HourlyPayTable, and BonusesTable components */}
+      {/* Render HourlyPayTable component with refresh state */}
       <div className='flex flex-row'>
-      <div className="flex-1 ml-8 mr-5 mt-8 mb-6">
-      <HourlyPayTable />
+        <div className="flex-1 ml-8 mr-5 mt-8 mb-6">
+          <HourlyPayTable refresh={refreshHourlyTable} setRefresh={setRefreshHourlyTable} />
+        </div>
       </div>
-      </div>
-        
- 
 
-   {/* Add Hourly Pay Modal */}
-   <Modal show={hourlyModalOpen} size="md" onClose={closeHourlyModal} popup>
+      {/* Add Hourly Pay Modal */}
+      <Modal show={hourlyModalOpen} size="md" onClose={closeHourlyModal} popup>
         <Modal.Header />
         <Modal.Body>
           <div className="space-y-6">
@@ -131,40 +104,50 @@ function PayPerHour() {
               <div className="mb-2 block">
                 <Label htmlFor="position" value="Position" />
               </div>
-              <TextInput
+              <Select
                 id="position"
-                type="text"
-                value={position}
-                onChange={(event) => setPosition(event.target.value)}
-                placeholder="Enter Position"
+                value={selectedPosition}
+                onChange={(event) => setSelectedPosition(event.target.value)}
                 className="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 dark:bg-gray-700 dark:border-gray-700 dark:focus:border-gray-500 dark:focus:ring-gray-600 dark:text-gray-300 rounded-md"
-              />
+              >
+                <option value="" disabled>Select Position</option> {/* Default option */}
+                {/* Render dropdown options */}
+                {positions.map(position => (
+                  <option key={position.id} value={position.position}>{position.position}</option>
+                ))}
+              </Select>
             </div>
             <div>
               <div className="mb-2 block">
                 <Label htmlFor="hourlyPay" value="Hourly Pay" />
               </div>
-              <TextInput
-                id="hourlyPay"
-                type="number"
-                value={hourlyPay}
-                onChange={(event) => setHourlyPay(event.target.value)}
-                placeholder="Enter Hourly Pay"
-                className="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 dark:bg-gray-700 dark:border-gray-700 dark:focus:border-gray-500 dark:focus:ring-gray-600 dark:text-gray-300 rounded-md"
-              />
+              <div className="flex items-center space-x-2">
+                <TextInput
+                  id="hourlyPay"
+                  type="text" // Changed to text to allow manual input
+                  value={hourlyPay}
+                  onChange={(event) => setHourlyPay(parseFloat(event.target.value))}
+                  placeholder="Enter Hourly Pay"
+                  className="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 dark:bg-gray-700 dark:border-gray-700 dark:focus:border-gray-500 dark:focus:ring-gray-600 dark:text-gray-300 rounded-md"
+                />
+                <Button onClick={incrementHourlyPay}>+</Button> {/* Button to increment hourly pay */}
+              </div>
             </div>
             <div>
               <div className="mb-2 block">
                 <Label htmlFor="otPay" value="OT Pay" />
               </div>
-              <TextInput
-                id="otPay"
-                type="number"
-                value={otPay}
-                onChange={(event) => setOTPay(event.target.value)}
-                placeholder="Enter OT Pay"
-                className="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 dark:bg-gray-700 dark:border-gray-700 dark:focus:border-gray-500 dark:focus:ring-gray-600 dark:text-gray-300 rounded-md"
-              />
+              <div className="flex items-center space-x-2">
+                <TextInput
+                  id="otPay"
+                  type="text" // Changed to text to allow manual input
+                  value={otPay}
+                  onChange={(event) => setOTPay(parseFloat(event.target.value))}
+                  placeholder="Enter OT Pay"
+                  className="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 dark:bg-gray-700 dark:border-gray-700 dark:focus:border-gray-500 dark:focus:ring-gray-600 dark:text-gray-300 rounded-md"
+                />
+                <Button onClick={incrementOTPay}>+</Button> {/* Button to increment OT pay */}
+              </div>
             </div>
           </div>
         </Modal.Body>

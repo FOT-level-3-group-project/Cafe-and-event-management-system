@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CancelOrderModal from './cancelOrderModal';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
 export default function ManageOrder() {
     const [orders, setOrders] = useState([]);
@@ -41,15 +42,36 @@ export default function ManageOrder() {
         }
     };
 
-    const handleCancelOrder = async (orderId) => {
+    const handleCancelOrder = async (order) => {
+
+        console.log(order);
+        const orderId = order.orderId;
         try {
             const response = await fetch(`http://localhost:8080/api/orders/status-update/${orderId}/Canceled`, {
                 method: 'PUT'
             });
             if (response.status === 204 || response.ok) {
-                toast('Order cancelled successfully!', {
-                    icon: <i className="ri-file-excel-fill text-red-700"></i>,
-                });
+
+                if (order.tableNumber > 0) {
+    
+                    const tableResponse = await axios.put(`http://localhost:8080/api/table/${order.tableNumber}/availability?availability=true`);
+
+                    if (tableResponse.status == 200) {
+                        toast.success('Order cancelled and table freed successfully!', {
+                            icon: <i className="ri-file-excel-fill text-red-700"></i>,
+                        });
+                    } else {
+                        toast.error("Failed to update table availability. Please contact system support.", { duration: 6000 });
+                        console.error('Failed to update table availability:', tableResponse);
+                    }
+                } else {
+                    toast.success('Order cancelled successfully!', {
+                        icon: <i className="ri-file-excel-fill text-red-700"></i>,
+                    });
+                }
+
+
+
                 setOrders(orders.filter(order => order.orderId !== orderId));
                 setIsCancelModalOpen(false);
             } else {
@@ -72,7 +94,6 @@ export default function ManageOrder() {
                 return order.customer && order.customer.cusMobile && order.customer.cusMobile.includes(searchQuery);
             }else if (searchCriteria === 'status') {
                 return order.orderStatus.toLowerCase().includes(searchQuery.toLowerCase());
-                console.log(order.orderStatus);
             }
         } else {
             return true;
@@ -284,7 +305,7 @@ export default function ManageOrder() {
             <CancelOrderModal 
                 isOpen={isCancelModalOpen} 
                 onToggle={toggleCancelModal}
-                onDelete={() => handleCancelOrder(selectedOrder.orderId)} 
+                onDelete={() => handleCancelOrder(selectedOrder)} 
             />
 
         </div>

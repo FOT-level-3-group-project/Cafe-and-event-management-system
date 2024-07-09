@@ -18,6 +18,7 @@ public class IncomeStatementService {
     @Autowired
     private AnnualIncomeStatementRepository annualIncomeStatementRepository;
 
+    // Save monthly income statement data to the database
     public MonthlyIncomeStatement saveMonthlyIncomeStatement(MonthlyIncomeStatement statement) {
         Optional<MonthlyIncomeStatement> existingStatement = monthlyIncomeStatementRepository.findByDate(statement.getDate());
 
@@ -32,6 +33,7 @@ public class IncomeStatementService {
         }
     }
 
+    // save annual income statement data to the database
     public AnnualIncomeStatement saveAnnualIncomeStatement(AnnualIncomeStatement statement) {
         int year = statement.getYear();
 
@@ -50,11 +52,12 @@ public class IncomeStatementService {
         }
     }
 
-
-    public Optional<AnnualIncomeStatement> getAnnualIncomeStatementByYear(int year) {
+    // Get previous income statement by year
+    public Optional<AnnualIncomeStatement> getPreviousAnnualIncomeStatementByYear(int year) {
         return annualIncomeStatementRepository.findByYear(year);
     }
 
+    // Get previous month income statement
     public Optional<MonthlyIncomeStatement> getPreviousMonthIncomeStatement() {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, -1);

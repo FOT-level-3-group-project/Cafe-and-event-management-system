@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PaymentService {
@@ -33,9 +34,9 @@ public class PaymentService {
         return paymentRepository.save(payment);
     }
 
-    public void deletePayment(int paymentId) {
-        paymentRepository.deleteById(paymentId);
-    }
+//    public void deletePayment(int paymentId) {
+//        paymentRepository.deleteById(paymentId);
+//    }
 
     public Payment getPayment(int paymentId) {
         Optional<Payment> payment = paymentRepository.findById(paymentId);
@@ -56,6 +57,12 @@ public class PaymentService {
         return paymentRepository.findTotalAmountsForCurrentYearByBillType();
     }
 
-
-
+    // get all unique bill types
+    public List<String> getAllBillTypes() {
+        List<Payment> payments = paymentRepository.findAll();
+        return payments.stream()
+                .map(Payment::getBillType)
+                .distinct()
+                .collect(Collectors.toList());
+    }
 }

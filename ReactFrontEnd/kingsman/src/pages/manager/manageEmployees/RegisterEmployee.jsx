@@ -14,7 +14,6 @@ export default function RegisterEmployee() {
             position: '',
             contact_number: '',
             gender: '',
-            idNumber: '',
             joined_date: '',
             email: '',
             address: '',
@@ -24,8 +23,7 @@ export default function RegisterEmployee() {
     const [errorMessage, setErrorMessage] = useState('');
     const [emailErrorMessage, setEmailErrorMessage] = useState('');
     const [contactErrorMessage, setContactErrorMessage] = useState('');
-    const [EmergencyContactErrorMessage, setEmergencyContactErrorMessage] = useState(''); 
-    const [IDNumberError, setIDNumberError] = useState();
+    const [EmergencyContactErrorMessage, setEmergencyContactErrorMessage] = useState('');
     const [showAddPositionModal, setShowAddPositionModal] = useState(false);
      const [positions, setPositions] = useState(() => {
         // Retrieve positions from local storage or use default positions
@@ -45,26 +43,6 @@ export default function RegisterEmployee() {
         }
         return newPassword;
     };
-
-    // const handleResetForm = () => {
-    //     setFormData({
-    //         first_name: '',
-    //         last_name: '',
-    //         username: '',
-    //         password: generatePassword(),
-    //         position: '',
-    //         contact_number: '',
-    //         gender: '',
-    //         idNumber: '',
-    //         joined_date: '',
-    //         email: '',
-    //         address: '',
-    //         uniform_size: '',
-    //         emergency_contact: ''
-    //     }); 
-    //         setErrorMessage('');
-    // };
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         let errorMessage = '';
@@ -102,23 +80,12 @@ export default function RegisterEmployee() {
         }else if (name === 'email') {
             if (!/\S+@\S+\.\S+/.test(value)) {
             setEmailErrorMessage('Please enter a valid email address');
-        }else {
-            setEmailErrorMessage('');
-        }
-        }
-        //validate ID Number
-       if (name === 'idNumber') {
-            if (value.length === 12 && /^\d+$/.test(value)) {
-                setIDNumberError(''); // Clear ID Number error message
-            } else if (value.length === 10 && /^\d{9}[VX]$/.test(value.toUpperCase())) {
-                setIDNumberError(''); // Clear ID Number error message
-            } else {
-                setIDNumberError('Invalid ID Number format');
+            }else {
+                setEmailErrorMessage('');
             }
-        }
-
-
-
+        }  
+    
+        // For position input field
          if (value === 'Add New') {
             setShowAddPositionModal(true);
         } else {
@@ -239,14 +206,7 @@ export default function RegisterEmployee() {
                                 <option value='female'>Female</option>
                                 <option value='other'>Other</option>
                             </select>
-                        </div>
-
-                       <div>
-                            <Label value='ID Number*' />
-                            <TextInput type='text' placeholder='ID Number' id='idNumber' value={formData.idNumber} onChange={handleChange} name='idNumber' required />
-                            {IDNumberError && <div className="text-red-500 text-sm">{IDNumberError}</div>}
-                        </div>
-                    
+                        </div>                    
                         <div>
                             <Label value='Joined Date*' />
                             <TextInput type='date' placeholder='Joined Date' id='JoinedDate' className='text-gray-400' value={formData.joined_date} onChange={handleChange} name="joined_date" required/>

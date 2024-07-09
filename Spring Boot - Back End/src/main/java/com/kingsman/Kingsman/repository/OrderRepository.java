@@ -82,4 +82,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT SUM(o.totalAfterDiscount) FROM Order o WHERE YEAR(o.orderDateTime) = YEAR(CURRENT_DATE)")
     Double findTotalAfterDiscountForCurrentYear();
 
+    List<Order> findOrdersByCreatedDateBetweenAndEmployeeIdAndOrderStatus(LocalDateTime startDate, LocalDateTime endDate, Long employeeId, String orderStatus);
 }

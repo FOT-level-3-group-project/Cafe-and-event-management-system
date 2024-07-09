@@ -10,7 +10,6 @@ const MonthlyProfit = () => {
     water: 0,
     telephone: 0,
     internet: 0,
-    inventoryExpenses: 0,
     insurance: 0,
     otherExpenses: 0,
   });
@@ -18,7 +17,7 @@ const MonthlyProfit = () => {
   const [totalExpenses, setTotalExpenses] = useState(0);;
   const [totalMonthlySalary, setTotalMonthlySalary] = useState(0);
   const [totalEventBudgetforMonth, setTotalEventBudgetforMonth] = useState(0);
-  // const [totalInventoryPurchasesForMonth, setTotalInventoryPurchasesForMonth] = useState(0);
+  const [totalInventoryPurchasesForMonth, setTotalInventoryPurchasesForMonth] = useState(0);
   const [salesRevenue, setSalesRevenue] = useState(0);
   const [eventRevenue, setEventRevenue] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0);
@@ -42,7 +41,7 @@ const MonthlyProfit = () => {
     fetchEventRevenue(); // Fetch event revenue 
     fetchMonthlySalary(); // Fetch monthly salary 
     fetchTotalEventBudgeforMonth(); // Fetch total event budgets 
-    // fetchTotalInventoryPurchasesForMonth(); // Fetch total inventory purchases
+    fetchTotalInventoryPurchasesForMonth(); // Fetch total inventory purchases
     fetchPreviousMonthData(); // Fetch previous month data
   }, []);
 
@@ -52,8 +51,7 @@ const MonthlyProfit = () => {
     calculateTotalIncome(); // Calculate total income 
     calculateTax(); // Calculate tax
     calculateNetProfit(); // Calculate net profit
-  }, [billTypeAmounts, salesRevenue, eventRevenue, totalExpenses, totalRevenue, totalIncome, tax, totalMonthlySalary, totalEventBudgetforMonth]);
-    // }, [billTypeAmounts, salesRevenue, eventRevenue, totalExpenses, totalRevenue, totalIncome, tax, totalMonthlySalary, totalEventBudgetforMonth, totalInventoryPurchasesForMonth]);
+    }, [billTypeAmounts, salesRevenue, eventRevenue, totalExpenses, totalRevenue, totalIncome, tax, totalMonthlySalary, totalEventBudgetforMonth, totalInventoryPurchasesForMonth]);
 
   // Fetch monthly expenses from the API
   const fetchMonthlyExpenses = async () => {
@@ -112,18 +110,18 @@ const MonthlyProfit = () => {
   };
 
   // Fetch total inventory purchases for the month from the API
-  // const fetchTotalInventoryPurchasesForMonth = async () => {
-  //   try {
-  //     const response = await fetch('http://localhost:8080/api/inventory/total-inventory-purchases-for-month');
-  //     if (!response.ok) {
-  //       throw new Error('Failed to fetch total inventory purchases');
-  //     }
-  //     const totalPurchases = await response.json();
-  //     setTotalInventoryPurchases(totalPurchases);
-  //   } catch (error) {
-  //     console.error('Error fetching total inventory purchases:', error);
-  //   }
-  // };
+  const fetchTotalInventoryPurchasesForMonth = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/inventory/total-price/month');
+      if (!response.ok) {
+        throw new Error('Failed to fetch total inventory purchases');
+      }
+      const totalPurchases = await response.json();
+      setTotalInventoryPurchasesForMonth(totalPurchases);
+    } catch (error) {
+      console.error('Error fetching total inventory purchases:', error);
+    }
+  };
 
 
   // Fetch monthly sales revenue from the API
@@ -212,9 +210,7 @@ const calculateTotalExpenses = () => {
   const totalEx = billTypeAmounts.reduce((accumulator, item) => {
     return accumulator + item.totalAmount;
   }, 0);
-
-  const totalExpenses = totalEx + totalMonthlySalary + totalEventBudgetforMonth;
-  // const totalExpenses = totalEx + totalMonthlySalary + totalEventBudgetforMonth + totalInventoryPurchasesForMonth;
+  const totalExpenses = totalEx + totalMonthlySalary + totalEventBudgetforMonth + totalInventoryPurchasesForMonth;
   setTotalExpenses(totalExpenses);
 };
 
@@ -286,28 +282,28 @@ const calculateTotalExpenses = () => {
         <Card className="max-w-xs flex-1 text-blue-500">
           <h5 className="text-l font-bold dark:text-white">
             Total Income <br />
-            Rs. {totalIncome.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
+            Rs. {totalIncome.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ' ')}
           </h5>
           <p className='dark:text-gray-400'>
-              Previous Month: Rs. {previousMonthTotalIncome.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
+              Previous Month: Rs. {previousMonthTotalIncome.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ' ')}
           </p>
         </Card>
         <Card className="max-w-xs flex-1 text-red-500">
           <h5 className="text-l font-bold dark:text-white">
             Total Expenses <br />
-            Rs. {totalExpenses.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
+            Rs. {totalExpenses.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ' ')}
           </h5>
           <p className='dark:text-gray-400'>
-              Previous Month: Rs. {previousMonthTotalExpenses.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
+              Previous Month: Rs. {previousMonthTotalExpenses.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ' ')}
           </p>
         </Card>
         <Card className="max-w-xs flex-1 text-green-500">
           <h5 className="text-l font-bold dark:text-white">
             Net Profit <br />
-            Rs. {netProfit.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
+            Rs. {netProfit.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ' ')}
           </h5>
           <p className='dark:text-gray-400'>
-              Previous Month: Rs. {previousMonthNetProfit.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}
+              Previous Month: Rs. {previousMonthNetProfit.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ' ')}
           </p>
         </Card>
       </div>
@@ -334,18 +330,18 @@ const calculateTotalExpenses = () => {
               </Table.Row>
               <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Sales Revenue</Table.Cell>
-                <Table.Cell className='pr-2 text-right'>{salesRevenue.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{salesRevenue.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ' ')}</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className="bg-white text-black dark:bg-gray-800">
                 <Table.Cell>Event Revenue</Table.Cell>
-                <Table.Cell className='pr-2 text-right'>{eventRevenue.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{eventRevenue.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ' ')}</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className='border-t-2 text-blue-700 '>
                 <Table.Cell className="font-semibold "> TOTAL REVENUES</Table.Cell>
                 <Table.Cell></Table.Cell>
-                <Table.Cell className='pr-2 text-right font-semibold'>{totalRevenue.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
+                <Table.Cell className='pr-2 text-right font-semibold'>{totalRevenue.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ' ')}</Table.Cell>
               </Table.Row>
               <Table.Row className=''>
                 <Table.Cell className='bg-green-600 text-white font-semibold'>EXPENSES</Table.Cell>
@@ -355,45 +351,44 @@ const calculateTotalExpenses = () => {
               {billTypeAmounts.map((item, index) => (
                 <Table.Row key={index} className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                   <Table.Cell>{item.billType}</Table.Cell>
-                  <Table.Cell className='pr-2 text-right'>{item.totalAmount.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
+                  <Table.Cell className='pr-2 text-right'>{item.totalAmount.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ' ')}</Table.Cell>
                   <Table.Cell></Table.Cell>
                 </Table.Row>
               ))}
                <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Employee Wages</Table.Cell>
-                <Table.Cell className='pr-2 text-right'>{totalMonthlySalary.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{totalMonthlySalary.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ' ')}</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
                <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Event Budget</Table.Cell>
-                <Table.Cell className='pr-2 text-right'>{totalEventBudgetforMonth.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{totalEventBudgetforMonth.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ' ')}</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Inventory Item Purchases</Table.Cell>
-                {/* <Table.Cell className='pr-2 text-right'>{totalInventoryPurchasesForMonth}</Table.Cell> */}
-                <Table.Cell className='pr-2 text-right'>0</Table.Cell>
+                <Table.Cell className='pr-2 text-right'>{totalInventoryPurchasesForMonth.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ' ')}</Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className='border-t-2 border-b-2 font-semibold text-red-700'>
                 <Table.Cell className=""> TOTAL EXPENSES</Table.Cell>
                 <Table.Cell></Table.Cell>
-                <Table.Cell  className='pr-2 text-right '> {totalExpenses.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')} </Table.Cell>
+                <Table.Cell  className='pr-2 text-right '> {totalExpenses.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ' ')} </Table.Cell>
               </Table.Row>
               <Table.Row className='border-t-2 font-semibold text-green-700'>
                 <Table.Cell>TOTAL INCOME</Table.Cell>
                 <Table.Cell></Table.Cell>
-                <Table.Cell className="pr-2 text-right ">{totalIncome.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')} </Table.Cell>
+                <Table.Cell className="pr-2 text-right ">{totalIncome.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ' ')} </Table.Cell>
               </Table.Row>
               <Table.Row className="bg-white text-black dark:border-gray-700 dark:bg-gray-800">
                 <Table.Cell>Less: Taxes</Table.Cell>
-                <Table.Cell className='pr-2 text-right'> {tax.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}  </Table.Cell>
+                <Table.Cell className='pr-2 text-right'> {tax.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ' ')}  </Table.Cell>
                 <Table.Cell></Table.Cell>
               </Table.Row>
               <Table.Row className='border-t-2 font-semibold text-green-700'>
                 <Table.Cell className='bg-green-600 text-white font-semibold'>NET PROFIT / LOSS</Table.Cell>
                 <Table.Cell className='bg-green-600'></Table.Cell>
-                <Table.Cell className="pr-2 text-right bg-green-600 text-white">{netProfit.toLocaleString('en-LK', { maximumFractionDigits: 0 }).replace(/,/g, ' ')} </Table.Cell>
+                <Table.Cell className="pr-2 text-right bg-green-600 text-white">{netProfit.toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/,/g, ' ')} </Table.Cell>
               </Table.Row>
             </Table.Body>
           </Table>

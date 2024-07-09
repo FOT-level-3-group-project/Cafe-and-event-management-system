@@ -4,10 +4,9 @@ import axios from 'axios'
 import { useState } from 'react'
 import { MdDelete } from "react-icons/md";
 
-
-
 export default function ManagerDash() {
   const [tables, setTable] = useState([]);
+  const [nextEvent, setNextEvent] = useState([]);
 
   useEffect(() => {
     fetchData();
@@ -18,6 +17,11 @@ export default function ManagerDash() {
     try {
       const response = await axios.get("http://localhost:8080/api/table/all");
       setTable(response.data)
+
+
+      const eventResponse = await axios.get("http://localhost:8080/api/events/next-event");
+      setNextEvent(eventResponse.data)
+      console.log(eventResponse.data)
       console.log(response.data)
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -29,7 +33,7 @@ export default function ManagerDash() {
 
   return (
     <div className='bg-gray-100 p-5 w-full'>
-      <div className='flex flex-wrap'>
+      <div className='flex flex-wrap ml-5 my-4'>
 
         {/* {*Display the available tables count*} */}
         <div key="" className=' w-fit h-auto ml-5 my-4'>
@@ -50,6 +54,24 @@ export default function ManagerDash() {
             </div>
           </Card>
         </div>
+         <div key="next-event" className='pt-5 pl-10'>
+          <Card className=" pl-20 pr-20 max-w-sm" horizontal>
+            <div className='mt-8'>
+              <div className='text-center'>
+                <h2 className='font-bold text-2xl'>Next Event</h2>
+              </div>
+              <div className='text-center mt-2'>
+                <h2 className='font-bold text-2xl'>
+                  <span className='text-xl text-green-600'>
+                    {nextEvent ? nextEvent.eventName : 'No upcoming events'} <br />
+                    {nextEvent ? nextEvent.eventDate : ''}
+                  </span>
+                </h2>
+              </div>
+            </div>
+          </Card>
+        </div>
+
 
       </div>
     </div>

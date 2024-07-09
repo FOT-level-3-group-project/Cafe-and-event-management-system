@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DeleteOrderModal from './deleteOrderModal';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
 export default function ManageOrder() {
     const [orders, setOrders] = useState([]);
@@ -90,12 +91,18 @@ export default function ManageOrder() {
     };
 
 
-    const handleDeleteOrder = async (orderId) => {
+    const handleDeleteOrder = async (order) => {
+
+        const orderId = order.orderId
         try {
             const response = await fetch(`http://localhost:8080/api/orders/${orderId}`, {
                 method: 'DELETE'
             });
+
             if (response.status === 204 || response.ok) {
+
+                await axios.put(`http://localhost:8080/api/table/${order.tableNumber}/availability?availability=true`);
+
                 toast('Order Deleted!', {
                     icon: <i className="ri-file-excel-fill text-red-700"></i>,
                 });
@@ -327,7 +334,7 @@ export default function ManageOrder() {
             <DeleteOrderModal 
                 isOpen={isDeleteModalOpen} 
                 onToggle={toggleDeleteModal}
-                onDelete={() => handleDeleteOrder(selectedOrder.orderId)}
+                onDelete={() => handleDeleteOrder(selectedOrder)}
             />
         </div>
     );

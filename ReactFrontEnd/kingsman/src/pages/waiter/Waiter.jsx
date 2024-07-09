@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import ManageOrder from './order/ManageOrder';
 import UpdateOrder from './order/UpdateOrder';
 import OrderView from './order/OrderView';
+import WaiterDashboard from './Dashboard/WaiterDashboard';
 
 export default function Waiter() {
 
@@ -19,7 +20,7 @@ export default function Waiter() {
           setTab(tabFromUrl);
       }
       else {
-        window.location.href = '/waiter?tab=take-order';
+        window.location.href = '/waiter?tab=dashboard';
     }
   }, [location.search]);
 
@@ -32,6 +33,7 @@ export default function Waiter() {
                 {/* sidebar */}
                 <WaiterSideBar/>
             </div>
+                {tab === 'dashboard' && <WaiterDashboard/>}
                 {/* Orders */}
                 {tab === 'take-order' && <TakeOrder/>}
                 {/* Manage Orders */}

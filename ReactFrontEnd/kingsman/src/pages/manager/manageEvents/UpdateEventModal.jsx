@@ -12,18 +12,14 @@ const UpdateEventModal = ({ event, handleClose}) => {
         eventDate: event.eventDate || '',
         startTime: event.startTime || '',
         duration: event.duration || '',
-        budget: event.budget || '',
         ticketPrice: event.ticketPrice || '',
-        ticketQuantity: event.ticketQuantity || '',
         entertainer: event.entertainer || '',
         description: event.description || ''
     });
 
     const [errorMessage, setErrorMessage] = useState('');
     const [durationErrorMessage, setDurationErrorMessage] = useState('');
-    const [budgetErrorMessage, setBudgetErrorMessage] = useState('');
     const [ticketPriceErrorMessage, setTicketPriceErrorMessage] = useState('');
-    const [ticketQuantityErrorMessage, setTicketQuantityErrorMessage] = useState('');
     const [showTicketPriceModal, setShowTicketPriceModal] = useState(false);
 
   const handleShowTicketPriceModal = () => {
@@ -46,14 +42,7 @@ const UpdateEventModal = ({ event, handleClose}) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
          let errorMessage = '';
-
-         if (name === 'budget'){
-      if (value !== '' && !/^\d+(\.\d{1,2})?$/.test(value)) {
-        setBudgetErrorMessage('Budget must be a valid number with up to two decimal places.');
-      }else{
-        setBudgetErrorMessage('');
-      }
-    }else if (name === 'ticketPrice'){
+    if (name === 'ticketPrice'){
       if (value !== '' && !/^\d+(\.\d{1,2})?$/.test(value)) {
         setTicketPriceErrorMessage('Ticket price must be a valid number with up to two decimal places.');
       }else{
@@ -64,12 +53,6 @@ const UpdateEventModal = ({ event, handleClose}) => {
         setDurationErrorMessage('Duration must be a valid number with up to two decimal places.');
       }else{
         setDurationErrorMessage('');
-      }
-    }else if (name === 'ticketQuantity'){
-      if (value !== '' && !/^\d+$/.test(value)) {
-        setTicketQuantityErrorMessage('Ticket quantity must be a valid integer.');
-      }else{
-        setTicketQuantityErrorMessage('');
       }
     }
     
@@ -160,17 +143,6 @@ const UpdateEventModal = ({ event, handleClose}) => {
                         <Label value='Duration (Hours)' />
                         <TextInput type='text' id='duration' value={formData.duration} name="duration" onChange={handleChange} />
                         {durationErrorMessage && <div className="text-red-500 text-sm">{durationErrorMessage}</div>}
-                    </div>
-                    <div>
-                        <Label value='Budget (Rs.)' />
-                        <TextInput type='text' id='budget' value={formData.budget} name="budget" onChange={handleChange} />
-                        {budgetErrorMessage && <div className="text-red-500 text-sm" >{budgetErrorMessage}</div>}
-                    </div>
-                    
-                    <div>
-                        <Label value='Ticket Quantity' />
-                        <TextInput type='text' id='ticketQuantity' value={formData.ticketQuantity} name="ticketQuantity" onChange={handleChange} />
-                         {ticketQuantityErrorMessage && <div className="text-red-500 text-sm">{ticketQuantityErrorMessage}</div>}
                     </div>
                     <div>
                         <Label value='Entertainer' />

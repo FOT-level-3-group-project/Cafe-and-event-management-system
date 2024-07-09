@@ -121,4 +121,18 @@ public class InventoryService {
 
         return inventoryItemUsageLogRepository.findByUsageDateTimeBetween(startOfDay,endOfDay);
     }
+
+    //get the total price of the inventory for the current month
+    public Float getTotalPriceForCurrentMonth() {
+        LocalDateTime startOfMonth = LocalDate.now().withDayOfMonth(1).atStartOfDay();
+        LocalDateTime endOfMonth = startOfMonth.plusMonths(1).minusSeconds(1);
+        return inventoryRepository.findTotalPriceForCurrentMonth(startOfMonth, endOfMonth);
+    }
+
+    // get the total price of the inventory for the current year
+    public Float getTotalPriceForCurrentYear() {
+        LocalDateTime startOfYear = LocalDate.now().withDayOfYear(1).atStartOfDay();
+        LocalDateTime endOfYear = startOfYear.plusYears(1).minusSeconds(1);
+        return inventoryRepository.findTotalPriceForCurrentYear(startOfYear, endOfYear);
+    }
 }

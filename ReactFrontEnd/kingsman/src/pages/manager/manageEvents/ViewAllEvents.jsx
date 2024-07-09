@@ -3,15 +3,19 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Table } from 'flowbite-react';
 import UpdateEventModal from './UpdateEventModal';
+import DoneEventModal from './DoneEventModal';
 
 const ViewAllEvents = () => {
     const [events, setEvents] = useState([]);
-    const [showEvetntUpdateModal, setShowEventUpdateModal] = useState(false);
+    const [showEventUpdateModal, setShowEventUpdateModal] = useState(false);
     const [eventToUpdate, setEventUpdate] = useState(null);
 
     //search bar
     const [searchQuery, setSearchQuery] = useState('');
     const [searchCriteria, setSearchCriteria] = useState('');
+
+    const [showDoneModal, setShowDoneModal] = useState(false);
+    const [eventToMarkDone, setEventToMarkDone] = useState(null);
 
     useEffect(() => {
         const viewEvents = async () => {
@@ -58,6 +62,22 @@ const ViewAllEvents = () => {
         }
     };
 
+  // retrieve event details
+    const fetchEventDetails = async (eventID) => {
+    try {
+        const response = await fetch(`http://localhost:8080/api/inform/get/${eventID}`);
+        if (!response.ok) {
+            throw new Error(`Error fetching event details: ${response.statusText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching event details:', error);
+        throw error;
+    }
+};
+
+
+
    // Function to handle sharing event details
     const handleShare = async (eventID) => {
         try {
@@ -91,8 +111,19 @@ const ViewAllEvents = () => {
         setShowEventUpdateModal(false);
     };
 
+ const handleStatusChange = (event) => {
+  setEventToMarkDone(event);
+  setShowDoneModal(true);
+};
+
+
+   const handleDoneModalClose = () => {
+        setShowDoneModal(false);
+    };
+
     return (
-      <div className="flex flex-col w-full bg-green-50">
+      <div className="flex flex-col w-full bg-green-50 ">
+      {/* topic and searchbar & filter */}
         <div className="flex items-center m-4 justify-between border-b bg-white dark:bg-gray-500 p-3 shadow-md rounded-md">
           <h1 className="text-2xl font-bold mb-2">Manage Events</h1>
 
@@ -125,29 +156,14 @@ const ViewAllEvents = () => {
               <Table.HeadCell className="bg-green-100">ID</Table.HeadCell>
               <Table.HeadCell className="bg-green-100">Name</Table.HeadCell>
               <Table.HeadCell className="bg-green-100">Date</Table.HeadCell>
-              <Table.HeadCell className="bg-green-100">
-                Starting Time
-              </Table.HeadCell>
-              <Table.HeadCell className="bg-green-100">
-                Duration (h)
-              </Table.HeadCell>
-              <Table.HeadCell className="bg-green-100">
-                Budget (Rs.)
-              </Table.HeadCell>
-              <Table.HeadCell className="bg-green-100">
-                Ticket Price (Rs.)
-              </Table.HeadCell>
-              <Table.HeadCell className="bg-green-100">Quantity</Table.HeadCell>
-              <Table.HeadCell className="bg-green-100">
-                Entertainer
-              </Table.HeadCell>
-              <Table.HeadCell className="bg-green-100">
-                Description
-              </Table.HeadCell>
-              {/* <Table.HeadCell className="bg-green-100">
-                Status
-              </Table.HeadCell> */}
-              <Table.HeadCell
+              <Table.HeadCell className="bg-green-100"> Starting Time </Table.HeadCell>
+              <Table.HeadCell className="bg-green-100"> Duration (h) </Table.HeadCell>
+              <Table.HeadCell className="bg-green-100"> Budget (Rs.) </Table.HeadCell>
+              <Table.HeadCell className="bg-green-100"> Ticket Price (Rs.) </Table.HeadCell>
+              <Table.HeadCell className="bg-green-100"> Sold Ticket Qty.</Table.HeadCell>
+              <Table.HeadCell className="bg-green-100"> Entertainer </Table.HeadCell>
+              <Table.HeadCell className="bg-green-100"> Description </Table.HeadCell>
+              <Table.HeadCell className="bg-green-100">  </Table.HeadCell> <Table.HeadCell
                 className="bg-green-100 text-center"
                 colSpan={3}
               ></Table.HeadCell>
@@ -171,81 +187,48 @@ const ViewAllEvents = () => {
                   }
                 })
                 .map((event, index) => (
-                  <Table.Row
-                    key={event.eventID}
-                    className={
-                      index % 2 === 0
-                        ? "bg-green-50 dark:bg-gray-500 dark:text-white"
-                        : "bg-gray-150 dark:bg-gray-700 dark:text-white"
-                    }
-                  >
+                  <Table.Row key={event.eventID} className={ index % 2 === 0 ? "bg-green-50 dark:bg-gray-500 dark:text-white" : "bg-gray-150 dark:bg-gray-700 dark:text-white" } >
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600"> {event.eventID}</Table.Cell>
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{event.eventName}</Table.Cell>
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{event.eventDate}</Table.Cell>
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{event.startTime}</Table.Cell>
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{event.duration}</Table.Cell>
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{event.budget}</Table.Cell>
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{event.ticketPrice}</Table.Cell>
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600"> {event.soldTicketQuantity}</Table.Cell>
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600"> {event.entertainer}</Table.Cell>
+                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{event.description}</Table.Cell>
                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                      {event.eventID}
-                    </Table.Cell>
-                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                      {event.eventName}
-                    </Table.Cell>
-                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                      {event.eventDate}
-                    </Table.Cell>
-                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                      {event.startTime}
-                    </Table.Cell>
-                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                      {event.duration}
-                    </Table.Cell>
-                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                      {event.budget}
-                    </Table.Cell>
-                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                      {event.ticketPrice}
-                    </Table.Cell>
-                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                      {event.ticketQuantity}
-                    </Table.Cell>
-                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                      {event.entertainer}
-                    </Table.Cell>
-                    <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                      {event.description}
-                    </Table.Cell>
-                    {/* <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">                      
-                    </Table.Cell> */}
-                    <Table.Cell className="dark:bg-gray-600">
-                      <button
-                        onClick={() => handleUpdateClick(event)}
-                        className="font-medium text-blue-600 dark:text-blue-400 hover:scale-110 "
-                      >
-                        Update
-                      </button>
+                      <button onClick={() => handleStatusChange(event)} className="font-medium text-green-800 dark:text-green-400 hover:scale-110"> Mark as Done </button>
                     </Table.Cell>
                     <Table.Cell className="dark:bg-gray-600">
-                      <button
-                        onClick={() => handleDelete(event.eventID)}
-                        className="font-medium text-red-800 dark:text-red-400 hover:scale-110"
-                      >
-                        Remove
-                      </button>
+                      <button onClick={() => handleUpdateClick(event)} className="font-medium text-blue-600 dark:text-blue-400 hover:scale-110 ">Update</button>
                     </Table.Cell>
                     <Table.Cell className="dark:bg-gray-600">
-                      <button
-                        onClick={() => handleShare(event.eventID)}
-                        className="font-medium text-green-800 dark:text-green-400 hover:scale-110"
-                      >
-                        Share
-                      </button>
+                      <button onClick={() => handleDelete(event.eventID)} className="font-medium text-red-800 dark:text-red-400 hover:scale-110" > Remove  </button>
+                    </Table.Cell>
+                    <Table.Cell className="dark:bg-gray-600">
+                      <button onClick={() => handleShare(event.eventID)}  className="font-medium text-green-800 dark:text-green-400 hover:scale-110" > Share </button>
                     </Table.Cell>
                   </Table.Row>
                 ))}
             </Table.Body>
           </Table>
 
-          {showEvetntUpdateModal && (
+          {showEventUpdateModal && (
             <UpdateEventModal
               event={eventToUpdate}
               handleClose={handleUpdateClose}
             />
           )}
+          
+         {showDoneModal && (
+  <DoneEventModal
+    event={eventToMarkDone}
+    handleClose={handleDoneModalClose}
+  />
+)}
+
         </div>
       </div>
     );

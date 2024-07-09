@@ -332,5 +332,56 @@ public class OrderService {
         return orderRepository.findTotalAfterDiscountForCurrentYear();
     }
 
+    // Get daily order counts for the last 30 days for a specific employee with status "Ready"
+    public Map<LocalDate, Long> getDailyOrderCountsForLast14DaysByEmployee(Long employeeId) {
+        LocalDate today = LocalDate.now();
+        LocalDate startDate = today.minusDays(29); // Get the start date for the last 30 days
+
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = today.plusDays(1).atStartOfDay(); // End of the day for today
+
+        // Fetch orders from the repository by employeeId and status "Ready"
+        List<Order> orders = orderRepository.findOrdersByCreatedDateBetweenAndEmployeeIdAndOrderStatus(startDateTime, endDateTime, employeeId, "Ready");
+
+        // Convert SQL Date to LocalDate and count orders for each day
+        return orders.stream()
+                .map(order -> order.getCreatedDate().toLocalDate())
+                .collect(Collectors.groupingBy(date -> date, Collectors.counting()));
+    }
+
+    // Get total order count for the current month for a specific employee with status "Ready"
+    public long getOrderCountThisMonthByEmployee(Long employeeId) {
+        LocalDate today = LocalDate.now();
+        LocalDate startDate = today.withDayOfMonth(1);
+        LocalDate endDate = today.withDayOfMonth(today.lengthOfMonth());
+
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay(); // End of the day for the last day of the month
+
+        return orderRepository.findOrdersByCreatedDateBetweenAndEmployeeIdAndOrderStatus(startDateTime, endDateTime, employeeId, "Ready").size();
+    }
+
+    // Get order count for the previous month for a specific employee with status "Ready"
+    public long getOrderCountPreviousMonthByEmployee(Long employeeId) {
+        LocalDate today = LocalDate.now();
+        LocalDate startDate = today.minusMonths(1).withDayOfMonth(1);
+        LocalDate endDate = today.withDayOfMonth(1).minusDays(1);
+
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay(); // End of the day for the last day of the previous month
+
+        return orderRepository.findOrdersByCreatedDateBetweenAndEmployeeIdAndOrderStatus(startDateTime, endDateTime, employeeId, "Ready").size();
+    }
+
+    // Get daily order counts for the last 14 days and additional statistics for a specific employee with status "Ready"
+    public Map<String, Object> getOrderStatisticsByEmployee(Long employeeId) {
+        Map<String, Object> statistics = new HashMap<>();
+        statistics.put("dailyOrderCounts", getDailyOrderCountsForLast14DaysByEmployee(employeeId));
+        statistics.put("orderCountThisMonth", getOrderCountThisMonthByEmployee(employeeId));
+        statistics.put("orderCountPreviousMonth", getOrderCountPreviousMonthByEmployee(employeeId));
+
+        return statistics;
+    }
+
 
 }

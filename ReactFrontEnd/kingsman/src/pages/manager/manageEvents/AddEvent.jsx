@@ -13,40 +13,15 @@ const AddEvent = () => {
     eventDate: '',
     startTime: '',
     duration: '',
-    budget: '',
     ticketPrice: '',
-    ticketQuantity: '',
     entertainer: '',
     description: '',
   });
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   const [durationErrorMessage, setDurationErrorMessage] = useState('');
-  const [budgetErrorMessage, setBudgetErrorMessage] = useState('');
   const [ticketPriceErrorMessage, setTicketPriceErrorMessage] = useState('');
-  const [ticketQuantityErrorMessage, setTicketQuantityErrorMessage] = useState('');
   const [showTicketPriceModal, setShowTicketPriceModal] = useState(false);
-
-
-  // const handleClear = () => {
-  //     setFormData({
-  //       eventIDNumber: '',
-  //       eventName: '',
-  //       eventDate: '',
-  //       startTime: '',
-  //       duration: '',
-  //       budget: '',
-  //       ticketPrice: '',
-  //       ticketQuantity: '',
-  //       entertainer: '',
-  //       description: '',
-  //     }); 
-  //     setErrorMessage('');
-  //     setBudgetErrorMessage('');
-  //     setTicketPriceErrorMessage('');
-  //     setTicketQuantityErrorMessage('');
-  //     setDurationErrorMessage('');
-  // };
 
   const handleShowTicketPriceModal = () => {
   setShowTicketPriceModal(true);
@@ -79,13 +54,8 @@ const handleTicketPriceChange = (price) => {
       });
     } 
 
-    if (name === 'budget'){
-      if (value !== '' && !/^\d+(\.\d{1,2})?$/.test(value)) {
-        setBudgetErrorMessage('Budget must be a valid number with up to two decimal places.');
-      }else{
-        setBudgetErrorMessage('');
-      }
-    }else if (name === 'ticketPrice'){
+  
+    if (name === 'ticketPrice'){
       if (value !== '' && !/^\d+(\.\d{1,2})?$/.test(value)) {
         setTicketPriceErrorMessage('Ticket price must be a valid number with up to two decimal places.');
       }else{
@@ -96,12 +66,6 @@ const handleTicketPriceChange = (price) => {
         setDurationErrorMessage('Duration must be a valid number with up to two decimal places.');
       }else{
         setDurationErrorMessage('');
-      }
-    }else if (name === 'ticketuantity'){
-      if (value !== '' && !/^\d+$/.test(value)) {
-        setTicketQuantityErrorMessage('Ticket quantity must be a valid integer.');
-      }else{
-        setTicketQuantityErrorMessage('');
       }
     }
 
@@ -136,21 +100,28 @@ const handleTicketPriceChange = (price) => {
           console.log(response.data);
           const successMessage = `Successfully added event ${formData.eventName}`;
           setErrorMessage(successMessage);
+
+           navigate('/manager?tab=view-all-events');
       } catch (error) {
-          if (error.response && error.response.data && error.response.data.error) {
-              // Extract the error message from the response data and display it
-              setErrorMessage(error.response.data.error);
-          } else if (error.request) {
-              // This usually indicates a network error or the server did not respond
-              console.log(error.request);
-              setErrorMessage('Network error occurred. Please try again later.');
-          } else {
-              // Something happened in setting up the request that triggered an error
-              console.log('Error', error.message);
-              setErrorMessage('Failed to add event. Please try again later.');
-          };
+      if (error.response && error.response.data) {
+        // Handle specific error messages returned from the backend
+        if (error.response.data === "An event with the same name already exists" ||
+            error.response.data === "An event with the same ID already exists" ||
+            error.response.data === "An event already exists on the same day") {
+          setErrorMessage(error.response.data);
+        } else {
+          // Fallback generic error message if needed
+          setErrorMessage('Failed to add event. Please try again later.');
+        }
+      } else if (error.request) {
+        console.log(error.request);
+        setErrorMessage('Network error occurred. Please try again later.');
+      } else {
+        console.log('Error', error.message);
+        setErrorMessage('Failed to add event. Please try again later.');
       }
-          };
+    }
+  };
     useEffect(() => {
         setFormData({
             ...formData,
@@ -198,19 +169,6 @@ const handleTicketPriceChange = (price) => {
                             <TextInput type='text' placeholder='Duration' id='Duration' value={formData.duration} onChange={handleChange} name="duration" />
                             {durationErrorMessage && <div className="text-red-500">{durationErrorMessage}</div>}
                         </div>
-
-                        <div>
-                            <Label value='Budget (Rs.)' />
-                            <TextInput type='text' placeholder='Budget' id='Budget' value={formData.budget} onChange={handleChange} name="budget"  />
-                            {budgetErrorMessage && <div className="text-red-500">{budgetErrorMessage}</div>}
-                        </div>
-
-                        <div>
-                            <Label value='Ticket Quantity' />
-                            <TextInput type='text' placeholder='Ticket Quantity' id='TicketQuantity' value={formData.ticketQuantity} onChange={handleChange} name="ticketQuantity" />
-                            {ticketQuantityErrorMessage && <div className="text-red-500">{ticketQuantityErrorMessage}</div>}
-                        </div>
-
                         <div>
                             <Label value='Entertainer' />
                             <TextInput type='text' placeholder='Entertainer' id='Entertainer' value={formData.entertainer} onChange={handleChange} name="entertainer"/>
