@@ -27,6 +27,7 @@ export default function TakeOrder() {
         const [selectedFoodItem, setSelectedFoodItem] = useState({});
         const [orderItems, setOrderItems] = useState([]);
         const [billItemData, setBillItemData] = useState({});
+        const [tableList, setTableList] = useState([]);
         const [tableNumber, setTableNumber] = useState(0);
         const [note, setNote] = useState('');
 
@@ -36,7 +37,9 @@ export default function TakeOrder() {
         const [discountPercentage, setDiscountPercentage] = useState(0);
 
         useEffect(() => {
-            setResponseErrors("")
+            setResponseErrors("");
+            getAvailableTables();
+
             axios.get("http://localhost:8080/api/food/available")
                 .then(response => {
                     setFoodItems(response.data);
@@ -44,6 +47,7 @@ export default function TakeOrder() {
                 .catch(error => {
                     console.error("Error fetching food items:", error);
                 });
+
         }, []);
 
         useEffect(() => {
@@ -166,9 +170,8 @@ export default function TakeOrder() {
             setOrderItems(updatedOrderItems);
 
         };
-        
-        
-        const generateOrder = () => {
+
+        const generateOrder = async () => {
             if (orderItems.length < 1) {
                 return setResponseErrors("At least one item must be ordered.");
             }
@@ -192,17 +195,24 @@ export default function TakeOrder() {
                 paymentStatus: false,
                 employeeId: currentUser.id,
                 orderItems: convertedOrderItems,
-                specialNote:note
+                specialNote: note
             };
         
-            axios.post("http://localhost:8080/api/orders", orderJSON, {
-                headers: {
-                    "Content-Type": "application/json"
+            try {
+                // Update table availability if a table number is provided
+                if (tableNumber > 0) {
+                    await axios.put(`http://localhost:8080/api/table/${tableNumber}/availability?availability=false`);
                 }
-            })
-            .then(response => {
+        
+                // Create the order
+                const response = await axios.post("http://localhost:8080/api/orders", orderJSON, {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+        
                 if (response.status === 201) {
-                    // Successful
+                    // Order was successfully placed
                     setCustomerData({});
                     handleClearFields();
                     setOrderItems([]);
@@ -211,20 +221,40 @@ export default function TakeOrder() {
                     setNote("");
                     toast.success('Order Placed.');
                 } else {
-                    // Unexpected response
+                    // Handle unexpected response from order creation
                     console.error('Unexpected response status:', response.status);
-                    toast.error(
-                        "Something has error. \n Please Contact System Support.",
-                        { duration: 6000 }
-                    );
+                    toast.error("Something has error. \n Please Contact System Support.", { duration: 6000 });
                 }
-            })
-            .catch(error => {
+            } catch (error) {
+                // Handle any errors from the table availability update or the order creation
                 setResponseErrors(error);
                 console.error("Error:", error);
-            });
+                // Make the table available again in case of any error during order creation
+                if (tableNumber > 0) {
+                    try {
+                        await axios.put(`http://localhost:8080/api/table/${tableNumber}/availability?availability=true`);
+                        toast.error("An error occurred while placing the order. The table has been made available again.", { duration: 6000 });
+                    } catch (updateError) {
+                        console.error("Error updating table availability:", updateError);
+                        toast.error("An error occurred. Please try again.", { duration: 6000 });
+                    }
+                }
+            }
+            finally{
+                getAvailableTables();
+            }
         };
             
+        const getAvailableTables =  () => {
+            
+            axios.get("http://localhost:8080/api/table/available")
+            .then(response => {
+                setTableList(response.data);
+            })
+            .catch(error => {
+                console.error("Error fetching available tables:", error);
+            });
+        }
 
   return (
     <div className="w-full bg-slate-200 dark:bg-slate-500 py-5">    
@@ -483,9 +513,9 @@ export default function TakeOrder() {
                                             className="block p-1 mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-0 focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                         >
                                             <option value={0}>No Table Assigned</option>
-                                            {[...Array(10).keys()].map((num) => (
-                                                <option key={num + 1} value={num + 1}>
-                                                    Table {num + 1}
+                                            {tableList.map((data) => (
+                                                <option key={data.id} value={data.tableNumber}>
+                                                    Table {data.tableNumber}
                                                 </option>
                                             ))}
                                         </select>
