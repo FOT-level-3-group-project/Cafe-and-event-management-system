@@ -35,6 +35,7 @@ export default function ManagerDash() {
     <div className='bg-gray-100 p-5 w-full'>
       <div className='flex flex-wrap ml-5 my-4'>
 
+        {/* {*Display the available tables count*} */}
         <div key="" className=' w-fit h-auto ml-5 my-4'>
           <Card
 
@@ -53,7 +54,6 @@ export default function ManagerDash() {
             </div>
           </Card>
         </div>
-
          <div key="next-event" className='pt-5 pl-10'>
           <Card className=" pl-20 pr-20 max-w-sm" horizontal>
             <div className='mt-8'>
