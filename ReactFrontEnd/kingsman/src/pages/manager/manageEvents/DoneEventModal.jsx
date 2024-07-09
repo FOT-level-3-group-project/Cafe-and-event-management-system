@@ -42,6 +42,7 @@ const DoneEventModal = ({ event, handleClose }) => {
     };
 
     const handleSubmit = async (e) => {
+          e.preventDefault();
        try {
             const updatedEvent = {
                 ...event,
@@ -102,7 +103,7 @@ const DoneEventModal = ({ event, handleClose }) => {
                             <option value="Cancelled">Cancelled</option>
                         </Select>
                     </div> */}
-                    <Button onClick={handleSubmit} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 ml-2 rounded w-full"> Confirm</Button>
+                    <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 ml-2 rounded w-full"> Confirm</Button>
                 </form>
             </Modal.Body>
         </Modal>
