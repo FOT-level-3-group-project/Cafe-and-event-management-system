@@ -16,8 +16,9 @@ public class Event {
     private float budget;
     private float ticketPrice;
     private String entertainer;
-    private Integer ticketQuantity;
+    private Integer soldTicketQuantity;
     private String description;
+    private String eventStatus;
 
     public String getEventID() {
         return eventID;
@@ -82,12 +83,12 @@ public class Event {
     public void setEntertainer(String entertainer) {
         this.entertainer = entertainer;
     }
-    public Integer getTicketQuantity() {
-        return ticketQuantity;
+    public Integer getSoldTicketQuantity() {
+        return soldTicketQuantity;
     }
 
-    public void setTicketQuantity(Integer capacity) {
-        this.ticketQuantity = capacity;
+    public void setSoldTicketQuantity(Integer capacity) {
+        this.soldTicketQuantity = capacity;
     }
 
     public String getDescription() {
@@ -96,5 +97,13 @@ public class Event {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getEventStatus() {
+        return eventStatus;
+    }
+
+    public void setEventStatus(String eventStatus) {
+        this.eventStatus = eventStatus;
     }
 }
