@@ -35,11 +35,13 @@ const BillPayments = () => {
 
         const fetchBillTypes = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/payment/getAllBillTypes');
-                setBillType(response.data);
-            } catch (error) {
-                console.error('Error fetching bill types:', error);
-            }
+            // const response = await axios.get('http://localhost:8080/api/payment/getAllBillTypes');
+            // const existingBillTypes = response.data;
+            const additionalBillTypes = ['Water Bill', 'Electricity Bill', 'Telephone Bill', 'Internet Bill', 'Insurance', 'Other Expenses'];
+            setBillType([...existingBillTypes, ...additionalBillTypes]);
+        } catch (error) {
+            console.error('Error fetching bill types:', error);
+        }
         };
   
 
