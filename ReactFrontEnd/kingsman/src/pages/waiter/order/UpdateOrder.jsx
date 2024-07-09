@@ -32,7 +32,9 @@ export default function UpdateOrder() {
         const [orderItems, setOrderItems] = useState([]);
         const [orderItemsConvertedResponse, setOrderItemsConvertedResponse] = useState([]);
         const [billItemData, setBillItemData] = useState({});
+        const [tableList, setTableList] = useState([]);
         const [tableNumber, setTableNumber] = useState(0);
+        const [tableNumberStatic, setTableNumberStatic] = useState(0);
         const [note, setNote] = useState('');
 
         const [subtotal, setSubtotal] = useState(0);
@@ -42,7 +44,8 @@ export default function UpdateOrder() {
         useEffect(() => {
             const urlParams = new URLSearchParams(window.location.search);
             const orderIDFromUrl = urlParams.get('order');
-            
+            getAvailableTables();
+
             axios.get(`http://localhost:8080/api/orders/${orderIDFromUrl}`)
                 .then(response => {
                     if (response.status === 200){
@@ -59,6 +62,7 @@ export default function UpdateOrder() {
                         setOrderItems(convertedOrderItems);
                         setOrderItemsConvertedResponse(convertedOrderItems);
                         setTableNumber(tableNumber);
+                        setTableNumberStatic(tableNumber);
                         setNote(specialNote);
                         setSubtotal(subTotal);
                         setDiscountPercentage(discountPercentage);
@@ -211,17 +215,16 @@ export default function UpdateOrder() {
             }
         
             const removedIds = findRemovedItemIds(orderItemsConvertedResponse, orderItems);
-
+        
             let deleteStatus = true;
             if (removedIds.length > 0) {
-                deleteStatus = deleteItems(removedIds);
+                deleteStatus = await deleteItems(removedIds); 
             }
-          
+        
             if (!deleteStatus) {
                 return;
             }
-
-
+        
             const convertedOrderItems = orderItems.map(item => {
                 const { foodId, ...rest } = item;
                 return { foodItemId: foodId, ...rest };
@@ -231,7 +234,7 @@ export default function UpdateOrder() {
             const orderJSON = {
                 orderId: OrderResponse.orderId,
                 customerId: customerData.cusId || "",
-                orderDateTime:OrderResponse.orderDateTime,
+                orderDateTime: OrderResponse.orderDateTime,
                 orderStatus: OrderResponse.orderStatus,
                 tableNumber: tableNumber,
                 subTotal: subtotal,
@@ -243,23 +246,53 @@ export default function UpdateOrder() {
                 employeeId: currentUser.id,
                 orderItems: convertedOrderItems
             };
-            console.log(orderItems);
         
-            axios.put(`http://localhost:8080/api/orders/${OrderResponse.orderId}`, orderJSON, {
-                headers: {
-                    "Content-Type": "application/json"
+            try {
+                console.log(tableNumber +" || "+tableNumberStatic)
+                // Check for table availability update
+               // Update table availability if there’s a change or if a new table is selected
+                if (tableNumber !== tableNumberStatic) {
+                    if (tableNumberStatic > 0) {
+                        // Free up the old table if it was previously assigned
+                        await tableAvailabilityUpdate(true, tableNumberStatic);
+                    }
+                    if (tableNumber > 0) {
+                        // Book the new table
+                        await tableAvailabilityUpdate(false, tableNumber);
+                    }
                 }
-            })
-            .then(response => {
+        
+                // Update the order
+                const response = await axios.put(`http://localhost:8080/api/orders/${OrderResponse.orderId}`, orderJSON, {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+        
                 if (response.status === 200) {
-                    // Successful
-                    toast.success('Order Updated.');
+                    // Update table availability if tableNumber is 0
+                    if (tableNumber === 0 && tableNumberStatic > 0) {
+
+                        const tableResponse = await tableAvailabilityUpdate(true, tableNumberStatic);
+
+                        if (tableResponse) {
+                            toast.success('Order Updated and table freed successfully!');
+                        } else {
+                            toast.error("Failed to update table availability. Please contact system support.", { duration: 6000 });
+                            console.error('Failed to update table availability:', tableResponse);
+                        }
+                    }
+                    else{
+                        toast.success('Order Updated.');
+                    }
+
+                   
                     setCustomerData({});
                     handleClearFields();
                     setOrderItems([]);
                     setResponseErrors("");
                     setTableNumber(0);
-                    window.location.href = "/waiter?tab=manage-orders" ;
+                    window.location.href = "/waiter?tab=manage-orders";
                 } else {
                     // Unexpected response
                     console.error('Unexpected response status:', response);
@@ -268,12 +301,12 @@ export default function UpdateOrder() {
                         { duration: 6000 }
                     );
                 }
-            })
-            .catch(error => {
+            } catch (error) {
                 setResponseErrors(error);
                 console.error("Error:", error);
-            });
+            }
         };
+        
           
         // Function to compare order items and find removed ones
         const findRemovedItemIds = (responseItems, itemList) => {
@@ -307,7 +340,25 @@ export default function UpdateOrder() {
                 return false;
             }
         };
+
+        const tableAvailabilityUpdate = async (status, tableNumber) => {
+            const tableResponse = await axios.put(`http://localhost:8080/api/table/${tableNumber}/availability?availability=`+status);
+            if (tableResponse.status == 200) {
+                return true;
+            }
+            return false;
+        }
         
+        const getAvailableTables =  () => {
+            
+            axios.get("http://localhost:8080/api/table/available")
+            .then(response => {
+                setTableList(response.data);
+            })
+            .catch(error => {
+                console.error("Error fetching available tables:", error);
+            });
+        }
         
         
     
@@ -572,9 +623,12 @@ export default function UpdateOrder() {
                                         className="block p-1 mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-0 focus:border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                     >
                                         <option value={0}>No Table Assigned</option>
-                                        {[...Array(10).keys()].map((num) => (
-                                            <option key={num + 1} value={num + 1}>
-                                                Table {num + 1}
+                                            {tableNumberStatic > 0 && (
+                                                <option key={tableNumberStatic} value={tableNumberStatic}>Table {tableNumberStatic} (Current One)</option>
+                                            )}                                        
+                                        {tableList.map((data) => (
+                                            <option key={data.id} value={data.tableNumber}>
+                                                Table {data.tableNumber}
                                             </option>
                                         ))}
                                     </select>
