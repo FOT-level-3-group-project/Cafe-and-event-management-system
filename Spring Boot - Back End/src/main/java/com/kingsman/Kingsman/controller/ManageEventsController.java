@@ -60,7 +60,6 @@ public class ManageEventsController {
         }
     }
 
-    // Find Total revenue of events for current month
     @GetMapping("/monthly-total-revenue")
     public ResponseEntity<Double> getTotalRevenueForCurrentMonth() {
         try {
@@ -71,7 +70,6 @@ public class ManageEventsController {
         }
     }
 
-    // Find Total revenue of events for current year
     @GetMapping("/annual-total-revenue")
     public ResponseEntity<Double> getTotalRevenueForCurrentYear() {
         try {
@@ -82,7 +80,6 @@ public class ManageEventsController {
         }
     }
 
-    // Find Total budget of events for current month
     @GetMapping("/monthly-total-budget")
     public ResponseEntity<Double> getTotalEventBudgetForCurrentMonth() {
         try {
@@ -93,7 +90,6 @@ public class ManageEventsController {
         }
     }
 
-    // Find Total budget of events for current year
     @GetMapping("/annual-total-budget")
     public ResponseEntity<Double> getTotalEventBudgetForCurrentYear() {
         try {
@@ -103,4 +99,5 @@ public class ManageEventsController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }
