@@ -49,4 +49,10 @@ public class TableManageService {
             throw new RuntimeException("Table not found with ID: " + id);
         }
     }
+
+    public List<TableManage> getAvailableTables() {
+        return tableManageRepository.findByTableAvailability(true);
+    }
+
+
 }
