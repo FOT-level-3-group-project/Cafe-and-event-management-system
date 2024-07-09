@@ -23,27 +23,6 @@ const AddEvent = () => {
   const [ticketPriceErrorMessage, setTicketPriceErrorMessage] = useState('');
   const [showTicketPriceModal, setShowTicketPriceModal] = useState(false);
 
-
-  // const handleClear = () => {
-  //     setFormData({
-  //       eventIDNumber: '',
-  //       eventName: '',
-  //       eventDate: '',
-  //       startTime: '',
-  //       duration: '',
-  //       budget: '',
-  //       ticketPrice: '',
-  //       ticketQuantity: '',
-  //       entertainer: '',
-  //       description: '',
-  //     }); 
-  //     setErrorMessage('');
-  //     setBudgetErrorMessage('');
-  //     setTicketPriceErrorMessage('');
-  //     setTicketQuantityErrorMessage('');
-  //     setDurationErrorMessage('');
-  // };
-
   const handleShowTicketPriceModal = () => {
   setShowTicketPriceModal(true);
 };
@@ -121,21 +100,28 @@ const handleTicketPriceChange = (price) => {
           console.log(response.data);
           const successMessage = `Successfully added event ${formData.eventName}`;
           setErrorMessage(successMessage);
+
+           navigate('/manager?tab=view-all-events');
       } catch (error) {
-          if (error.response && error.response.data && error.response.data.error) {
-              // Extract the error message from the response data and display it
-              setErrorMessage(error.response.data.error);
-          } else if (error.request) {
-              // This usually indicates a network error or the server did not respond
-              console.log(error.request);
-              setErrorMessage('Network error occurred. Please try again later.');
-          } else {
-              // Something happened in setting up the request that triggered an error
-              console.log('Error', error.message);
-              setErrorMessage('Failed to add event. Please try again later.');
-          };
+      if (error.response && error.response.data) {
+        // Handle specific error messages returned from the backend
+        if (error.response.data === "An event with the same name already exists" ||
+            error.response.data === "An event with the same ID already exists" ||
+            error.response.data === "An event already exists on the same day") {
+          setErrorMessage(error.response.data);
+        } else {
+          // Fallback generic error message if needed
+          setErrorMessage('Failed to add event. Please try again later.');
+        }
+      } else if (error.request) {
+        console.log(error.request);
+        setErrorMessage('Network error occurred. Please try again later.');
+      } else {
+        console.log('Error', error.message);
+        setErrorMessage('Failed to add event. Please try again later.');
       }
-          };
+    }
+  };
     useEffect(() => {
         setFormData({
             ...formData,

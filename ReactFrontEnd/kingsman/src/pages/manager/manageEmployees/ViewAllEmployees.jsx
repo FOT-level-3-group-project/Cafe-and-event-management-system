@@ -197,7 +197,6 @@ const ViewAllEmployees = () => {
                <Table.HeadCell className="bg-green-100"> Email</Table.HeadCell>
                <Table.HeadCell className="bg-green-100"> Address</Table.HeadCell>
                <Table.HeadCell className="bg-green-100"> Gender</Table.HeadCell>
-               <Table.HeadCell className="bg-green-100"> ID Number </Table.HeadCell>
                <Table.HeadCell className="bg-green-100"> Joined Date </Table.HeadCell>
                <Table.HeadCell className="bg-green-100"> Uniform Size </Table.HeadCell>
                <Table.HeadCell className="bg-green-100"> Emergency Contact </Table.HeadCell>
@@ -250,7 +249,6 @@ const ViewAllEmployees = () => {
                      <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.email}</Table.Cell>
                      <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.address}</Table.Cell>
                      <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.gender}</Table.Cell>
-                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.idNumber}</Table.Cell>
                      <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.joined_date} </Table.Cell>
                      <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.uniform_size}</Table.Cell>
                      <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{employee.emergency_contact}</Table.Cell>
