@@ -62,6 +62,22 @@ const ViewAllEvents = () => {
         }
     };
 
+  // retrieve event details
+    const fetchEventDetails = async (eventID) => {
+    try {
+        const response = await fetch(`http://localhost:8080/api/inform/get/${eventID}`);
+        if (!response.ok) {
+            throw new Error(`Error fetching event details: ${response.statusText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching event details:', error);
+        throw error;
+    }
+};
+
+
+
    // Function to handle sharing event details
     const handleShare = async (eventID) => {
         try {
@@ -147,7 +163,7 @@ const ViewAllEvents = () => {
               <Table.HeadCell className="bg-green-100"> Sold Ticket Qty.</Table.HeadCell>
               <Table.HeadCell className="bg-green-100"> Entertainer </Table.HeadCell>
               <Table.HeadCell className="bg-green-100"> Description </Table.HeadCell>
-              <Table.HeadCell className="bg-green-100"> Status </Table.HeadCell> <Table.HeadCell
+              <Table.HeadCell className="bg-green-100">  </Table.HeadCell> <Table.HeadCell
                 className="bg-green-100 text-center"
                 colSpan={3}
               ></Table.HeadCell>
@@ -183,9 +199,7 @@ const ViewAllEvents = () => {
                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600"> {event.entertainer}</Table.Cell>
                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">{event.description}</Table.Cell>
                     <Table.Cell className="text-black dark:text-slate-200 dark:bg-gray-600">
-                      <button onClick={() => handleStatusChange(event)} className="font-medium text-green-800 dark:text-green-400 hover:scale-110">
-            Mark as Done
-          </button>
+                      <button onClick={() => handleStatusChange(event)} className="font-medium text-green-800 dark:text-green-400 hover:scale-110"> Mark as Done </button>
                     </Table.Cell>
                     <Table.Cell className="dark:bg-gray-600">
                       <button onClick={() => handleUpdateClick(event)} className="font-medium text-blue-600 dark:text-blue-400 hover:scale-110 ">Update</button>
