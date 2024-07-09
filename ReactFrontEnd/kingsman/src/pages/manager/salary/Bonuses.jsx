@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Modal, Label, TextInput } from "flowbite-react";
 import DeductionsTable from './DeductionsTable';
 import BonusesTable from './BonusesTable';
+ 
 
 function Bonuses() {
   const [bonusModalOpen, setBonusModalOpen] = useState(false);
@@ -12,6 +13,17 @@ function Bonuses() {
   const [bonusAmount, setBonusAmount] = useState(0);
   const [deductionType, setDeductionType] = useState('');
   const [deductionAmount, setDeductionAmount] = useState(0);
+  const [employees, setEmployees] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/employeeIdsAndPositions')
+      .then(response => {
+        setEmployees(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching employee details:', error);
+      });
+  }, []);
 
   const handleOpenBonusModal = () => {
     setBonusModalOpen(true);
@@ -101,14 +113,12 @@ function Bonuses() {
       </div>
 
       <div className='flex flex-row'>
-        
         <div className="flex-1 ml-2 mr-5 mt-8">
           <BonusesTable fetchBonuses={fetchBonuses} />
         </div>
         <div className="flex-1 ml-3 mr-3 mt-1 mb-6">
           <DeductionsTable fetchDeductions={fetchDeductions} />
         </div>
-
       </div>
 
       {/* Add Bonus Modal */}
@@ -128,9 +138,9 @@ function Bonuses() {
                 className="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 dark:bg-gray-700 dark:border-gray-700 dark:focus:border-gray-500 dark:focus:ring-gray-600 dark:text-gray-300 rounded-md"
               >
                 <option value="">Select Employee</option>
-                <option value="W.A.T.I Bandara">W.A.T.I Bandara</option>
-                <option value="W.G Madhushan">W.G Madhushan</option>
-                <option value="C.D Senarathna">C.D Senarathna</option>
+                {employees.map(employee => (
+                  <option key={employee[0]} value={employee[1]}>{employee[1]}</option>
+                ))}
               </select>
             </div>
             <div>
@@ -184,9 +194,9 @@ function Bonuses() {
                 className="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 dark:bg-gray-700 dark:border-gray-700 dark:focus:border-gray-500 dark:focus:ring-gray-600 dark:text-gray-300 rounded-md"
               >
                 <option value="">Select Employee</option>
-                <option value="W.A.T.I Bandara">W.A.T.I Bandara</option>
-                <option value="W.G Madhushan">W.G Madhushan</option>
-                <option value="C.D Senarathna">C.D Senarathna</option>
+                {employees.map(employee => (
+                  <option key={employee[0]} value={employee[1]}>{employee[1]}</option>
+                ))}
               </select>
             </div>
             <div>

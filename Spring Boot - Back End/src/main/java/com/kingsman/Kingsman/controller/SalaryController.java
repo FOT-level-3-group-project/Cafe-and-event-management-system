@@ -29,4 +29,9 @@ public class SalaryController {
     public List<MonthSalary> getThisMonthSalaries() {
         return monthSalaryService.getThisMonthSalaries();
     }
+
+    @GetMapping("/getMonthSalaries/{month}")
+    public List<MonthSalary> getMonthSalaries(@PathVariable String month) {
+        return monthSalaryService.getMonthSalaries(month);
+    }
 }

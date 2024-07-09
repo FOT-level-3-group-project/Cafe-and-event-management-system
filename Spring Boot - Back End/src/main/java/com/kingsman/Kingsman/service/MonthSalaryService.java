@@ -173,4 +173,8 @@ public class MonthSalaryService {
         String currentMonth = YearMonth.now().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
         return monthSalaryRepository.findByMonth(currentMonth);
     }
+
+    public List<MonthSalary> getMonthSalaries(String month) {
+        return monthSalaryRepository.findByMonth(month);
+    }
 }

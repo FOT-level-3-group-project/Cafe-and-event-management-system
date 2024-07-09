@@ -20,4 +20,6 @@ public interface MonthSalaryRepository extends JpaRepository<MonthSalary, Long> 
 
 
     List<MonthSalary> findByMonth(String currentMonth);
+
+
 }

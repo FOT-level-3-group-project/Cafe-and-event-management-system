@@ -4,6 +4,7 @@ import { Table, Button, Modal, TextInput } from 'flowbite-react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
 
+
 function BonusesTable({ fetchBonuses }) {
   const [bonuses, setBonuses] = useState([]);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -85,7 +86,7 @@ function BonusesTable({ fetchBonuses }) {
         <Table.Head>
           <Table.HeadCell>Employee Name</Table.HeadCell>
           <Table.HeadCell>Bonus Type</Table.HeadCell>
-          <Table.HeadCell>Bonus (Rs.)</Table.HeadCell>
+          <Table.HeadCell>Bonus (R<span style={{ textTransform: 'lowercase' }}>s</span>)</Table.HeadCell>
           <Table.HeadCell>Action</Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">

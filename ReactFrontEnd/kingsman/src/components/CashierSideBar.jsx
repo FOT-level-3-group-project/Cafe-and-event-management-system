@@ -7,6 +7,9 @@ import { Sidebar } from "flowbite-react";
 import { HiArrowSmRight, HiUser } from "react-icons/hi";
 import { MdOutlineRestaurantMenu } from "react-icons/md";
 import { logOutSuccess } from '../redux/user/userSlice';
+import { RiUserShared2Fill } from "react-icons/ri";
+import { HiOutlineUsers } from "react-icons/hi";
+
 
 
 export default function CashierSideBar() {
@@ -42,10 +45,10 @@ export default function CashierSideBar() {
                     
                     <Sidebar.Collapse label='Attendance' icon={HiUser}>
                         <Link to='/cashier?tab=addAttendance'>
-                            <Sidebar.Item active={tab === 'addAttendance'} icon={HiUser} as='div'> Add Attendance </Sidebar.Item>
+                            <Sidebar.Item active={tab === 'addAttendance'} icon={RiUserShared2Fill } as='div'> Add Attendance </Sidebar.Item>
                         </Link>
                         <Link to='/cashier?tab=viewAttendance'>
-                            <Sidebar.Item active={tab === 'viewAttendance'} icon={HiUser} as='div'> View Attendance </Sidebar.Item>
+                            <Sidebar.Item active={tab === 'viewAttendance'} icon={HiOutlineUsers } as='div'> View Attendance </Sidebar.Item>
                         </Link>
 
                     </Sidebar.Collapse>

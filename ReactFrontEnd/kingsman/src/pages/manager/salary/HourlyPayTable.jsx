@@ -4,7 +4,7 @@ import { Table, Modal, Button, TextInput } from 'flowbite-react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
 
-function HourlyPayTable() {
+function HourlyPayTable({ refresh, setRefresh }) {
   const [hourPayments, setHourPayments] = useState([]);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteHourPaymentId, setDeleteHourPaymentId] = useState(null);
@@ -18,7 +18,7 @@ function HourlyPayTable() {
 
   useEffect(() => {
     fetchHourPayments();
-  }, []);
+  }, [refresh]); // Refresh effect triggered by changes in 'refresh'
 
   const fetchHourPayments = async () => {
     try {
@@ -64,7 +64,7 @@ function HourlyPayTable() {
   const confirmEditHourPayment = async () => {
     try {
       await axios.put(`http://localhost:8080/hourPayments/${editHourPaymentData.id}`, editHourPaymentData);
-      fetchHourPayments(); // Refresh table after edit
+      setRefresh(prev => !prev); // Toggle refresh state to trigger fetch
       console.log('Hourly payment updated successfully');
     } catch (error) {
       console.error('Error updating hourly payment:', error);
@@ -80,13 +80,13 @@ function HourlyPayTable() {
   };
 
   return (
-    <div>
-      <h2 className="text-xl font-bold mb-4">Hourly Payments</h2>
+    <div className='w-full'>
+      <h2 className="text-xl font-bold mb-4 ">Hourly Payments</h2>
       <Table hoverable className='drop-shadow-lg'>
         <Table.Head>
           <Table.HeadCell>Position</Table.HeadCell>
-          <Table.HeadCell>Pay Per Hour (Rs.)</Table.HeadCell>
-          <Table.HeadCell>Pay Per OT Hour (Rs.)</Table.HeadCell>
+          <Table.HeadCell>Pay Per Hour (R<span style={{ textTransform: 'lowercase' }}>s</span>)</Table.HeadCell>
+          <Table.HeadCell>Pay Per OT Hour (R<span style={{ textTransform: 'lowercase' }}>s</span>)</Table.HeadCell>
           <Table.HeadCell>Action</Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
