@@ -7,13 +7,17 @@ A web application system for Kingsman Cafe and Event Management located in Polat
 - [Installation](#installation)
 - [Usage](#usage)
 - [Features](#features)
+- [Technologies Used](#technologies-used)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Installation
-Clone the repository and install dependencies:
-```bash
-git clone https://github.com/your-username/kingsman-cafe.git
-cd kingsman-cafe
-npm install
+### Prerequisites
+- Node.js
+- npm (Node Package Manager)
 
+### Steps
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/kingsman-cafe.git
+   cd kingsman-cafe
