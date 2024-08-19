@@ -22,16 +22,17 @@ const AddEvent = () => {
   const [durationErrorMessage, setDurationErrorMessage] = useState('');
   const [ticketPriceErrorMessage, setTicketPriceErrorMessage] = useState('');
   const [showTicketPriceModal, setShowTicketPriceModal] = useState(false);
+  const [minDate, setMinDate] = useState('');
 
   const handleShowTicketPriceModal = () => {
-  setShowTicketPriceModal(true);
-};
+    setShowTicketPriceModal(true);
+  };
 
-const handleCloseTicketPriceModal = () => {
-  setShowTicketPriceModal(false);
-};
+  const handleCloseTicketPriceModal = () => {
+    setShowTicketPriceModal(false);
+  };
 
-const handleTicketPriceChange = (price) => {
+  const handleTicketPriceChange = (price) => {
     setFormData({
       ...formData,
       ticketPrice: price,
@@ -126,6 +127,12 @@ const handleTicketPriceChange = (price) => {
         setFormData({
             ...formData,
         });
+
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+        const dd = String(today.getDate()).padStart(2, '0');
+        setMinDate(`${yyyy}-${mm}-${dd}`);
     }, []);
 
     return (
@@ -149,7 +156,7 @@ const handleTicketPriceChange = (price) => {
 
                         <div>
                             <Label value='Event Date*' />
-                             <TextInput type='date' placeholder='Event Date' id='EventDate' value={formData.eventDate} onChange={handleChange} name="eventDate" className='text-gray-400' />
+                             <TextInput type='date' placeholder='Event Date' id='EventDate' value={formData.eventDate} onChange={handleChange} name="eventDate" min={minDate} className='text-gray-400' />
                         </div>
 
                         <div>

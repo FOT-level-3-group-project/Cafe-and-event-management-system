@@ -168,10 +168,6 @@ const UpdateEmployeeModal = ({ employee, handleClose }) => {
                         </select>
                     </div>
                     <div>
-                        <Label value='ID Number' />
-                        <TextInput type='text' id='idNumber' value={employee.idNumber} name='idNumber' readOnly />
-                    </div>
-                    <div>
                         <Label value='Joined Date' />
                         <TextInput type='date' id='JoinedDate' value={employee.joined_date} name="joined_date" readOnly />
                     </div>
