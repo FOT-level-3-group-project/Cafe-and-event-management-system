@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Label, TextInput, Button, Alert } from 'flowbite-react';
 import axios from 'axios';
 import GenerateTicketPriceModel from './GenerateTicketPriceModel';
@@ -21,6 +21,7 @@ const UpdateEventModal = ({ event, handleClose}) => {
     const [durationErrorMessage, setDurationErrorMessage] = useState('');
     const [ticketPriceErrorMessage, setTicketPriceErrorMessage] = useState('');
     const [showTicketPriceModal, setShowTicketPriceModal] = useState(false);
+    const [minDate, setMinDate] = useState('');
 
   const handleShowTicketPriceModal = () => {
     setShowTicketPriceModal(true);
@@ -74,6 +75,14 @@ const UpdateEventModal = ({ event, handleClose}) => {
     };
   };
 
+  useEffect(() => {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+      const dd = String(today.getDate()).padStart(2, '0');
+      setMinDate(`${yyyy}-${mm}-${dd}`);
+  }, []);
+
 
     const handleSubmit = async (e) => {
         try {
@@ -108,7 +117,7 @@ const UpdateEventModal = ({ event, handleClose}) => {
                     </div>
                     <div>
                         <Label value='Event Date*' />
-                        <TextInput type='date' id='eventDate' value={formData.eventDate} name="eventDate" onChange={handleChange} required/>
+                        <TextInput type='date' id='eventDate' value={formData.eventDate} name="eventDate" onChange={handleChange} min={minDate} required/>
                     </div>
 
                     <div>

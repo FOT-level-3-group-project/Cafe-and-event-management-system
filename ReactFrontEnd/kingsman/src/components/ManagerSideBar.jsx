@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { BiCoinStack } from "react-icons/bi";
-import { Sidebar } from "flowbite-react";
+import { Sidebar, SidebarCollapse } from "flowbite-react";
 import { HiArrowSmRight, HiUser } from "react-icons/hi";
 import { BsPersonFillCheck } from "react-icons/bs";
 import { logOutSuccess } from '../redux/user/userSlice';
@@ -14,6 +14,7 @@ import { MdRestaurantMenu } from "react-icons/md";
 import { FaChartPie } from "react-icons/fa";
 import { MdOutlineTableBar } from "react-icons/md";
 import { IoSettings } from "react-icons/io5";
+import { MdOutlineRestaurantMenu } from "react-icons/md";
 
 
 export default function ManagerSideBar() {
@@ -105,9 +106,11 @@ export default function ManagerSideBar() {
                         <Link to='/manager?tab=table-manage'>
                             <Sidebar.Item active={tab === 'table-manage'} icon={MdOutlineTableBar} as='div'> Table Management </Sidebar.Item>
                         </Link>
-
                     </Sidebar.Collapse>
                     
+                    <Link to = '/manager?tab=billPayments'>
+                        <Sidebar.Item active={tab === 'billPayments'} icon={MdOutlineRestaurantMenu} as='div'> Bill Payments </Sidebar.Item>
+                    </Link>
 
                     <Link to='/manager?tab=profile'>
                         <Sidebar.Item active={tab === 'profile'} icon={HiUser} label={"Manager"} labelColor='dark' as='div'>

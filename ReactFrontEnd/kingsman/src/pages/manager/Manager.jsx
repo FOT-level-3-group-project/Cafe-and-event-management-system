@@ -21,8 +21,7 @@ import UpdateOrderItems from './order/UpdateOrderItems';
 import EmpSalaries from './salary/EmpSalaries';
 import Bonuses from './salary/Bonuses';
 import PayPerHour from './salary/PayPerHour';
-
-
+import BillPayments from './BillPayments';
 
 export default function Manager() {
     const location = useLocation();
@@ -90,6 +89,10 @@ export default function Manager() {
 
             {/* Table Manage */}
             {tab === 'table-manage' && <TableManage/>}
+
+            {/* Bill Payments */}
+            {tab === 'billPayments' && <BillPayments/>}
+
 
         </div>
     )

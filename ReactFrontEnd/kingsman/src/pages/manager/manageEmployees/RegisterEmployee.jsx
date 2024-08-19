@@ -25,7 +25,7 @@ export default function RegisterEmployee() {
     const [contactErrorMessage, setContactErrorMessage] = useState('');
     const [EmergencyContactErrorMessage, setEmergencyContactErrorMessage] = useState('');
     const [showAddPositionModal, setShowAddPositionModal] = useState(false);
-     const [positions, setPositions] = useState(() => {
+    const [positions, setPositions] = useState(() => {
         // Retrieve positions from local storage or use default positions
         const savedPositions = localStorage.getItem('positions');
         return savedPositions ? JSON.parse(savedPositions) : ['Cashier', 'Chef', 'Waiter'];
@@ -109,6 +109,8 @@ export default function RegisterEmployee() {
             const generatedPassword = formData.password; // Accessing the auto-generated password from form data
             const successMessage = `Successfully registered with Password: ${generatedPassword}`;
             setErrorMessage(successMessage);
+
+            // navigate('/manager?tab=view-all-employees');
         } catch (error) {
             if (error.response) {
                 // Extract the error message from the response data and display it
